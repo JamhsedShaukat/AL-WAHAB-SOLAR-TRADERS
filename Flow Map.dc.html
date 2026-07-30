@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; -webkit-font-smoothing:antialiased; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+
+<div style="min-height:100vh; background:linear-gradient(180deg,#0A0F1E 0%,#070B16 45%,#05080F 100%); color:#E7ECF5; fontFamily:Manrope, sans-serif; padding:48px 24px 96px;">
+
+  <div style="max-width:1100px; margin:0 auto;">
+
+    <!-- Title -->
+    <div style="textAlign:center; marginBottom:48px;">
+      <div style="display:inline-flex; alignItems:center; gap:10px; marginBottom:16px;">
+        <span style="display:grid; placeItems:center; height:36px; width:36px; borderRadius:12px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+          <img src="al-wahab-logo.png" alt="" style="width:30px; height:30px; objectFit:contain;" />
+        </span>
+        <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; fontWeight:600; color:#fff;">Al-Wahab <span style="color:#FFB800;">Solar Traders</span></span>
+      </div>
+      <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:32px; fontWeight:600; color:#fff; margin:0;">Complete User Flow</h1>
+      <p style="color:#94A3B8; fontSize:15px; marginTop:8px;">Click any screen to open it. Arrows show the primary user journey.</p>
+    </div>
+
+    <!-- ====== FLOW 1: CUSTOMER JOURNEY ====== -->
+    <div style="marginBottom:48px;">
+      <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.16em; color:#FFB800; marginBottom:20px;">Primary customer journey</div>
+
+      <!-- Flow row -->
+      <div style="display:flex; flexWrap:wrap; gap:12px; alignItems:center;">
+
+        <!-- Homepage -->
+        <a href="Al-Wahab Solar Estimator.dc.html" style="flex:1 1 160px; textDecoration:none;">
+          <div style="background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.3); borderRadius:14px; padding:18px; cursor:pointer;">
+            <div style="fontSize:11px; fontWeight:600; color:#FFB800; textTransform:uppercase; letterSpacing:0.1em; marginBottom:6px;">Step 1</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Homepage</div>
+            <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">Hero, trust signals, sample estimate, FAQ, lead form</div>
+            <div style="fontSize:11px; color:#64748B; marginTop:8px;">Al-Wahab Solar Estimator.dc.html</div>
+          </div>
+        </a>
+
+        <div style="color:#FFB800; fontSize:20px; flexShrink:0;">→</div>
+
+        <!-- Estimator -->
+        <a href="Al-Wahab Solar Estimator.dc.html" style="flex:1 1 160px; textDecoration:none;">
+          <div style="background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.3); borderRadius:14px; padding:18px; cursor:pointer;">
+            <div style="fontSize:11px; fontWeight:600; color:#FFB800; textTransform:uppercase; letterSpacing:0.1em; marginBottom:6px;">Step 2</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Estimator Wizard</div>
+            <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">8-step wizard, live rail, building animation, result</div>
+            <div style="fontSize:11px; color:#64748B; marginTop:8px;">Click "Free estimate" on homepage</div>
+          </div>
+        </a>
+
+        <div style="color:#FFB800; fontSize:20px; flexShrink:0;">→</div>
+
+        <!-- Estimate Detail -->
+        <a href="Estimate Detail %26 Project.dc.html" style="flex:1 1 160px; textDecoration:none;">
+          <div style="background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.3); borderRadius:14px; padding:18px; cursor:pointer;">
+            <div style="fontSize:11px; fontWeight:600; color:#FFB800; textTransform:uppercase; letterSpacing:0.1em; marginBottom:6px;">Step 3</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Full Estimate</div>
+            <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">Itemized cost, timeline, energy, warranties, tiers</div>
+            <div style="fontSize:11px; color:#64748B; marginTop:8px;">Estimate Detail & Project.dc.html</div>
+          </div>
+        </a>
+
+        <div style="color:#FFB800; fontSize:20px; flexShrink:0;">→</div>
+
+        <!-- Auth -->
+        <a href="Auth %26 Dashboard.dc.html" style="flex:1 1 160px; textDecoration:none;">
+          <div style="background:rgba(0,229,255,.06); border:1px solid rgba(0,229,255,.25); borderRadius:14px; padding:18px; cursor:pointer;">
+            <div style="fontSize:11px; fontWeight:600; color:#00E5FF; textTransform:uppercase; letterSpacing:0.1em; marginBottom:6px;">Step 4</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Sign Up / Log In</div>
+            <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">Split layout, OTP verification, password reset</div>
+            <div style="fontSize:11px; color:#64748B; marginTop:8px;">Auth & Dashboard.dc.html</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Second row -->
+      <div style="display:flex; flexWrap:wrap; gap:12px; alignItems:center; marginTop:12px;">
+        <div style="flex:1 1 160px;"></div>
+        <div style="flex:1 1 160px;"></div>
+        <div style="color:#FFB800; fontSize:20px; flexShrink:0; transform:rotate(90deg);">→</div>
+        <div style="flex:1 1 160px;"></div>
+      </div>
+
+      <div style="display:flex; flexWrap:wrap; gap:12px; alignItems:center; marginTop:4px;">
+
+        <!-- Project Detail -->
+        <a href="Estimate Detail %26 Project.dc.html" style="flex:1 1 160px; textDecoration:none;">
+          <div style="background:rgba(52,211,153,.06); border:1px solid rgba(52,211,153,.25); borderRadius:14px; padding:18px; cursor:pointer;">
+            <div style="fontSize:11px; fontWeight:600; color:#34D399; textTransform:uppercase; letterSpacing:0.1em; marginBottom:6px;">Step 7</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Project Detail</div>
+            <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">Phase tracker, timeline, team, docs, payments</div>
+            <div style="fontSize:11px; color:#64748B; marginTop:8px;">Toggle "Project Detail" at bottom</div>
+          </div>
+        </a>
+
+        <div style="color:#FFB800; fontSize:20px; flexShrink:0;">←</div>
+
+        <!-- My Estimates -->
+        <a href="Customer Screens.dc.html" style="flex:1 1 160px; textDecoration:none;">
+          <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:14px; padding:18px; cursor:pointer;">
+            <div style="fontSize:11px; fontWeight:600; color:#94A3B8; textTransform:uppercase; letterSpacing:0.1em; marginBottom:6px;">Step 6</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">My Estimates</div>
+            <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">Saved estimates list with filters, status, actions</div>
+            <div style="fontSize:11px; color:#64748B; marginTop:8px;">Customer Screens.dc.html → "My Estimates"</div>
+          </div>
+        </a>
+
+        <div style="color:#FFB800; fontSize:20px; flexShrink:0;">←</div>
+
+        <!-- Dashboard -->
+        <a href="Auth %26 Dashboard.dc.html" style="flex:1 1 160px; textDecoration:none;">
+          <div style="background:rgba(0,229,255,.06); border:1px solid rgba(0,229,255,.25); borderRadius:14px; padding:18px; cursor:pointer;">
+            <div style="fontSize:11px; fontWeight:600; color:#00E5FF; textTransform:uppercase; letterSpacing:0.1em; marginBottom:6px;">Step 5</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Dashboard</div>
+            <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">KPIs, project cards, empty state, new estimate</div>
+            <div style="fontSize:11px; color:#64748B; marginTop:8px;">Click "Dashboard" in Auth file</div>
+          </div>
+        </a>
+
+        <div style="flex:1 1 160px;"></div>
+      </div>
+    </div>
+
+    <!-- ====== FLOW 2: SUPPORTING SCREENS ====== -->
+    <div style="marginBottom:48px;">
+      <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.16em; color:#00E5FF; marginBottom:20px;">Supporting customer screens</div>
+      <div style="display:flex; flexWrap:wrap; gap:12px;">
+        <sc-for list="{{ supportingScreens }}" as="screen" hint-placeholder-count="6">
+          <a href="{{ screen.href }}" style="flex:1 1 200px; textDecoration:none;">
+            <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:14px; padding:16px; cursor:pointer;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:15px; fontWeight:600; color:#fff;">{{ screen.title }}</div>
+              <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">{{ screen.desc }}</div>
+              <div style="fontSize:11px; color:#64748B; marginTop:6px;">{{ screen.file }}</div>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- ====== FLOW 3: ADMIN PANEL ====== -->
+    <div style="marginBottom:48px;">
+      <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.16em; color:#A78BFA; marginBottom:20px;">Admin panel (staff only)</div>
+      <div style="display:flex; flexWrap:wrap; gap:12px;">
+        <sc-for list="{{ adminScreens }}" as="screen" hint-placeholder-count="4">
+          <a href="Admin Panel.dc.html" style="flex:1 1 200px; textDecoration:none;">
+            <div style="background:rgba(139,92,246,.06); border:1px solid rgba(139,92,246,.2); borderRadius:14px; padding:16px; cursor:pointer;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:15px; fontWeight:600; color:#fff;">{{ screen.title }}</div>
+              <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">{{ screen.desc }}</div>
+              <div style="fontSize:11px; color:#64748B; marginTop:6px;">{{ screen.nav }}</div>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- ====== FILE INDEX ====== -->
+    <div>
+      <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.16em; color:#64748B; marginBottom:16px;">File index — 5 design components</div>
+      <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); borderRadius:16px; overflow:hidden;">
+        <sc-for list="{{ fileIndex }}" as="file" hint-placeholder-count="5">
+          <a href="{{ file.href }}" style="display:flex; justifyContent:space-between; alignItems:center; padding:14px 20px; borderBottom:1px solid rgba(255,255,255,.06); textDecoration:none; cursor:pointer;">
+            <div>
+              <div style="fontSize:14.5px; color:#E7ECF5; fontWeight:500;">{{ file.name }}</div>
+              <div style="fontSize:12.5px; color:#64748B; marginTop:2px;">{{ file.screens }}</div>
+            </div>
+            <span style="color:#FFB800; fontSize:14px;">→</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div style="display:flex; flexWrap:wrap; gap:20px; marginTop:32px; padding:20px; background:rgba(255,255,255,.02); borderRadius:14px; border:1px solid rgba(255,255,255,.06);">
+      <div style="display:flex; alignItems:center; gap:8px;"><span style="width:12px; height:12px; borderRadius:4px; background:rgba(255,184,0,.3);"></span><span style="fontSize:13px; color:#94A3B8;">Core funnel (gold)</span></div>
+      <div style="display:flex; alignItems:center; gap:8px;"><span style="width:12px; height:12px; borderRadius:4px; background:rgba(0,229,255,.3);"></span><span style="fontSize:13px; color:#94A3B8;">Auth & dashboard (cyan)</span></div>
+      <div style="display:flex; alignItems:center; gap:8px;"><span style="width:12px; height:12px; borderRadius:4px; background:rgba(52,211,153,.3);"></span><span style="fontSize:13px; color:#94A3B8;">Post-purchase (green)</span></div>
+      <div style="display:flex; alignItems:center; gap:8px;"><span style="width:12px; height:12px; borderRadius:4px; background:rgba(139,92,246,.3);"></span><span style="fontSize:13px; color:#94A3B8;">Admin panel (purple)</span></div>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const supportingScreens = [
+      { title: 'About', desc: 'Company story, stats, promise cards', href: 'Customer Screens.dc.html', file: 'Customer Screens → "About"' },
+      { title: 'Contact', desc: 'Info card + message form', href: 'Customer Screens.dc.html', file: 'Customer Screens → "Contact"' },
+      { title: 'Profile & Settings', desc: '4 tabs: profile, security, prefs, data', href: 'Customer Screens.dc.html', file: 'Customer Screens → "Profile"' },
+      { title: 'Notifications', desc: 'Grouped feed with unread indicators', href: 'Customer Screens.dc.html', file: 'Customer Screens → "Notifications"' },
+      { title: 'Error Pages', desc: '404, 500, offline states', href: 'Customer Screens.dc.html', file: 'Customer Screens → "Errors"' },
+      { title: 'OTP Verification', desc: '6-digit code entry with countdown', href: 'Auth %26 Dashboard.dc.html', file: 'Auth & Dashboard → "OTP"' },
+    ];
+
+    const adminScreens = [
+      { title: 'Admin Dashboard', desc: '8 KPI cards, charts, funnel, alerts, activity feed', nav: 'Sidebar → Dashboard' },
+      { title: 'Leads', desc: 'Kanban board + list view with SLA indicators', nav: 'Sidebar → Leads' },
+      { title: 'Projects', desc: 'Data table + board view, progress bars', nav: 'Sidebar → Projects' },
+      { title: 'Users', desc: 'User table with role chips, avatars, activity', nav: 'Sidebar → Users' },
+    ];
+
+    const fileIndex = [
+      { name: 'Al-Wahab Solar Estimator.dc.html', screens: 'Homepage (13 sections) + 8-step estimator wizard + result screen', href: 'Al-Wahab Solar Estimator.dc.html' },
+      { name: 'Auth & Dashboard.dc.html', screens: 'Sign up, log in, OTP, password reset, customer dashboard (populated + empty)', href: 'Auth %26 Dashboard.dc.html' },
+      { name: 'Estimate Detail & Project.dc.html', screens: 'Full itemized estimate (5 sections) + project detail with phase tracker', href: 'Estimate Detail %26 Project.dc.html' },
+      { name: 'Customer Screens.dc.html', screens: 'About, contact, my estimates, profile & settings, notifications, error pages', href: 'Customer Screens.dc.html' },
+      { name: 'Admin Panel.dc.html', screens: 'Admin shell + dashboard, leads, projects, users modules', href: 'Admin Panel.dc.html' },
+    ];
+
+    return { supportingScreens, adminScreens, fileIndex };
+  }
+}
+</script>
+</body>
+</html>

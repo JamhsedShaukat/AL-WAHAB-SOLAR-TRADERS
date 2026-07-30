@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @keyframes meshShift { 0%,100% { transform: translate3d(0,0,0) scale(1); } 33% { transform: translate3d(4%,-3%,0) scale(1.08); } 66% { transform: translate3d(-3%,4%,0) scale(.96); } }
+    @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,184,0,.45), 0 10px 40px -8px rgba(255,140,0,.5); } 50% { box-shadow: 0 0 0 12px rgba(255,184,0,0), 0 10px 50px -6px rgba(255,140,0,.7); } }
+    @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+    @keyframes shimmerSweep { 100% { background-position: 200% 0; } }
+    @keyframes dotPulse { 0%,80%,100% { transform: scale(.6); opacity:.4; } 40% { transform: scale(1); opacity:1; } }
+    body { margin:0; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    ::selection { background: rgba(255,184,0,.3); color:#fff; }
+    * { box-sizing: border-box; }
+    input::placeholder, textarea::placeholder { color: rgba(148,163,184,.7); }
+  </style>
+</helmet>
+
+<div style="position:relative; min-height:100vh; background:radial-gradient(1200px 800px at 70% -10%, rgba(255,184,0,0.10), transparent 60%), radial-gradient(900px 700px at 10% 20%, rgba(0,229,255,0.06), transparent 55%), linear-gradient(180deg,#0A0F1E 0%,#070B16 45%,#05080F 100%); color:#E7ECF5; fontFamily:Manrope, sans-serif;">
+
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;">
+    <div style="position:absolute; top:-160px; right:-10%; width:55vh; height:55vh; borderRadius:9999px; opacity:.6; filter:blur(90px); background:radial-gradient(circle, rgba(255,184,0,.22), transparent 65%); animation: meshShift 22s ease-in-out infinite;"></div>
+    <div style="position:absolute; top:40%; left:-12%; width:50vh; height:50vh; borderRadius:9999px; opacity:.5; filter:blur(100px); background:radial-gradient(circle, rgba(0,229,255,.16), transparent 65%); animation: meshShift 28s ease-in-out infinite reverse;"></div>
+    <div style="position:absolute; bottom:-15%; right:20%; width:45vh; height:45vh; borderRadius:9999px; opacity:.4; filter:blur(110px); background:radial-gradient(circle, rgba(255,140,0,.16), transparent 65%); animation: meshShift 25s ease-in-out infinite;"></div>
+  </div>
+
+  <!-- ===================== HEADER ===================== -->
+  <header style="position:sticky; top:0; z-index:50;">
+    <sc-if value="{{isHomeView}}" hint-placeholder-val="{{true}}">
+      <div style="background:rgba(7,11,22,.7); backdropFilter:blur(14px); borderBottom:1px solid rgba(255,255,255,.07);">
+        <div style="max-width:1200px; margin:0 auto; display:flex; alignItems:center; justifyContent:space-between; gap:16px; padding:18px 24px;">
+          <a href="#" onClick="{{ goHome }}" style="display:flex; alignItems:center; gap:10px; textDecoration:none; cursor:pointer;">
+            <span style="display:grid; placeItems:center; height:36px; width:36px; borderRadius:12px; background:linear-gradient(135deg,#FFB800,#FF8C00); boxShadow:0 0 20px -2px rgba(255,184,0,0.6); overflow:hidden;">
+              <img src="al-wahab-logo.png" alt="Al-Wahab Solar" style="width:30px; height:30px; objectFit:contain;" />
+            </span>
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; fontWeight:600; color:#fff; letterSpacing:-0.02em;">Al-Wahab <span style="color:#FFB800;">Solar Traders</span></span>
+          </a>
+          <sc-if value="{{isMobile}}" hint-placeholder-val="{{false}}">
+            <button aria-label="Menu" onClick="{{ toggleMobileNav }}" style="display:grid; placeItems:center; height:40px; width:40px; borderRadius:12px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); color:#fff; cursor:pointer;">
+              <span style="fontSize:18px;">☰</span>
+            </button>
+          </sc-if>
+          <sc-if value="{{isDesktop}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex; alignItems:center; gap:28px;">
+            <nav style="display:flex; alignItems:center; gap:24px;">
+              <a href="#how" style="color:#CBD5E1; fontSize:14.5px; textDecoration:none;">How it works</a>
+              <a href="#why" style="color:#CBD5E1; fontSize:14.5px; textDecoration:none;">Why us</a>
+              <a href="#about" style="color:#CBD5E1; fontSize:14.5px; textDecoration:none;">About</a>
+              <a href="#faq" style="color:#CBD5E1; fontSize:14.5px; textDecoration:none;">FAQ</a>
+            </nav>
+            <button onClick="{{ startEstimator }}" style="display:inline-flex; alignItems:center; gap:8px; padding:11px 20px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:14.5px; cursor:pointer; boxShadow:0 10px 30px -8px rgba(255,140,0,0.55); animation:glowPulse 2.6s ease-in-out infinite;">Free estimate</button>
+          </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{mobileNavOpen}}" hint-placeholder-val="{{false}}">
+          <div style="margin:0 16px 12px; padding:12px; borderRadius:16px; background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px); display:flex; flexDirection:column; gap:4px;">
+            <a href="#how" style="padding:12px 14px; borderRadius:10px; color:#E7ECF5; textDecoration:none;">How it works</a>
+            <a href="#why" style="padding:12px 14px; borderRadius:10px; color:#E7ECF5; textDecoration:none;">Why us</a>
+            <a href="#about" style="padding:12px 14px; borderRadius:10px; color:#E7ECF5; textDecoration:none;">About</a>
+            <a href="#faq" style="padding:12px 14px; borderRadius:10px; color:#E7ECF5; textDecoration:none;">FAQ</a>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isEstimatorView}}" hint-placeholder-val="{{false}}">
+      <div style="background:rgba(7,11,22,.7); backdropFilter:blur(14px); borderBottom:1px solid rgba(255,255,255,.07);">
+        <div style="max-width:1200px; margin:0 auto; display:flex; alignItems:center; gap:14px; padding:14px 24px;">
+          <button aria-label="Back to home" onClick="{{ goHome }}" style="display:grid; placeItems:center; height:40px; width:40px; borderRadius:12px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); color:#fff; cursor:pointer;">←</button>
+          <span style="display:flex; alignItems:center; gap:8px;">
+            <span style="display:grid; placeItems:center; height:28px; width:28px; borderRadius:9px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+              <img src="al-wahab-logo.png" alt="" style="width:22px; height:22px; objectFit:contain;" />
+            </span>
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:15.5px; fontWeight:600; color:#fff;">Al-Wahab <span style="color:#FFB800;">Solar</span></span>
+          </span>
+          <span style="flex:1;"></span>
+          <sc-if value="{{isQuestions}}" hint-placeholder-val="{{false}}">
+            <span aria-live="polite" style="fontSize:13px; padding:7px 14px; borderRadius:9999px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#CBD5E1;">Step {{ stepN }} of {{ totalSteps }}</span>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+  </header>
+
+  <!-- ===================== HOMEPAGE ===================== -->
+  <sc-if value="{{isHomeView}}" hint-placeholder-val="{{true}}">
+    <main style="position:relative; zIndex:1;">
+
+      <!-- HERO -->
+      <section style="max-width:1200px; margin:0 auto; padding:88px 24px 72px; display:flex; flexWrap:wrap; gap:48px; alignItems:center;">
+        <div style="flex:1 1 480px;">
+          <span style="display:inline-flex; alignItems:center; gap:8px; padding:7px 16px; borderRadius:9999px; background:rgba(255,184,0,.08); border:1px solid rgba(255,184,0,.28); color:#FFB800; fontSize:13px; fontWeight:600; letterSpacing:0.02em;">Lahore's solar estimator — by Al-Wahab Solar Traders</span>
+          <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(2.25rem,5vw,4rem); lineHeight:1.06; fontWeight:600; color:#fff; marginTop:22px; marginBottom:0;">Get an accurate solar estimate <span style="backgroundImage:linear-gradient(100deg,#FFD466 0%,#FFB800 40%,#FF8C00 100%); WebkitBackgroundClip:text; WebkitTextFillColor:transparent;">in 2 minutes</span></h1>
+          <p style="color:#94A3B8; fontSize:17px; lineHeight:1.6; maxWidth:560px; marginTop:18px;">Answer a few questions or upload your LESCO bill. We price your system on live Lahore market rates — then our own certified team supplies and installs it. Free, with no hidden costs.</p>
+          <div style="display:flex; flexWrap:wrap; gap:14px; marginTop:28px;">
+            <button onClick="{{ startEstimator }}" style="display:inline-flex; alignItems:center; gap:8px; padding:14px 26px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:16px; cursor:pointer; boxShadow:0 10px 30px -8px rgba(255,140,0,0.55);">Get your free solar estimate</button>
+            <a href="#how" style="display:inline-flex; alignItems:center; gap:8px; padding:14px 26px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); color:#fff; fontWeight:500; fontSize:16px; textDecoration:none;">See how it works</a>
+          </div>
+          <p style="color:#64748B; fontSize:13.5px; marginTop:18px;">Upload your electricity bill for the most accurate estimate</p>
+        </div>
+        <div style="flex:1 1 340px; maxWidth:420px;">
+          <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:24px; padding:28px; boxShadow:0 30px 80px -30px rgba(0,0,0,0.9);">
+            <div style="fontSize:13px; color:#00E5FF; fontWeight:600;">Powered by live Lahore market prices</div>
+            <div style="display:flex; gap:24px; marginTop:20px;">
+              <div>
+                <div style="fontSize:12.5px; color:#94A3B8;">Suggested size</div>
+                <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:34px; fontWeight:600; color:#fff;">6.5 kW</div>
+              </div>
+              <div>
+                <div style="fontSize:12.5px; color:#94A3B8;">/mo saved</div>
+                <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:34px; fontWeight:600; color:#FFB800;">28.8K</div>
+              </div>
+            </div>
+            <div style="marginTop:20px; paddingTop:16px; borderTop:1px solid rgba(255,255,255,.08); fontSize:12.5px; color:#64748B;">Prices based on live Lahore market · updated regularly · installed by our own team</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRUST MARQUEE -->
+      <section style="max-width:1200px; margin:0 auto; padding:0 24px 56px; display:flex; flexWrap:wrap; gap:12px;">
+        <sc-for list="{{ trustPills }}" as="pill" hint-placeholder-count="6">
+          <span style="padding:9px 16px; borderRadius:9999px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); fontSize:13px; color:#CBD5E1; display:inline-flex; alignItems:center; gap:8px;"><span style="width:6px; height:6px; borderRadius:9999px; background:#FFB800;"></span>{{ pill }}</span>
+        </sc-for>
+      </section>
+
+      <!-- VALUE STRIP -->
+      <section style="max-width:1200px; margin:0 auto; padding:0 24px 80px; display:flex; flexWrap:wrap; gap:20px;">
+        <sc-for list="{{ valueCards }}" as="card" hint-placeholder-count="4">
+          <div style="flex:1 1 240px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); backdropFilter:blur(14px); borderRadius:16px; padding:24px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; fontWeight:600; color:#fff;">{{ card.title }}</div>
+            <div style="fontSize:14.5px; color:#94A3B8; marginTop:8px; lineHeight:1.55;">{{ card.body }}</div>
+          </div>
+        </sc-for>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section id="how" style="max-width:1200px; margin:0 auto; padding:0 24px 88px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">How it works</div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(1.75rem,3.5vw,2.75rem); color:#fff; marginTop:10px; marginBottom:10px;">From a high bill to a working system, in four steps</h2>
+        <p style="color:#94A3B8; fontSize:16px; maxWidth:620px;">No sales calls to get started — just your answers and clear, itemized numbers.</p>
+        <div style="display:flex; flexWrap:wrap; gap:20px; marginTop:36px;">
+          <sc-for list="{{ howSteps }}" as="step" hint-placeholder-count="4">
+            <div style="flex:1 1 240px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:24px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:28px; fontWeight:700; color:rgba(255,184,0,0.35);">{{ step.n }}</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; fontWeight:600; color:#fff; marginTop:10px;">{{ step.title }}</div>
+              <div style="fontSize:14.5px; color:#94A3B8; marginTop:8px; lineHeight:1.55;">{{ step.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- WHY AL-WAHAB -->
+      <section id="why" style="max-width:1200px; margin:0 auto; padding:0 24px 88px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">Why Al-Wahab</div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(1.75rem,3.5vw,2.75rem); color:#fff; marginTop:10px; marginBottom:10px;">Solar decisions, minus the guesswork</h2>
+        <p style="color:#94A3B8; fontSize:16px; maxWidth:620px;">Everything you need to price, plan and trust a solar purchase in Lahore — from one company.</p>
+        <div style="display:flex; flexWrap:wrap; gap:20px; marginTop:36px;">
+          <sc-for list="{{ whyCards }}" as="card" hint-placeholder-count="6">
+            <div style="flex:1 1 280px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:24px;">
+              <div style="fontSize:12.5px; fontWeight:600; textTransform:uppercase; letterSpacing:0.1em; color:#00E5FF;">{{ card.label }}</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; fontWeight:600; color:#fff; marginTop:10px;">{{ card.title }}</div>
+              <div style="fontSize:14.5px; color:#94A3B8; marginTop:8px; lineHeight:1.55;">{{ card.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- SAMPLE ESTIMATE -->
+      <section style="max-width:1200px; margin:0 auto; padding:0 24px 88px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">Your estimate</div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(1.75rem,3.5vw,2.75rem); color:#fff; marginTop:10px; marginBottom:10px;">See exactly what you'll pay — line by line</h2>
+        <p style="color:#94A3B8; fontSize:16px; maxWidth:640px;">Every estimate breaks the full system down on live Lahore prices, so there are no surprises. Here's a sample.</p>
+        <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:24px; padding:32px; marginTop:32px; maxWidth:720px;">
+          <div style="display:flex; alignItems:center; gap:10px; flexWrap:wrap;">
+            <span style="fontSize:12.5px; padding:5px 12px; borderRadius:9999px; background:rgba(255,255,255,.06); color:#94A3B8;">al-wahab · solar estimate</span>
+            <span style="fontSize:12.5px; padding:5px 12px; borderRadius:9999px; background:rgba(255,184,0,.15); color:#FFB800;">Sample</span>
+          </div>
+          <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:19px; color:#fff; marginTop:16px; marginBottom:6px;">Itemized breakdown</div>
+          <div>
+            <sc-for list="{{ sampleLineItems }}" as="item" hint-placeholder-count="6">
+              <div style="display:flex; justifyContent:space-between; alignItems:baseline; padding:12px 0; borderBottom:1px solid rgba(255,255,255,.06);">
+                <div>
+                  <div style="fontSize:15px; color:#E7ECF5;">{{ item.name }}</div>
+                  <div style="fontSize:12.5px; color:#64748B;">{{ item.spec }}</div>
+                </div>
+                <div style="fontSize:15px; color:#E7ECF5; fontVariantNumeric:tabular-nums;">{{ item.amount }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex; justifyContent:space-between; alignItems:center; paddingTop:16px; marginTop:8px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff;">Estimated total</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:22px; fontWeight:600; backgroundImage:linear-gradient(100deg,#FFD466 0%,#FFB800 40%,#FF8C00 100%); WebkitBackgroundClip:text; WebkitTextFillColor:transparent;">PKR 1,582,295</div>
+          </div>
+          <div style="fontSize:12px; color:#64748B; marginTop:4px;">Indicative — your tailored estimate may differ</div>
+          <div style="display:flex; flexWrap:wrap; gap:12px; marginTop:20px;">
+            <div style="flex:1 1 100px; background:rgba(255,255,255,.04); borderRadius:12px; padding:14px; textAlign:center;">
+              <div style="fontSize:11.5px; color:#94A3B8;">Est. monthly saving</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginTop:4px;">PKR 28,812</div>
+            </div>
+            <div style="flex:1 1 100px; background:rgba(255,255,255,.04); borderRadius:12px; padding:14px; textAlign:center;">
+              <div style="fontSize:11.5px; color:#94A3B8;">Estimated payback</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginTop:4px;">4.5 yrs</div>
+            </div>
+            <div style="flex:1 1 100px; background:rgba(255,255,255,.04); borderRadius:12px; padding:14px; textAlign:center;">
+              <div style="fontSize:11.5px; color:#94A3B8;">System size</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginTop:4px;">6.5 kW</div>
+            </div>
+          </div>
+          <button onClick="{{ startEstimator }}" style="width:100%; marginTop:20px; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Get your estimate</button>
+          <div style="fontSize:11.5px; color:#64748B; marginTop:10px; textAlign:center;">Sample figures — illustrative only.</div>
+        </div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section style="max-width:1200px; margin:0 auto; padding:0 24px 88px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">Reviews</div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(1.75rem,3.5vw,2.75rem); color:#fff; marginTop:10px; marginBottom:10px;">Ratings from real, completed installs</h2>
+        <p style="color:#94A3B8; fontSize:16px; maxWidth:620px;">After every completed job, homeowners rate the work our team did.</p>
+        <div style="display:flex; flexWrap:wrap; gap:20px; marginTop:36px;">
+          <sc-for list="{{ reviews }}" as="review" hint-placeholder-count="3">
+            <div style="flex:1 1 280px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:24px;">
+              <div style="color:#FFB800; fontSize:15px; letterSpacing:2px;">★★★★★</div>
+              <div style="fontSize:14.5px; color:#E7ECF5; marginTop:12px; lineHeight:1.6;">“{{ review.quote }}”</div>
+              <div style="fontSize:13px; color:#94A3B8; marginTop:14px;">Homeowner · {{ review.area }}</div>
+              <div style="fontSize:12.5px; color:#00E5FF; marginTop:2px;">{{ review.system }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" style="max-width:1200px; margin:0 auto; padding:0 24px 88px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">About Al-Wahab</div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(1.75rem,3.5vw,2.75rem); color:#fff; marginTop:10px; marginBottom:10px; maxWidth:680px;">A Lahore solar company that shows its numbers</h2>
+        <p style="color:#94A3B8; fontSize:16px; maxWidth:680px; lineHeight:1.65;">Al-Wahab Solar Traders supplies and installs solar systems across Lahore. We built this estimator because homeowners kept telling us the same thing: every dealer quotes a different number and nobody explains it. So we put our pricing online, itemized, before you ever speak to us.</p>
+        <div style="display:flex; gap:14px; marginTop:20px; flexWrap:wrap;">
+          <a href="#" style="padding:13px 24px; borderRadius:12px; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; textDecoration:none;">Learn about us</a>
+          <a href="#" style="padding:13px 24px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); color:#fff; fontWeight:500; fontSize:15px; textDecoration:none;">Talk to our team</a>
+        </div>
+        <div style="display:flex; flexWrap:wrap; gap:20px; marginTop:40px;">
+          <sc-for list="{{ aboutStats }}" as="stat" hint-placeholder-count="4">
+            <div style="flex:1 1 140px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px; textAlign:center;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:28px; fontWeight:600; color:#FFB800;">{{ stat.value }}</div>
+              <div style="fontSize:13px; color:#94A3B8; marginTop:6px;">{{ stat.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex; flexWrap:wrap; gap:20px; marginTop:20px;">
+          <sc-for list="{{ aboutCards }}" as="card" hint-placeholder-count="3">
+            <div style="flex:1 1 240px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16.5px; fontWeight:600; color:#fff;">{{ card.title }}</div>
+              <div style="fontSize:14px; color:#94A3B8; marginTop:8px; lineHeight:1.55;">{{ card.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" style="max-width:900px; margin:0 auto; padding:0 24px 88px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800; textAlign:center;">FAQ</div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(1.75rem,3.5vw,2.75rem); color:#fff; marginTop:10px; marginBottom:10px; textAlign:center;">Questions, answered honestly</h2>
+        <p style="color:#94A3B8; fontSize:16px; textAlign:center;">The things Lahore homeowners ask us most.</p>
+        <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; marginTop:32px; overflow:hidden;">
+          <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
+            <div style="borderBottom:1px solid rgba(255,255,255,.06);">
+              <button onClick="{{ item.onClick }}" aria-expanded="{{ item.open }}" style="width:100%; textAlign:left; background:none; border:none; cursor:pointer; padding:20px 24px; display:flex; justifyContent:space-between; alignItems:center; gap:16px; color:#fff; fontSize:15.5px; fontWeight:500;">
+                <span>{{ item.q }}</span>
+                <span style="color:#FFB800; fontSize:14px;">▼</span>
+              </button>
+              <sc-if value="{{ item.open }}" hint-placeholder-val="{{false}}">
+                <div style="padding:0 24px 20px; color:#94A3B8; fontSize:14.5px; lineHeight:1.6;">{{ item.a }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- FINAL CTA + LEAD FORM -->
+      <section style="max-width:1200px; margin:0 auto; padding:0 24px 96px; display:flex; flexWrap:wrap; gap:48px;">
+        <div style="flex:1 1 380px;">
+          <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">Get started</div>
+          <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(1.75rem,3.5vw,2.75rem); color:#fff; marginTop:10px; marginBottom:10px;">Ready to see your solar number?</h2>
+          <p style="color:#94A3B8; fontSize:16px; lineHeight:1.6;">Start your free estimate now, or leave your details and we'll walk you through it — no obligation.</p>
+          <div style="display:flex; flexDirection:column; gap:10px; marginTop:20px;">
+            <div style="display:flex; alignItems:center; gap:10px; color:#E7ECF5; fontSize:14.5px;"><span style="color:#FFB800;">✓</span>Free, itemized estimate in about 2 minutes</div>
+            <div style="display:flex; alignItems:center; gap:10px; color:#E7ECF5; fontSize:14.5px;"><span style="color:#FFB800;">✓</span>Installed by our own certified team</div>
+            <div style="display:flex; alignItems:center; gap:10px; color:#E7ECF5; fontSize:14.5px;"><span style="color:#FFB800;">✓</span>No hidden costs, no obligation</div>
+          </div>
+        </div>
+        <div style="flex:1 1 380px; maxWidth:460px;">
+          <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:20px; padding:28px;">
+            <sc-if value="{{leadSubmitted}}" hint-placeholder-val="{{false}}">
+              <div style="textAlign:center; padding:24px 0;">
+                <div style="fontSize:32px; color:#FFB800;">✓</div>
+                <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginTop:10px;">Thank you</div>
+                <div style="fontSize:14.5px; color:#94A3B8; marginTop:6px;">We'll call you within one working day.</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{notLeadSubmitted}}" hint-placeholder-val="{{true}}">
+            <form onSubmit="{{ submitLead }}" style="display:flex; flexDirection:column; gap:14px;">
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Full name</label>
+                <input required type="text" value="{{ leadForm.name }}" onChange="{{ updateName }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Email</label>
+                <input required type="email" value="{{ leadForm.email }}" onChange="{{ updateEmail }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Phone</label>
+                <input required type="tel" value="{{ leadForm.phone }}" onChange="{{ updatePhone }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Monthly electricity bill</label>
+                <select value="{{ leadForm.bill }}" onChange="{{ updateBill }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;">
+                  <option value="">Select…</option>
+                  <option value="u15">Under PKR 15,000</option>
+                  <option value="15-30">PKR 15,000 – 30,000</option>
+                  <option value="30-60">PKR 30,000 – 60,000</option>
+                  <option value="o60">Over PKR 60,000</option>
+                </select>
+              </div>
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Area / town (optional)</label>
+                <input type="text" value="{{ leadForm.area }}" onChange="{{ updateArea }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <button type="submit" style="width:100%; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer; marginTop:6px;">Start my free estimate</button>
+              <div style="fontSize:12px; color:#64748B; textAlign:center;">No spam. Your details are only used to prepare your estimate.</div>
+            </form>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer style="borderTop:1px solid rgba(255,255,255,.07); padding:56px 24px 32px;">
+        <div style="max-width:1200px; margin:0 auto; display:flex; flexWrap:wrap; gap:32px;">
+          <div style="flex:1 1 200px;">
+            <div style="display:flex; alignItems:center; gap:10px;">
+              <span style="display:grid; placeItems:center; height:32px; width:32px; borderRadius:10px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;"><img src="al-wahab-logo.png" alt="" style="width:26px; height:26px; objectFit:contain;" /></span>
+              <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Al-Wahab <span style="color:#FFB800;">Solar Traders</span></span>
+            </div>
+            <p style="color:#94A3B8; fontSize:13.5px; lineHeight:1.6; marginTop:14px; maxWidth:280px;">Lahore's honest solar estimator. Price your system, book a free survey, and let our own certified team install it. <strong style="color:#FFB800;">Shine On!</strong></p>
+          </div>
+          <div>
+            <div style="fontSize:13px; fontWeight:600; color:#fff; marginBottom:12px;">Product</div>
+            <div style="display:flex; flexDirection:column; gap:8px; fontSize:13.5px; color:#94A3B8;">
+              <a href="#" onClick="{{ startEstimator }}" style="color:#94A3B8; textDecoration:none; cursor:pointer;">Get an estimate</a>
+              <a href="#how" style="color:#94A3B8; textDecoration:none;">How it works</a>
+              <a href="#why" style="color:#94A3B8; textDecoration:none;">Why us</a>
+              <a href="#faq" style="color:#94A3B8; textDecoration:none;">FAQ</a>
+            </div>
+          </div>
+          <div>
+            <div style="fontSize:13px; fontWeight:600; color:#fff; marginBottom:12px;">Company</div>
+            <div style="display:flex; flexDirection:column; gap:8px; fontSize:13.5px; color:#94A3B8;">
+              <a href="#about" style="color:#94A3B8; textDecoration:none;">About Al-Wahab</a>
+              <a href="#" style="color:#94A3B8; textDecoration:none;">Our warranty</a>
+              <a href="#" style="color:#94A3B8; textDecoration:none;">Net metering guide</a>
+              <a href="#" style="color:#94A3B8; textDecoration:none;">Contact</a>
+            </div>
+          </div>
+          <div>
+            <div style="fontSize:13px; fontWeight:600; color:#fff; marginBottom:12px;">Contact</div>
+            <div style="display:flex; flexDirection:column; gap:8px; fontSize:13.5px; color:#94A3B8;">
+              <span>Lahore, Pakistan</span>
+              <a href="mailto:info@alwahabsolar.pk" style="color:#94A3B8; textDecoration:none;">info@alwahabsolar.pk</a>
+              <a href="tel:+924211176576" style="color:#94A3B8; textDecoration:none;">+92 42 111 765 765</a>
+              <a href="#" style="color:#00E5FF; textDecoration:none;">WhatsApp us</a>
+            </div>
+          </div>
+        </div>
+        <div style="max-width:1200px; margin:32px auto 0; paddingTop:24px; borderTop:1px solid rgba(255,255,255,.06); display:flex; flexWrap:wrap; justifyContent:space-between; gap:12px; fontSize:12.5px; color:#64748B;">
+          <span>© 2026 Al-Wahab Solar Traders. All rights reserved.</span>
+          <span>Privacy · Terms · Sitemap</span>
+        </div>
+      </footer>
+    </main>
+  </sc-if>
+
+  <!-- ===================== ESTIMATOR ===================== -->
+  <sc-if value="{{isEstimatorView}}" hint-placeholder-val="{{false}}">
+    <main style="position:relative; zIndex:1; maxWidth:1200px; margin:0 auto; padding:36px 24px 96px;">
+
+      <!-- ENTRY -->
+      <sc-if value="{{isEntry}}" hint-placeholder-val="{{true}}">
+        <div style="maxWidth:640px; margin:0 auto;">
+          <div style="display:flex; gap:14px; alignItems:flex-start;">
+            <span style="flexShrink:0; display:grid; placeItems:center; height:44px; width:44px; borderRadius:9999px; background:linear-gradient(135deg,#FFB800,#FF8C00); boxShadow:0 0 20px -2px rgba(255,184,0,.6);"><span style="width:18px; height:18px; borderRadius:9999px; background:#05080F;"></span></span>
+            <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:4px 20px 20px 20px; padding:16px 20px; maxWidth:460px;">
+              <div style="fontSize:15.5px; color:#fff; fontWeight:500;">Assalam-o-Alaikum! I'm Roshni, your solar guide.</div>
+              <div style="fontSize:14.5px; color:#94A3B8; marginTop:6px; lineHeight:1.5;">Upload your latest LESCO bill for the most accurate estimate, or answer a few quick questions — about 2 minutes.</div>
+            </div>
+          </div>
+          <div style="display:flex; flexDirection:column; gap:14px; marginTop:28px;">
+            <sc-for list="{{ entryOptions }}" as="opt" hint-placeholder-count="3">
+              <button onClick="{{ opt.onClick }}" style="textAlign:left; width:100%; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px; cursor:pointer; color:inherit; position:relative;">
+                <sc-if value="{{ opt.badge }}" hint-placeholder-val="{{false}}">
+                  <span style="position:absolute; top:-10px; right:16px; fontSize:11px; fontWeight:600; padding:3px 10px; borderRadius:9999px; background:#FFB800; color:#05080F;">{{ opt.badge }}</span>
+                </sc-if>
+                <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16.5px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                <div style="fontSize:13.5px; color:#94A3B8; marginTop:6px;">{{ opt.sub }}</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- BILL UPLOAD FLOW -->
+      <sc-if value="{{isBill}}" hint-placeholder-val="{{false}}">
+        <div style="maxWidth:560px; margin:0 auto;">
+          <sc-if value="{{isBillUpload}}" hint-placeholder-val="{{true}}">
+            <div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:19px; color:#fff;">Upload your LESCO bill</div>
+              <div style="fontSize:14px; color:#94A3B8; marginTop:6px;">A photo or PDF of your latest bill gives the most accurate estimate.</div>
+              <div style="border:2px dashed rgba(255,255,255,.15); borderRadius:20px; padding:40px 24px; textAlign:center; marginTop:20px;">
+                <div style="fontSize:32px;">📄</div>
+                <div style="fontSize:14.5px; color:#CBD5E1; marginTop:10px;">Drag & drop, or tap to choose a file</div>
+                <div style="fontSize:12.5px; color:#64748B; marginTop:4px;">JPG, PNG or PDF</div>
+              </div>
+              <button onClick="{{ uploadSimulate }}" style="width:100%; marginTop:20px; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Read my bill</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{isBillReading}}" hint-placeholder-val="{{false}}">
+            <div>
+              <div style="display:flex; gap:14px; alignItems:flex-start;">
+                <span style="flexShrink:0; display:grid; placeItems:center; height:44px; width:44px; borderRadius:9999px; background:linear-gradient(135deg,#FFB800,#FF8C00);"><span style="width:18px; height:18px; borderRadius:9999px; background:#05080F;"></span></span>
+                <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:4px 20px 20px 20px; padding:16px 20px;">
+                  <div style="fontSize:15.5px; color:#fff;">Great — let me read your bill.</div>
+                  <div style="fontSize:13.5px; color:#94A3B8; marginTop:6px;">I'll pull out your usage and connection details so you can confirm them.</div>
+                </div>
+              </div>
+              <div style="marginTop:24px; height:140px; borderRadius:16px; background:'linear-gradient(90deg, rgba(255,255,255,.04) 25%, rgba(255,255,255,.1) 50%, rgba(255,255,255,.04) 75%)'; backgroundSize:'200% 100%'; animation:shimmerSweep 1.4s linear infinite;"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{isBillConfirm}}" hint-placeholder-val="{{false}}">
+            <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:20px; padding:26px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff;">Found these details — please confirm</div>
+              <div style="marginTop:18px;">
+                <label style="fontSize:13px; color:#CBD5E1; display:block; marginBottom:6px;">Avg monthly usage (kWh)</label>
+                <input type="number" value="{{ units }}" onChange="{{ setUnitsInput }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div style="marginTop:16px;">
+                <label style="fontSize:13px; color:#CBD5E1; display:block; marginBottom:6px;">Connection phase</label>
+                <div style="display:flex; gap:8px;">
+                  <button onClick="{{ setSingle }}" style="{{ phaseSingleBtnStyle }}">Single-phase</button>
+                  <button onClick="{{ setThree }}" style="{{ phaseThreeBtnStyle }}">Three-phase</button>
+                </div>
+              </div>
+              <div style="marginTop:16px;">
+                <label style="fontSize:13px; color:#CBD5E1; display:block; marginBottom:6px;">Installation address</label>
+                <input type="text" value="{{ address }}" onChange="{{ setAddress }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div style="fontSize:12px; color:#64748B; marginTop:12px;">You can edit any field</div>
+              <button onClick="{{ confirmBill }}" style="width:100%; marginTop:18px; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Confirm details</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- QUESTIONS -->
+      <sc-if value="{{isQuestions}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex; flexWrap:wrap; gap:32px; alignItems:flex-start;">
+          <div style="flex:1 1 480px; maxWidth:680px;">
+
+            <sc-if value="{{hasSummaryLines}}" hint-placeholder-val="{{false}}">
+              <div style="display:flex; flexDirection:column; gap:8px; marginBottom:20px;">
+                <sc-for list="{{ summaryLines }}" as="line" hint-placeholder-count="2">
+                  <button onClick="{{ line.onClick }}" style="textAlign:left; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); borderRadius:12px; padding:10px 16px; color:#94A3B8; fontSize:13.5px; cursor:pointer;">{{ line.text }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div style="display:flex; gap:14px; alignItems:flex-start;">
+              <span style="flexShrink:0; display:grid; placeItems:center; height:44px; width:44px; borderRadius:9999px; background:linear-gradient(135deg,#FFB800,#FF8C00);"><span style="width:18px; height:18px; borderRadius:9999px; background:#05080F;"></span></span>
+              <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:4px 20px 20px 20px; padding:16px 20px;">
+                <div style="fontSize:15.5px; color:#fff; fontWeight:500; lineHeight:1.45;">{{ currentQuestion }}</div>
+                <div style="fontSize:13px; color:#94A3B8; marginTop:10px; lineHeight:1.5;">{{ currentHelper }}</div>
+              </div>
+            </div>
+
+            <div style="marginTop:24px;">
+              <!-- USAGE -->
+              <sc-if value="{{isUsageStep}}" hint-placeholder-val="{{false}}">
+                <div>
+                  <div style="display:flex; flexWrap:wrap; gap:8px;">
+                    <sc-for list="{{ unitsQuickOptions }}" as="q" hint-placeholder-count="5">
+                      <button onClick="{{ q.onClick }}" style="{{ q.style }}">{{ q.label }} units</button>
+                    </sc-for>
+                  </div>
+                  <input type="number" placeholder="Or type your average monthly units" value="{{ units }}" onChange="{{ setUnitsInput }}" style="width:100%; marginTop:14px; padding:14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+                </div>
+              </sc-if>
+
+              <!-- GOAL -->
+              <sc-if value="{{isGoalStep}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex; flexDirection:column; gap:12px;">
+                  <sc-for list="{{ goalOptions }}" as="opt" hint-placeholder-count="3">
+                    <button onClick="{{ opt.onClick }}" style="{{ opt.cardStyle }}">
+                      <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                      <div style="fontSize:13.5px; color:#94A3B8; marginTop:4px;">{{ opt.sub }}</div>
+                    </button>
+                  </sc-for>
+                  <sc-if value="{{isFitBudgetGoal}}" hint-placeholder-val="{{false}}">
+                    <input type="number" placeholder="Your budget in PKR" value="{{ budget }}" onChange="{{ setBudgetInput }}" style="width:100%; padding:14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <!-- SYSTEM TYPE -->
+              <sc-if value="{{isSystemTypeStep}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex; flexDirection:column; gap:12px;">
+                  <sc-for list="{{ systemTypeOptions }}" as="opt" hint-placeholder-count="3">
+                    <button onClick="{{ opt.onClick }}" style="{{ opt.cardStyle }}; position:relative;">
+                      <sc-if value="{{ opt.badge }}" hint-placeholder-val="{{false}}">
+                        <span style="position:absolute; top:-10px; right:16px; fontSize:11px; fontWeight:600; padding:3px 10px; borderRadius:9999px; background:#FFB800; color:#05080F;">{{ opt.badge }}</span>
+                      </sc-if>
+                      <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                      <div style="fontSize:13.5px; color:#94A3B8; marginTop:4px;">{{ opt.sub }}</div>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <!-- BACKUP -->
+              <sc-if value="{{isBackupStep}}" hint-placeholder-val="{{false}}">
+                <div>
+                  <div style="display:flex; flexWrap:wrap; gap:10px;">
+                    <sc-for list="{{ backupLoadOptions }}" as="opt" hint-placeholder-count="5">
+                      <button onClick="{{ opt.onClick }}" style="{{ opt.chipStyle }}">{{ opt.label }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="marginTop:24px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px;">
+                    <div style="display:flex; justifyContent:space-between; fontSize:13.5px; color:#CBD5E1;"><span>Backup duration</span><span style="color:#FFB800; fontWeight:600;">{{ backupHours }} hours</span></div>
+                    <input type="range" min="1" max="12" step="1" value="{{ backupHours }}" onChange="{{ setBackupHours }}" style="width:100%; marginTop:12px;" />
+                  </div>
+                </div>
+              </sc-if>
+
+              <!-- ROOF -->
+              <sc-if value="{{isRoofStep}}" hint-placeholder-val="{{false}}">
+                <div>
+                  <div style="display:flex; flexWrap:wrap; gap:12px;">
+                    <sc-for list="{{ roofTypeOptions }}" as="opt" hint-placeholder-count="4">
+                      <button onClick="{{ opt.onClick }}" style="{{ opt.cardStyle }}">
+                        <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:15.5px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                        <div style="fontSize:13px; color:#94A3B8; marginTop:4px;">{{ opt.sub }}</div>
+                      </button>
+                    </sc-for>
+                  </div>
+                  <div style="marginTop:20px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px;">
+                    <div style="fontSize:13px; color:#CBD5E1; marginBottom:10px;">Available roof area</div>
+                    <div style="display:flex; gap:10px;">
+                      <input type="number" placeholder="Area" value="{{ roofAreaDisplay }}" onChange="{{ setRoofAreaInput }}" style="flex:1; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+                      <button onClick="{{ setUnitSqft }}" style="{{ sqftBtnStyle }}">sq ft</button>
+                      <button onClick="{{ setUnitMarla }}" style="{{ marlaBtnStyle }}">marla</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <!-- STRUCTURE -->
+              <sc-if value="{{isStructureStep}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex; flexDirection:column; gap:20px;">
+                  <div>
+                    <div style="fontSize:13px; color:#CBD5E1; marginBottom:10px;">Structure type</div>
+                    <div style="display:flex; gap:12px; flexWrap:wrap;">
+                      <sc-for list="{{ structureTypeOptions }}" as="opt" hint-placeholder-count="2">
+                        <button onClick="{{ opt.onClick }}" style="{{ opt.cardStyle }}; flex:1 1 160px;">
+                          <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:15.5px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                          <div style="fontSize:13px; color:#94A3B8; marginTop:4px;">{{ opt.sub }}</div>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="fontSize:13px; color:#CBD5E1; marginBottom:10px;">Structure quality</div>
+                    <div style="display:flex; gap:12px; flexWrap:wrap;">
+                      <sc-for list="{{ structureQualityOptions }}" as="opt" hint-placeholder-count="2">
+                        <button onClick="{{ opt.onClick }}" style="{{ opt.cardStyle }}; flex:1 1 160px;">
+                          <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:15.5px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                          <div style="fontSize:13px; color:#94A3B8; marginTop:4px;">{{ opt.sub }}</div>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <!-- PRIORITY -->
+              <sc-if value="{{isPriorityStep}}" hint-placeholder-val="{{false}}">
+                <div>
+                  <div style="display:inline-flex; borderRadius:9999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); padding:4px; marginBottom:18px;">
+                    <button onClick="{{ setPriorityModePriority }}" style="{{ priorityModeBtnAStyle }}">By priority</button>
+                    <button onClick="{{ setPriorityModeBudget }}" style="{{ priorityModeBtnBStyle }}">By budget</button>
+                  </div>
+                  <sc-if value="{{isPriorityModePriority}}" hint-placeholder-val="{{true}}">
+                    <div style="display:flex; flexDirection:column; gap:12px;">
+                      <sc-for list="{{ priorityOptions }}" as="opt" hint-placeholder-count="3">
+                        <button onClick="{{ opt.onClick }}" style="{{ opt.cardStyle }}; position:relative;">
+                          <sc-if value="{{ opt.badge }}" hint-placeholder-val="{{false}}">
+                            <span style="position:absolute; top:-10px; right:16px; fontSize:11px; fontWeight:600; padding:3px 10px; borderRadius:9999px; background:#FFB800; color:#05080F;">{{ opt.badge }}</span>
+                          </sc-if>
+                          <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                          <div style="fontSize:13.5px; color:#94A3B8; marginTop:4px;">{{ opt.sub }}</div>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{isPriorityModeBudget}}" hint-placeholder-val="{{false}}">
+                    <input type="number" placeholder="Your target budget in PKR" value="{{ budget }}" onChange="{{ setBudgetInput }}" style="width:100%; padding:14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <!-- NET METERING -->
+              <sc-if value="{{isNetMeteringStep}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex; flexDirection:column; gap:12px;">
+                  <sc-for list="{{ netMeteringOptions }}" as="opt" hint-placeholder-count="2">
+                    <button onClick="{{ opt.onClick }}" style="{{ opt.cardStyle }}">
+                      <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">{{ opt.title }}</div>
+                      <div style="fontSize:13.5px; color:#94A3B8; marginTop:4px;">{{ opt.sub }}</div>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+
+            <button onClick="{{ continueStep }}" disabled="{{ continueDisabled }}" style="{{ continueBtnStyle }}">Continue</button>
+          </div>
+
+          <!-- RIGHT RAIL -->
+          <div style="flex:1 1 300px; maxWidth:360px; position:sticky; top:96px;">
+            <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:20px; padding:22px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff;">Your estimate so far</div>
+              <div style="fontSize:12.5px; color:#64748B; marginTop:2px;">Updates as you answer</div>
+
+              <sc-if value="{{hasLiveEstimate}}" hint-placeholder-val="{{false}}">
+                <div style="marginTop:18px; paddingBottom:16px; borderBottom:1px solid rgba(255,255,255,.08);">
+                  <div style="fontSize:12px; color:#94A3B8;">Indicative system</div>
+                  <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:30px; color:#FFB800; marginTop:2px;">{{ liveSizeLabel }}</div>
+                  <div style="fontSize:13.5px; color:#CBD5E1; marginTop:4px;">~{{ liveSavingLabel }}/mo saved</div>
+                </div>
+              </sc-if>
+              <sc-if value="{{noLiveEstimate}}" hint-placeholder-val="{{true}}">
+              </sc-if>
+
+              <sc-if value="{{hasRailFacts}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex; flexDirection:column; gap:10px; marginTop:16px;">
+                  <sc-for list="{{ railFacts }}" as="fact" hint-placeholder-count="3">
+                    <div style="display:flex; justifyContent:space-between; fontSize:13.5px;">
+                      <span style="color:#94A3B8;">{{ fact.label }}</span>
+                      <span style="color:#E7ECF5;">{{ fact.value }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{noRailFacts}}" hint-placeholder-val="{{true}}">
+                <div style="marginTop:16px; fontSize:13.5px; color:#64748B; lineHeight:1.6;">Answer the questions and your tailored solar specs will appear here.</div>
+              </sc-if>
+
+              <div style="marginTop:20px; paddingTop:16px; borderTop:1px solid rgba(255,255,255,.08); fontSize:12px; color:#64748B; textAlign:center;">Free, no-obligation estimate</div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- BUILDING -->
+      <sc-if value="{{isBuilding}}" hint-placeholder-val="{{false}}">
+        <div style="maxWidth:480px; margin:80px auto; textAlign:center;">
+          <div style="width:88px; height:88px; margin:0 auto; borderRadius:9999px; border:6px solid rgba(255,184,0,.18); borderTopColor:'#FFB800'; animation:spinSlow 1.4s linear infinite;"></div>
+          <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:19px; color:#fff; marginTop:24px;">Building your personalised estimate…</div>
+          <div style="fontSize:14.5px; color:#94A3B8; marginTop:10px;">{{ buildingCurrentLine }}</div>
+        </div>
+      </sc-if>
+
+      <!-- RESULT -->
+      <sc-if value="{{isResult}}" hint-placeholder-val="{{false}}">
+        <div style="maxWidth:640px; margin:0 auto;">
+          <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:24px; padding:36px; textAlign:center;">
+            <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.16em; color:#FFB800;">Your estimate is ready</div>
+            <div style="display:flex; alignItems:center; justifyContent:center; gap:12px; marginTop:16px;">
+              <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:36px; fontWeight:600; color:#fff;">{{ finalSizeLabel }}</span>
+              <span style="fontSize:13px; padding:6px 14px; borderRadius:9999px; background:rgba(0,229,255,.15); color:#00E5FF;">{{ finalTypeChip }}</span>
+            </div>
+            <div style="fontSize:13px; color:#94A3B8; marginTop:6px;">{{ finalTierLabel }} tier</div>
+            <div style="fontSize:13px; color:#94A3B8; marginTop:18px;">Estimated price</div>
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:30px; fontWeight:600; backgroundImage:linear-gradient(100deg,#FFD466 0%,#FFB800 40%,#FF8C00 100%); WebkitBackgroundClip:text; WebkitTextFillColor:transparent; marginTop:4px;">{{ finalPriceRange }}</div>
+
+            <div style="display:flex; flexWrap:wrap; gap:12px; marginTop:28px;">
+              <div style="flex:1 1 100px; background:rgba(255,255,255,.04); borderRadius:14px; padding:16px;">
+                <div style="fontSize:11.5px; color:#94A3B8;">Saved / month</div>
+                <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginTop:4px;">{{ finalSaving }}</div>
+              </div>
+              <div style="flex:1 1 100px; background:rgba(255,255,255,.04); borderRadius:14px; padding:16px;">
+                <div style="fontSize:11.5px; color:#94A3B8;">Payback</div>
+                <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginTop:4px;">{{ finalPayback }}</div>
+              </div>
+              <div style="flex:1 1 100px; background:rgba(255,255,255,.04); borderRadius:14px; padding:16px;">
+                <div style="fontSize:11.5px; color:#94A3B8;">CO₂ / year</div>
+                <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginTop:4px;">{{ finalCo2 }}</div>
+              </div>
+            </div>
+
+            <button onClick="{{ showViewFullToast }}" style="width:100%; marginTop:28px; padding:15px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15.5px; cursor:pointer;">View your full estimate</button>
+            <button onClick="{{ showEmailToast }}" style="width:100%; marginTop:12px; padding:15px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); color:#fff; fontWeight:500; fontSize:15px; cursor:pointer;">Email me this estimate</button>
+
+            <div style="fontSize:12.5px; color:#64748B; marginTop:20px; lineHeight:1.6;">Indicative figures from live Lahore prices. A free site survey confirms the final quotation.</div>
+          </div>
+          <div style="display:flex; justifyContent:center; gap:24px; marginTop:20px;">
+            <button onClick="{{ restart }}" style="background:none; border:none; color:#94A3B8; fontSize:13.5px; cursor:pointer; textDecoration:underline;">Start another estimate</button>
+            <button onClick="{{ goHome }}" style="background:none; border:none; color:#94A3B8; fontSize:13.5px; cursor:pointer; textDecoration:underline;">Back to homepage</button>
+          </div>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <!-- TOAST -->
+  <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+    <div style="position:fixed; bottom:24px; right:24px; zIndex:100; background:rgba(13,20,38,.85); border:1px solid rgba(255,255,255,.12); backdropFilter:blur(16px); borderRadius:12px; padding:14px 20px; maxWidth:320px; borderLeft:'3px solid #FFB800'; color:#E7ECF5; fontSize:14px;">{{ toast }}</div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    view: 'home',
+    isMobile: (typeof window !== 'undefined') ? window.innerWidth < 880 : false,
+    mobileNavOpen: false,
+    faqOpen: null,
+    leadForm: { name: '', email: '', phone: '', bill: '', area: '' },
+    leadSubmitted: false,
+    toast: null,
+    phase: 'entry',
+    path: null,
+    billState: 'upload',
+    stepIndex: 0,
+    buildingLine: 0,
+    answers: {
+      units: null, phaseType: 'single', address: '',
+      goal: null, budget: null,
+      systemType: null,
+      backupLoads: [], backupHours: 4,
+      roofType: null, roofAreaSqft: null, roofUnit: 'sqft',
+      structureType: null, structureQuality: null,
+      priorityMode: 'priority', priority: null,
+      netMetering: null,
+    },
+    finalEstimate: null,
+  };
+
+  RATE = { panel: 75700, inverter: 45000, battery: 66000, structure: 20150, bos: 14650, netMetering: 60000, labour: 13430, transport: 25000 };
+  TIER_MULT = { economy: 0.86, standard: 1.0, premium: 1.30 };
+  TIER_LABEL = { economy: 'Economy', standard: 'Standard', premium: 'Premium' };
+  YIELD = 100; TARIFF = 48.02; FIXED_UNITS = 50; REDUCE_FACTOR = 0.65; SQFT_PER_KWP = 70; CO2 = 1015; BUFFER = 0.06;
+  LOAD_KW = { fans_lights: 0.5, fridge: 0.3, ac: 1.5, router: 0.05, pump: 1.0 };
+  INVERTER_STEPS = [3, 5, 6, 8, 10, 12, 15, 20, 25];
+
+  componentDidMount() {
+    if (typeof window !== 'undefined') {
+      this._onResize = () => this.setState({ isMobile: window.innerWidth < 880 });
+      window.addEventListener('resize', this._onResize);
+    }
+  }
+  componentWillUnmount() {
+    if (typeof window !== 'undefined' && this._onResize) window.removeEventListener('resize', this._onResize);
+    if (this._t1) clearTimeout(this._t1);
+    if (this._t2) clearTimeout(this._t2);
+    if (this._t3) clearTimeout(this._t3);
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+  }
+
+  fmtPKR(n) { if (n == null || isNaN(n)) return '—'; return 'PKR ' + Math.round(n).toLocaleString('en-US'); }
+  roundTo(n, step) { return Math.round(n / step) * step; }
+
+  tierFromPriority() {
+    const p = this.state.answers.priority;
+    if (p === 'lowest_price') return 'economy';
+    if (p === 'best_quality') return 'premium';
+    return 'standard';
+  }
+
+  subtotalFor(kw, a, tier, inverterKwArg, batteryKwhArg) {
+    const R = this.RATE;
+    const inverterKw = inverterKwArg != null ? inverterKwArg : (this.INVERTER_STEPS.find(s => s >= kw) || Math.ceil(kw / 5) * 5);
+    let batteryKwh = batteryKwhArg;
+    if (batteryKwh == null) {
+      batteryKwh = 0;
+      if (a.systemType && a.systemType !== 'ongrid') {
+        let loadKw = a.backupLoads.reduce((sum, k) => sum + (this.LOAD_KW[k] || 0), 0) || 0.5;
+        batteryKwh = (loadKw * a.backupHours) / 0.9;
+      }
+    }
+    const panels = R.panel * kw;
+    const inverter = R.inverter * inverterKw;
+    const battery = R.battery * batteryKwh;
+    let structure = R.structure * kw;
+    if (a.structureType === 'customized') structure *= 1.15;
+    if (a.structureQuality === 'medium') structure *= 0.88;
+    const bos = R.bos * kw;
+    const netMetering = a.netMetering ? R.netMetering : 0;
+    const labour = R.labour * kw;
+    const transport = R.transport;
+    const sum = panels + inverter + battery + structure + bos + netMetering + labour + transport;
+    return sum * (this.TIER_MULT[tier] || 1);
+  }
+
+  computeEstimate(tierOverride) {
+    const a = this.state.answers;
+    const units = a.units || 0;
+    if (!units || !a.goal) return null;
+    let target = units / this.YIELD;
+    if (a.goal === 'reduce_bill') target = target * this.REDUCE_FACTOR;
+    if (a.goal === 'fit_budget' && a.budget) {
+      let best = 1;
+      for (let kw = 1; kw <= 30; kw += 0.5) {
+        const s = this.subtotalFor(kw, a, tierOverride || 'standard');
+        if (s <= a.budget) best = kw; else break;
+      }
+      target = best;
+    }
+    target = Math.ceil(target * 2) / 2;
+    if (a.roofAreaSqft) {
+      const maxByArea = a.roofAreaSqft / this.SQFT_PER_KWP;
+      if (target > maxByArea) target = Math.floor(maxByArea * 2) / 2;
+    }
+    if (target < 1) target = 1;
+
+    const tier = tierOverride || this.tierFromPriority();
+    const inverterKw = this.INVERTER_STEPS.find(s => s >= target) || Math.ceil(target / 5) * 5;
+    let batteryKwh = 0;
+    if (a.systemType && a.systemType !== 'ongrid') {
+      let loadKw = a.backupLoads.reduce((sum, k) => sum + (this.LOAD_KW[k] || 0), 0);
+      if (loadKw === 0) loadKw = 0.5;
+      batteryKwh = Math.round((loadKw * a.backupHours / 0.9) * 2) / 2;
+    }
+    const subtotal = this.subtotalFor(target, a, tier, inverterKw, batteryKwh);
+    const priceLow = this.roundTo(subtotal * (1 - this.BUFFER), 10000);
+    const priceHigh = this.roundTo(subtotal * (1 + this.BUFFER), 10000);
+    const monthlyGenUnits = target * this.YIELD;
+    const billCoveragePct = Math.min(100, Math.round((monthlyGenUnits / units) * 100));
+    const monthlySaving = this.TARIFF * (monthlyGenUnits - this.FIXED_UNITS);
+    const paybackYears = subtotal / (monthlySaving * 12);
+    const co2Year = Math.round(target * this.CO2);
+    const typeLabel = a.systemType === 'ongrid' ? 'On-grid' : a.systemType === 'offgrid' ? 'Off-grid' : 'Hybrid';
+
+    return { sizeKw: target, inverterKw, batteryKwh, tier, tierLabel: this.TIER_LABEL[tier], typeLabel, subtotal, priceLow, priceHigh, monthlyGenUnits, billCoveragePct, monthlySaving, paybackYears, co2Year };
+  }
+
+  stepsList() {
+    const list = [];
+    if (this.state.path === 'manual') list.push('usage');
+    list.push('goal', 'systemType');
+    if (this.state.answers.systemType !== 'ongrid') list.push('backup');
+    list.push('roof', 'structure', 'priority', 'netmetering');
+    return list;
+  }
+
+  setAnswer = (key, value) => { this.setState(s => ({ answers: { ...s.answers, [key]: value } })); };
+
+  toggleBackupLoad = (key) => {
+    this.setState(s => {
+      const has = s.answers.backupLoads.includes(key);
+      const backupLoads = has ? s.answers.backupLoads.filter(k => k !== key) : [...s.answers.backupLoads, key];
+      return { answers: { ...s.answers, backupLoads } };
+    });
+  };
+
+  setBackupHours = (e) => this.setAnswer('backupHours', Number(e.target.value));
+  setRoofAreaInput = (e) => {
+    const val = parseFloat(e.target.value) || 0;
+    const sqft = this.state.answers.roofUnit === 'marla' ? val * 272.25 : val;
+    this.setAnswer('roofAreaSqft', sqft);
+  };
+  setUnitSqft = () => this.setAnswer('roofUnit', 'sqft');
+  setUnitMarla = () => this.setAnswer('roofUnit', 'marla');
+  setBudgetInput = (e) => this.setAnswer('budget', parseFloat(e.target.value) || null);
+  setUnitsInput = (e) => this.setAnswer('units', parseFloat(e.target.value) || null);
+  setSingle = () => this.setAnswer('phaseType', 'single');
+  setThree = () => this.setAnswer('phaseType', 'three');
+  setAddress = (e) => this.setAnswer('address', e.target.value);
+  setPriorityModePriority = () => this.setAnswer('priorityMode', 'priority');
+  setPriorityModeBudget = () => this.setAnswer('priorityMode', 'budget');
+
+  startEstimator = () => this.setState({ view: 'estimator', phase: 'entry' });
+  goHome = () => this.setState({ view: 'home' });
+  toggleMobileNav = () => this.setState(s => ({ mobileNavOpen: !s.mobileNavOpen }));
+
+  selectPath = (key) => {
+    if (key === 'upload') this.setState({ path: 'upload', phase: 'bill', billState: 'upload' });
+    else if (key === 'manual') this.setState({ path: 'manual', phase: 'questions', stepIndex: 0 });
+    else this.setState(s => ({ path: 'sample', phase: 'questions', stepIndex: 0, answers: { ...s.answers, units: 980, phaseType: 'three', address: 'Model Town, Lahore' } }));
+  };
+
+  uploadSimulate = () => {
+    this.setState({ billState: 'reading' });
+    this._t1 = setTimeout(() => {
+      this.setState(s => ({ billState: 'confirm', answers: { ...s.answers, units: 850, phaseType: 'single', address: 'Johar Town, Lahore' } }));
+    }, 1400);
+  };
+  confirmBill = () => this.setState({ phase: 'questions', stepIndex: 0 });
+
+  canContinue() {
+    const key = this.stepsList()[this.state.stepIndex];
+    const a = this.state.answers;
+    switch (key) {
+      case 'usage': return !!a.units && a.units > 0;
+      case 'goal': return !!a.goal && (a.goal !== 'fit_budget' || !!a.budget);
+      case 'systemType': return !!a.systemType;
+      case 'backup': return true;
+      case 'roof': return !!a.roofType && !!a.roofAreaSqft && a.roofAreaSqft > 0;
+      case 'structure': return !!a.structureType && !!a.structureQuality;
+      case 'priority': return a.priorityMode === 'budget' ? !!a.budget : !!a.priority;
+      case 'netmetering': return a.netMetering !== null;
+      default: return false;
+    }
+  }
+
+  continueStep = () => {
+    if (!this.canContinue()) return;
+    const list = this.stepsList();
+    if (this.state.stepIndex >= list.length - 1) {
+      this.setState({ phase: 'building', buildingLine: 0 });
+      this._t1 = setTimeout(() => this.setState({ buildingLine: 1 }), 700);
+      this._t2 = setTimeout(() => this.setState({ buildingLine: 2 }), 1400);
+      this._t3 = setTimeout(() => { const finalEstimate = this.computeEstimate(); this.setState({ phase: 'result', finalEstimate }); }, 2200);
+    } else {
+      this.setState(s => ({ stepIndex: s.stepIndex + 1 }));
+    }
+  };
+
+  goToStep = (idx) => this.setState({ phase: 'questions', stepIndex: idx });
+
+  restart = () => {
+    this.setState({
+      phase: 'entry', path: null, billState: 'upload', stepIndex: 0, finalEstimate: null,
+      answers: { units: null, phaseType: 'single', address: '', goal: null, budget: null, systemType: null, backupLoads: [], backupHours: 4, roofType: null, roofAreaSqft: null, roofUnit: 'sqft', structureType: null, structureQuality: null, priorityMode: 'priority', priority: null, netMetering: null }
+    });
+  };
+
+  showToast = (msg) => {
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    this.setState({ toast: msg });
+    this._toastTimer = setTimeout(() => this.setState({ toast: null }), 3200);
+  };
+
+  toggleFaq = (i) => this.setState(s => ({ faqOpen: s.faqOpen === i ? null : i }));
+  updateLeadForm = (field) => (e) => this.setState(s => ({ leadForm: { ...s.leadForm, [field]: e.target.value } }));
+  submitLead = (e) => { e.preventDefault(); this.setState({ leadSubmitted: true }); };
+
+  cardStyle(selected) {
+    return {
+      textAlign: 'left', width: '100%', cursor: 'pointer', borderRadius: 16, padding: 20,
+      background: selected ? 'rgba(255,184,0,.07)' : 'rgba(255,255,255,.035)',
+      border: selected ? '1px solid rgba(255,184,0,.6)' : '1px solid rgba(255,255,255,.09)',
+      color: 'inherit',
+    };
+  }
+  chipStyle(selected) {
+    return {
+      cursor: 'pointer', borderRadius: 9999, padding: '10px 16px', fontSize: 13.5,
+      background: selected ? 'rgba(255,184,0,.15)' : 'rgba(255,255,255,.035)',
+      border: selected ? '1px solid rgba(255,184,0,.6)' : '1px solid rgba(255,255,255,.09)',
+      color: selected ? '#FFB800' : '#CBD5E1',
+    };
+  }
+  segStyle(active) {
+    return {
+      cursor: 'pointer', border: 'none', borderRadius: 9999, padding: '9px 18px', fontSize: 13.5, fontWeight: 600,
+      background: active ? 'rgba(255,255,255,.1)' : 'transparent', color: active ? '#fff' : '#94A3B8',
+    };
+  }
+  unitBtnStyle(active) {
+    return {
+      cursor: 'pointer', borderRadius: 12, padding: '0 16px', fontSize: 14, fontWeight: 500,
+      background: active ? 'rgba(255,184,0,.15)' : 'rgba(255,255,255,.04)',
+      border: active ? '1px solid rgba(255,184,0,.6)' : '1px solid rgba(255,255,255,.1)',
+      color: active ? '#FFB800' : '#CBD5E1',
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const a = s.answers;
+
+    const trustPills = ['Live Lahore market prices', 'Our own certified team', 'Itemized breakdowns', 'No hidden costs', 'Net-metering handled', 'Free for homeowners'];
+    const valueCards = [
+      { title: 'Live Lahore prices', body: 'Estimates use current local market rates, updated regularly.' },
+      { title: 'Our own certified team', body: 'We supply and install ourselves — no subcontractors, no hand-offs.' },
+      { title: 'Itemized & transparent', body: 'See every line item — panels, inverter, battery, labour. No hidden costs.' },
+      { title: 'Free for homeowners', body: 'Estimate, plan and decide at no cost to you.' },
+    ];
+    const howSteps = [
+      { n: '01', title: 'Answer a few questions — or upload your bill', body: 'Tell us your usage, or upload your LESCO bill for the most accurate read on what you need.' },
+      { n: '02', title: 'Get an itemized estimate', body: 'See a clear breakdown — panels, inverter, battery, structure, installation and net metering — priced on live Lahore rates.' },
+      { n: '03', title: 'Book a free site survey', body: 'Save your estimate and our engineer visits your roof to confirm the design and finalise your quotation.' },
+      { n: '04', title: 'We install, you track it', body: 'Our team installs and commissions your system while you follow every phase and task from your dashboard.' },
+    ];
+    const whyCards = [
+      { label: 'Live market pricing', title: 'Accurate Lahore prices', body: 'Your estimate is built on real, regularly-updated Lahore market rates — not generic guesses.' },
+      { label: 'Full breakdown', title: 'Transparent, itemized scope', body: 'See every component — panels, inverter, battery, structure, installation and net metering — with no hidden costs.' },
+      { label: 'In-house team', title: 'Installed by our own engineers', body: 'The people who quote you are the people who install. One company, start to finish, fully accountable.' },
+      { label: 'Net metering', title: 'LESCO paperwork handled', body: 'We prepare the application, coordinate the inspection and see your bi-directional meter through to approval.' },
+      { label: 'Stay in control', title: 'Track your installation', body: 'Follow your project through every phase and task, from site survey to grid connection.' },
+      { label: 'After the install', title: 'Warranty and service', body: 'Manufacturer warranties on every component, plus our own workmanship cover and local after-sales support.' },
+    ];
+    const sampleLineItems = [
+      { name: 'Solar panels', spec: '6.5 kW · Tier-1 mono PERC', amount: 'PKR 492,050' },
+      { name: 'Hybrid inverter', spec: '8 kW hybrid inverter', amount: 'PKR 360,000' },
+      { name: 'Battery storage', spec: '5 kWh lithium', amount: 'PKR 330,000' },
+      { name: 'Mounting structure', spec: 'Hot-dip galvanised, good quality', amount: 'PKR 130,975' },
+      { name: 'Installation & wiring', spec: 'BOS, labour, transport', amount: 'PKR 209,270' },
+      { name: 'Net metering', spec: 'Application + bi-directional meter', amount: 'PKR 60,000' },
+    ];
+    const reviews = [
+      { area: 'DHA Phase 6, Lahore', system: '8 kWp Hybrid', quote: 'The estimate matched the final quotation almost exactly. Their own crew installed it in five days.' },
+      { area: 'Johar Town, Lahore', system: '6.5 kWp Hybrid', quote: 'No back-and-forth with dealers. I saw every price online before I ever spoke to anyone.' },
+      { area: 'Bahria Town, Lahore', system: '10 kWp On-grid', quote: 'Net metering approval took longer than the install itself, but Al-Wahab handled all the LESCO paperwork.' },
+    ];
+    const aboutStats = [
+      { value: '10+', label: 'Years in business' },
+      { value: '1,200+', label: 'Installs completed' },
+      { value: '7.4 MW', label: 'Deployed across Lahore' },
+      { value: '4.8★', label: 'Average rating' },
+    ];
+    const aboutCards = [
+      { title: 'One company, start to finish', body: 'Design, supply, installation, net metering and service — all in-house. No subcontractors to chase.' },
+      { title: 'Priced before you call', body: 'Our rates are published in every estimate. What you see itemized online is the basis of your quotation.' },
+      { title: 'Local, and here afterwards', body: 'We are a Lahore business. When you need service in year three, we are still a short drive away.' },
+    ];
+    const faqData = [
+      { q: 'How accurate are the prices?', a: "Estimates use live Lahore market rates that we update regularly, so they're a close, honest guide. Your final price is confirmed after a free site survey — quoted on the same itemized basis, with no new line items appearing." },
+      { q: 'Do I need a battery?', a: 'Not always. An on-grid system is the cheapest way to cut your bill. Add a battery (a hybrid system) if you also want backup during load-shedding.' },
+      { q: 'What about net metering and LESCO?', a: 'If you choose on-grid or hybrid, your estimate includes the net-metering application and bi-directional meter, and our team handles the LESCO paperwork and inspection for you.' },
+      { q: 'Who does the installation?', a: 'Our own engineers and technicians. We do not subcontract. The team that surveys your roof is the team that installs and commissions the system.' },
+      { q: 'What warranty do I get?', a: 'Manufacturer warranties on every component — typically 12 years product and 25 years performance on panels, 5–10 years on the inverter, 8–10 years on the battery, 10 years on the structure — plus our own 1–2 year workmanship cover.' },
+    ];
+    const faqItems = faqData.map((f, i) => ({ ...f, open: s.faqOpen === i, onClick: () => this.toggleFaq(i) }));
+
+    const stepsList = this.stepsList();
+    const stepKey = s.phase === 'questions' ? stepsList[s.stepIndex] : null;
+    const totalSteps = stepsList.length;
+    const stepN = s.stepIndex + 1;
+
+    const questionMap = {
+      usage: { q: "What's your average monthly electricity usage?", h: 'Roughly is fine — you can refine this later.' },
+      goal: { q: 'What should your solar system do for you?', h: 'This helps me size it to your goal.' },
+      systemType: { q: 'Which system type suits you best?', h: 'Hybrid is the most popular choice in Lahore for load-shedding cover.' },
+      backup: { q: 'During outages, what should keep running — and for how long?', h: 'Only the loads you pick are backed up, which keeps battery cost sensible.' },
+      roof: { q: 'Where will the panels go, and how much space is there?', h: 'A rough area is fine — we confirm it on the free site survey.' },
+      structure: { q: 'What mounting structure should we plan for?', h: 'Good-quality structures last the full 25 years in Lahore weather.' },
+      priority: { q: 'What matters most for your build?', h: 'Prefer a number? Switch to "By budget".' },
+      netmetering: { q: 'Want to sell your extra units back to the grid?', h: 'Net metering credits your surplus on your monthly LESCO bill.' },
+    };
+    const currentQuestion = (questionMap[stepKey] || {}).q || '';
+    const currentHelper = (questionMap[stepKey] || {}).h || '';
+
+    const entryOptions = [
+      { key: 'upload', title: 'Upload your LESCO bill', sub: 'Photo or PDF — most accurate estimate', badge: 'Most accurate', onClick: () => this.selectPath('upload') },
+      { key: 'manual', title: 'Answer a few questions instead', sub: 'About 2 minutes, no bill needed', badge: null, onClick: () => this.selectPath('manual') },
+      { key: 'sample', title: 'Use a sample bill', sub: 'See how the estimator works', badge: null, onClick: () => this.selectPath('sample') },
+    ];
+
+    const unitsQuickOptions = [300, 600, 900, 1200, 1500].map(v => ({ value: v, label: String(v), onClick: () => this.setAnswer('units', v), style: this.unitBtnStyle(a.units === v) }));
+
+    const goalOptions = [
+      { key: 'cover_all', title: 'Cover my whole bill', sub: 'Offset close to 100% of your usage', onClick: () => this.setAnswer('goal', 'cover_all'), cardStyle: this.cardStyle(a.goal === 'cover_all') },
+      { key: 'reduce_bill', title: 'Reduce my bill', sub: 'Trim the most expensive LESCO slabs', onClick: () => this.setAnswer('goal', 'reduce_bill'), cardStyle: this.cardStyle(a.goal === 'reduce_bill') },
+      { key: 'fit_budget', title: 'Fit a budget', sub: 'Best system for a set amount', onClick: () => this.setAnswer('goal', 'fit_budget'), cardStyle: this.cardStyle(a.goal === 'fit_budget') },
+    ];
+
+    const systemTypeOptions = [
+      { key: 'ongrid', title: 'On-grid', sub: 'Lowest cost · no battery · no cover during outages', badge: null, onClick: () => this.setAnswer('systemType', 'ongrid'), cardStyle: this.cardStyle(a.systemType === 'ongrid') },
+      { key: 'hybrid', title: 'Hybrid', sub: 'Grid + battery — runs through load-shedding', badge: 'Most popular in Lahore', onClick: () => this.setAnswer('systemType', 'hybrid'), cardStyle: this.cardStyle(a.systemType === 'hybrid') },
+      { key: 'offgrid', title: 'Off-grid', sub: 'Fully independent · largest battery bank', badge: null, onClick: () => this.setAnswer('systemType', 'offgrid'), cardStyle: this.cardStyle(a.systemType === 'offgrid') },
+    ];
+
+    const backupLoadOptions = [
+      { key: 'fans_lights', label: 'Fans & lights', onClick: () => this.toggleBackupLoad('fans_lights'), chipStyle: this.chipStyle(a.backupLoads.includes('fans_lights')) },
+      { key: 'fridge', label: 'Refrigerator', onClick: () => this.toggleBackupLoad('fridge'), chipStyle: this.chipStyle(a.backupLoads.includes('fridge')) },
+      { key: 'ac', label: '1 air conditioner', onClick: () => this.toggleBackupLoad('ac'), chipStyle: this.chipStyle(a.backupLoads.includes('ac')) },
+      { key: 'router', label: 'Internet / router', onClick: () => this.toggleBackupLoad('router'), chipStyle: this.chipStyle(a.backupLoads.includes('router')) },
+      { key: 'pump', label: 'Water pump', onClick: () => this.toggleBackupLoad('pump'), chipStyle: this.chipStyle(a.backupLoads.includes('pump')) },
+    ];
+
+    const roofTypeOptions = [
+      { key: 'rcc', title: 'RCC roof', sub: 'Concrete slab — most common', onClick: () => this.setAnswer('roofType', 'rcc'), cardStyle: this.cardStyle(a.roofType === 'rcc') },
+      { key: 'metal', title: 'Metal sheet', sub: 'Tin / steel roofing', onClick: () => this.setAnswer('roofType', 'metal'), cardStyle: this.cardStyle(a.roofType === 'metal') },
+      { key: 'ground', title: 'Ground mount', sub: 'Open land area', onClick: () => this.setAnswer('roofType', 'ground'), cardStyle: this.cardStyle(a.roofType === 'ground') },
+      { key: 'carport', title: 'Carport / shed', sub: 'Over parking or canopy', onClick: () => this.setAnswer('roofType', 'carport'), cardStyle: this.cardStyle(a.roofType === 'carport') },
+    ];
+
+    const structureTypeOptions = [
+      { key: 'standard', title: 'Standard', sub: 'Ready design', onClick: () => this.setAnswer('structureType', 'standard'), cardStyle: this.cardStyle(a.structureType === 'standard') },
+      { key: 'customized', title: 'Customized', sub: 'Elevated / tailored', onClick: () => this.setAnswer('structureType', 'customized'), cardStyle: this.cardStyle(a.structureType === 'customized') },
+    ];
+    const structureQualityOptions = [
+      { key: 'medium', title: 'Medium', sub: 'Galvanised iron', onClick: () => this.setAnswer('structureQuality', 'medium'), cardStyle: this.cardStyle(a.structureQuality === 'medium') },
+      { key: 'good', title: 'Good', sub: 'Hot-dip / aluminium', onClick: () => this.setAnswer('structureQuality', 'good'), cardStyle: this.cardStyle(a.structureQuality === 'good') },
+    ];
+
+    const priorityOptions = [
+      { key: 'lowest_price', title: 'Lowest price', sub: 'Most affordable components', badge: null, onClick: () => this.setAnswer('priority', 'lowest_price'), cardStyle: this.cardStyle(a.priority === 'lowest_price') },
+      { key: 'best_value', title: 'Best value', sub: 'Smart balance of price & quality', badge: 'Recommended', onClick: () => this.setAnswer('priority', 'best_value'), cardStyle: this.cardStyle(a.priority === 'best_value') },
+      { key: 'best_quality', title: 'Best quality', sub: 'Premium Tier-1 throughout', badge: null, onClick: () => this.setAnswer('priority', 'best_quality'), cardStyle: this.cardStyle(a.priority === 'best_quality') },
+    ];
+
+    const netMeteringOptions = [
+      { key: 'yes', title: 'Yes, apply for net metering', sub: 'Export surplus units and earn bill credits', onClick: () => this.setAnswer('netMetering', true), cardStyle: this.cardStyle(a.netMetering === true) },
+      { key: 'no', title: 'Not right now', sub: 'I can add it later', onClick: () => this.setAnswer('netMetering', false), cardStyle: this.cardStyle(a.netMetering === false) },
+    ];
+
+    const railFacts = [];
+    if (a.units) railFacts.push({ label: 'Usage', value: `${a.units} units/mo` });
+    if (a.goal) railFacts.push({ label: 'Goal', value: { cover_all: 'Cover whole bill', reduce_bill: 'Reduce bill', fit_budget: 'Fit a budget' }[a.goal] });
+    if (a.systemType) railFacts.push({ label: 'System', value: { ongrid: 'On-grid', hybrid: 'Hybrid', offgrid: 'Off-grid' }[a.systemType] });
+    if (a.systemType && a.systemType !== 'ongrid') railFacts.push({ label: 'Backup', value: `${a.backupHours} hours` });
+    if (a.roofType) railFacts.push({ label: 'Roof', value: { rcc: 'RCC roof', metal: 'Metal sheet', ground: 'Ground mount', carport: 'Carport / shed' }[a.roofType] });
+    if (a.structureType) railFacts.push({ label: 'Structure', value: `${a.structureType === 'customized' ? 'Customized' : 'Standard'} · ${a.structureQuality === 'medium' ? 'Medium' : a.structureQuality === 'good' ? 'Good' : ''}` });
+    if (a.priority) railFacts.push({ label: 'Priority', value: { lowest_price: 'Lowest price', best_value: 'Best value', best_quality: 'Best quality' }[a.priority] });
+    if (a.netMetering !== null) railFacts.push({ label: 'Net metering', value: a.netMetering ? 'Yes' : 'Not now' });
+
+    const liveEstimate = this.computeEstimate();
+
+    const summaryLines = [];
+    if (s.phase === 'questions' || s.phase === 'building' || s.phase === 'result') {
+      stepsList.forEach((key, idx) => {
+        if (idx >= s.stepIndex && s.phase === 'questions') return;
+        let text = null;
+        if (key === 'usage' && a.units) text = `${a.units} units/mo`;
+        if (key === 'goal' && a.goal) text = { cover_all: 'Cover my whole bill', reduce_bill: 'Reduce my bill', fit_budget: 'Fit a budget' }[a.goal];
+        if (key === 'systemType' && a.systemType) text = { ongrid: 'On-grid', hybrid: 'Hybrid', offgrid: 'Off-grid' }[a.systemType];
+        if (key === 'backup') text = `${a.backupHours} hours backup`;
+        if (key === 'roof' && a.roofType) text = `${{ rcc: 'RCC roof', metal: 'Metal sheet', ground: 'Ground mount', carport: 'Carport/shed' }[a.roofType]} · ${a.roofAreaSqft || 0} sq ft`;
+        if (key === 'structure' && a.structureType) text = `${a.structureType} structure`;
+        if (key === 'priority' && a.priority) text = { lowest_price: 'Lowest price', best_value: 'Best value', best_quality: 'Best quality' }[a.priority];
+        if (key === 'netmetering' && a.netMetering !== null) text = a.netMetering ? 'Net metering: yes' : 'Net metering: no';
+        if (text) summaryLines.push({ text, onClick: () => this.goToStep(idx) });
+      });
+    }
+
+    const buildingLines = ['Sizing your system…', 'Pricing on live Lahore rates…', 'Checking net-metering options…'];
+    const canContinueVal = s.phase === 'questions' ? this.canContinue() : false;
+
+    return {
+      view: s.view, isHomeView: s.view === 'home', isEstimatorView: s.view === 'estimator',
+      isMobile: s.isMobile, isDesktop: !s.isMobile, mobileNavOpen: s.mobileNavOpen,
+      goHome: this.goHome, startEstimator: this.startEstimator, toggleMobileNav: this.toggleMobileNav,
+
+      trustPills, valueCards, howSteps, whyCards, sampleLineItems, reviews, aboutStats, aboutCards, faqItems,
+
+      leadForm: s.leadForm, leadSubmitted: s.leadSubmitted, notLeadSubmitted: !s.leadSubmitted, submitLead: this.submitLead,
+      updateName: this.updateLeadForm('name'), updateEmail: this.updateLeadForm('email'),
+      updatePhone: this.updateLeadForm('phone'), updateBill: this.updateLeadForm('bill'), updateArea: this.updateLeadForm('area'),
+
+      phase: s.phase, path: s.path, billState: s.billState,
+      stepN, totalSteps,
+      isEntry: s.phase === 'entry', isBill: s.phase === 'bill', isQuestions: s.phase === 'questions',
+      isBuilding: s.phase === 'building', isResult: s.phase === 'result',
+      isBillUpload: s.billState === 'upload', isBillReading: s.billState === 'reading', isBillConfirm: s.billState === 'confirm',
+      isUsageStep: stepKey === 'usage', isGoalStep: stepKey === 'goal', isSystemTypeStep: stepKey === 'systemType',
+      isBackupStep: stepKey === 'backup', isRoofStep: stepKey === 'roof', isStructureStep: stepKey === 'structure',
+      isPriorityStep: stepKey === 'priority', isNetMeteringStep: stepKey === 'netmetering',
+      isFitBudgetGoal: a.goal === 'fit_budget',
+      currentQuestion, currentHelper,
+
+      entryOptions, unitsQuickOptions, goalOptions, systemTypeOptions, backupLoadOptions, roofTypeOptions,
+      structureTypeOptions, structureQualityOptions, priorityOptions, netMeteringOptions,
+
+      units: a.units, address: a.address,
+      budget: a.budget, roofAreaSqft: a.roofAreaSqft,
+      roofAreaDisplay: a.roofAreaSqft ? (a.roofUnit === 'marla' ? (a.roofAreaSqft / 272.25).toFixed(2) : a.roofAreaSqft) : '',
+      backupHours: a.backupHours,
+
+      setUnitsInput: this.setUnitsInput, setBudgetInput: this.setBudgetInput,
+      setRoofAreaInput: this.setRoofAreaInput, setUnitSqft: this.setUnitSqft, setUnitMarla: this.setUnitMarla,
+      setBackupHours: this.setBackupHours, setSingle: this.setSingle, setThree: this.setThree, setAddress: this.setAddress,
+      setPriorityModePriority: this.setPriorityModePriority, setPriorityModeBudget: this.setPriorityModeBudget,
+      isPriorityModePriority: a.priorityMode === 'priority', isPriorityModeBudget: a.priorityMode === 'budget',
+
+      phaseSingleBtnStyle: this.segStyle(a.phaseType === 'single'),
+      phaseThreeBtnStyle: this.segStyle(a.phaseType === 'three'),
+      priorityModeBtnAStyle: this.segStyle(a.priorityMode === 'priority'),
+      priorityModeBtnBStyle: this.segStyle(a.priorityMode === 'budget'),
+      sqftBtnStyle: this.unitBtnStyle(a.roofUnit === 'sqft'),
+      marlaBtnStyle: this.unitBtnStyle(a.roofUnit === 'marla'),
+
+      uploadSimulate: this.uploadSimulate, confirmBill: this.confirmBill,
+      continueDisabled: !canContinueVal, continueStep: this.continueStep, restart: this.restart,
+      continueBtnStyle: {
+        width: '100%', marginTop: 24, padding: 15, borderRadius: 12, border: 'none', fontWeight: 600, fontSize: 15.5,
+        cursor: canContinueVal ? 'pointer' : 'not-allowed',
+        background: canContinueVal ? 'linear-gradient(90deg,#FFB800,#FF8C00)' : 'rgba(255,255,255,.06)',
+        color: canContinueVal ? '#05080F' : '#64748B',
+      },
+
+      railFacts, hasRailFacts: railFacts.length > 0, noRailFacts: railFacts.length === 0,
+      liveEstimate, hasLiveEstimate: !!liveEstimate, noLiveEstimate: !liveEstimate,
+      liveSizeLabel: liveEstimate ? `${liveEstimate.sizeKw} kW ${liveEstimate.typeLabel}` : '',
+      liveSavingLabel: liveEstimate ? this.fmtPKR(liveEstimate.monthlySaving) : '',
+
+      summaryLines, hasSummaryLines: summaryLines.length > 0,
+      buildingLines, buildingCurrentLine: buildingLines[s.buildingLine] || buildingLines[0],
+
+      finalEstimate: s.finalEstimate,
+      finalSizeLabel: s.finalEstimate ? `${s.finalEstimate.sizeKw} kW` : '',
+      finalTypeChip: s.finalEstimate ? s.finalEstimate.typeLabel : '',
+      finalTierLabel: s.finalEstimate ? s.finalEstimate.tierLabel : '',
+      finalPriceRange: s.finalEstimate ? `${this.fmtPKR(s.finalEstimate.priceLow)} – ${this.fmtPKR(s.finalEstimate.priceHigh)}` : '',
+      finalSaving: s.finalEstimate ? `${this.fmtPKR(s.finalEstimate.monthlySaving)}/mo` : '',
+      finalPayback: s.finalEstimate ? `${s.finalEstimate.paybackYears.toFixed(1)} yrs` : '',
+      finalCo2: s.finalEstimate ? `${s.finalEstimate.co2Year.toLocaleString('en-US')} kg/yr` : '',
+
+      toast: s.toast,
+      showViewFullToast: () => this.showToast('Full itemized estimate — coming in the next build phase.'),
+      showEmailToast: () => this.showToast("We'll email this estimate to you shortly."),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

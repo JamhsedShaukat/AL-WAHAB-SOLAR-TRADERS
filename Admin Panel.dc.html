@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,184,0,.45), 0 10px 40px -8px rgba(255,140,0,.5); } 50% { box-shadow: 0 0 0 12px rgba(255,184,0,0), 0 10px 50px -6px rgba(255,140,0,.7); } }
+    body { margin:0; -webkit-font-smoothing:antialiased; overflow-x:hidden; background:#05080F; }
+    ::selection { background: rgba(255,184,0,.3); color:#fff; }
+    * { box-sizing: border-box; }
+    input::placeholder { color: rgba(148,163,184,.7); }
+    ::-webkit-scrollbar { width:8px; } ::-webkit-scrollbar-track { background:#070B16; } ::-webkit-scrollbar-thumb { background:#1C2742; borderRadius:99px; }
+  </style>
+</helmet>
+
+<div style="display:flex; minHeight:100vh; background:linear-gradient(180deg,#0A0F1E 0%,#070B16 45%,#05080F 100%); color:#E7ECF5; fontFamily:Manrope, sans-serif;">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside style="width:260px; flexShrink:0; background:rgba(13,20,38,.55); borderRight:1px solid rgba(255,255,255,.08); backdropFilter:blur(20px) saturate(140%); display:flex; flexDirection:column; position:sticky; top:0; height:100vh; overflow-y:auto;">
+    <!-- Logo -->
+    <div style="padding:20px 20px 24px; display:flex; alignItems:center; gap:10px;">
+      <span style="display:grid; placeItems:center; height:36px; width:36px; borderRadius:12px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+        <img src="al-wahab-logo.png" alt="" style="width:30px; height:30px; objectFit:contain;" />
+      </span>
+      <div>
+        <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:15px; fontWeight:600; color:#fff;">Al-Wahab</div>
+        <div style="fontSize:11px; color:#94A3B8;">Admin Panel</div>
+      </div>
+    </div>
+
+    <!-- Nav groups -->
+    <nav style="flex:1; padding:0 12px;">
+      <sc-for list="{{ sidebarGroups }}" as="group" hint-placeholder-count="4">
+        <div style="marginBottom:20px;">
+          <div style="fontSize:11px; fontWeight:600; textTransform:uppercase; letterSpacing:0.14em; color:#64748B; padding:0 12px; marginBottom:8px;">{{ group.label }}</div>
+          <sc-for list="{{ group.items }}" as="item" hint-placeholder-count="4">
+            <button onClick="{{ item.onClick }}" style="{{ item.style }}">
+              <span style="fontSize:15px; width:20px; textAlign:center;">{{ item.icon }}</span>
+              <span>{{ item.label }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </nav>
+
+    <!-- User block -->
+    <div style="padding:16px 20px; borderTop:1px solid rgba(255,255,255,.08); display:flex; alignItems:center; gap:10px;">
+      <div style="width:32px; height:32px; borderRadius:9999px; background:rgba(255,184,0,.15); display:grid; placeItems:center; fontSize:13px; fontWeight:600; color:#FFB800;">SA</div>
+      <div>
+        <div style="fontSize:13px; color:#fff; fontWeight:500;">Super Admin</div>
+        <div style="fontSize:11px; color:#64748B;">admin@alwahabsolar.pk</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div style="flex:1; display:flex; flexDirection:column; minWidth:0;">
+
+    <!-- TOPBAR -->
+    <header style="height:64px; flexShrink:0; background:rgba(13,20,38,.55); borderBottom:1px solid rgba(255,255,255,.08); backdropFilter:blur(20px); display:flex; alignItems:center; justifyContent:space-between; padding:0 24px;">
+      <div style="display:flex; alignItems:center; gap:8px; fontSize:13.5px; color:#94A3B8;">
+        <span>Admin</span><span style="color:#64748B;">/</span><span style="color:#E7ECF5;">{{ currentPageTitle }}</span>
+      </div>
+      <div style="display:flex; alignItems:center; gap:14px;">
+        <button style="padding:8px 14px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#94A3B8; fontSize:13px; cursor:pointer; display:flex; alignItems:center; gap:6px;">
+          <span style="fontSize:12px;">⌘K</span> Search
+        </button>
+        <button style="position:relative; padding:8px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#CBD5E1; fontSize:16px; cursor:pointer;">
+          ◎<span style="position:absolute; top:6px; right:6px; width:7px; height:7px; borderRadius:9999px; background:#FFB800;"></span>
+        </button>
+        <span style="padding:4px 12px; borderRadius:9999px; border:1px solid rgba(255,184,0,.3); fontSize:11px; fontWeight:600; color:#FFB800;">Super Admin</span>
+        <div style="width:32px; height:32px; borderRadius:9999px; background:rgba(255,184,0,.15); display:grid; placeItems:center; fontSize:13px; fontWeight:600; color:#FFB800;">SA</div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main style="flex:1; padding:24px; overflow-y:auto;">
+
+      <!-- ======= DASHBOARD ======= -->
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; justifyContent:space-between; alignItems:center; flexWrap:wrap; gap:12px; marginBottom:24px;">
+          <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#fff; margin:0;">Dashboard</h1>
+          <div style="display:flex; gap:6px;">
+            <sc-for list="{{ periodOptions }}" as="p" hint-placeholder-count="5">
+              <button onClick="{{ p.onClick }}" style="{{ p.style }}">{{ p.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- KPI row -->
+        <div style="display:flex; flexWrap:wrap; gap:16px; marginBottom:24px;">
+          <sc-for list="{{ dashKpis }}" as="kpi" hint-placeholder-count="8">
+            <div style="flex:1 1 180px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:18px;">
+              <div style="display:flex; alignItems:center; gap:8px; marginBottom:10px;">
+                <span style="width:36px; height:36px; borderRadius:12px; background:rgba(255,184,0,.1); display:grid; placeItems:center; fontSize:16px; color:#FFB800;">{{ kpi.icon }}</span>
+                <span style="fontSize:12.5px; color:#94A3B8;">{{ kpi.label }}</span>
+              </div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:26px; fontWeight:600; color:#fff;">{{ kpi.value }}</div>
+              <div style="fontSize:12px; marginTop:4px;">
+                <span style="color:{{ kpi.deltaColor }};">{{ kpi.delta }}</span>
+                <span style="color:#64748B;"> vs last period</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- Charts row -->
+        <div style="display:flex; flexWrap:wrap; gap:16px; marginBottom:24px;">
+          <div style="flex:1 1 400px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:16px;">Estimates & signups over time</div>
+            <div style="height:200px; display:flex; alignItems:flex-end; gap:6px; padding:0 4px;">
+              <sc-for list="{{ chartBars }}" as="bar" hint-placeholder-count="12">
+                <div style="flex:1; display:flex; flexDirection:column; alignItems:center; gap:4px;">
+                  <div style="width:100%; borderRadius:4px 4px 0 0; background:linear-gradient(180deg,#FFB800,rgba(255,184,0,.3)); height:{{ bar.h1 }};"></div>
+                  <div style="fontSize:10px; color:#64748B;">{{ bar.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex:1 1 320px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:16px;">Conversion funnel</div>
+            <sc-for list="{{ funnelSteps }}" as="step" hint-placeholder-count="5">
+              <div style="marginBottom:10px;">
+                <div style="display:flex; justifyContent:space-between; fontSize:12.5px; marginBottom:4px;">
+                  <span style="color:#CBD5E1;">{{ step.label }}</span>
+                  <span style="color:#FFB800;">{{ step.pct }}</span>
+                </div>
+                <div style="height:6px; borderRadius:9999px; background:rgba(255,255,255,.06);">
+                  <div style="height:100%; borderRadius:9999px; background:linear-gradient(90deg,#FFB800,#FF8C00); width:{{ step.width }};"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Needs attention + Recent activity -->
+        <div style="display:flex; flexWrap:wrap; gap:16px;">
+          <div style="flex:1 1 340px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:16px;">Needs attention</div>
+            <sc-for list="{{ alertItems }}" as="alert" hint-placeholder-count="4">
+              <div style="display:flex; alignItems:center; gap:10px; padding:10px 0; borderBottom:1px solid rgba(255,255,255,.06);">
+                <span style="width:8px; height:8px; borderRadius:9999px; background:{{ alert.dotColor }};"></span>
+                <span style="flex:1; fontSize:13.5px; color:#CBD5E1;">{{ alert.text }}</span>
+                <span style="fontSize:12px; color:#64748B;">{{ alert.count }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="flex:1 1 340px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:16px;">Recent activity</div>
+            <sc-for list="{{ recentActivity }}" as="act" hint-placeholder-count="5">
+              <div style="display:flex; gap:10px; padding:10px 0; borderBottom:1px solid rgba(255,255,255,.06);">
+                <div style="width:28px; height:28px; borderRadius:9999px; background:rgba(255,255,255,.06); display:grid; placeItems:center; fontSize:12px; color:#94A3B8; flexShrink:0;">{{ act.avatar }}</div>
+                <div style="flex:1;">
+                  <div style="fontSize:13px; color:#CBD5E1;">{{ act.text }}</div>
+                  <div style="fontSize:11.5px; color:#64748B; marginTop:2px;">{{ act.time }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ======= LEADS ======= -->
+      <sc-if value="{{ isLeads }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; justifyContent:space-between; alignItems:center; flexWrap:wrap; gap:12px; marginBottom:20px;">
+          <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#fff; margin:0;">Leads</h1>
+          <div style="display:flex; gap:8px;">
+            <button onClick="{{ setLeadsView }}" style="{{ leadsListBtnStyle }}">List</button>
+            <button onClick="{{ setLeadsKanban }}" style="{{ leadsKanbanBtnStyle }}">Board</button>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:12px 16px; display:flex; flexWrap:wrap; gap:10px; alignItems:center; marginBottom:20px;">
+          <input type="text" placeholder="Search leads…" style="flex:1 1 200px; padding:9px 14px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:13.5px;" />
+          <sc-for list="{{ leadStatusFilters }}" as="f" hint-placeholder-count="5">
+            <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+          </sc-for>
+        </div>
+
+        <!-- Kanban view -->
+        <sc-if value="{{ isLeadsKanbanView }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; gap:16px; overflow-x:auto; paddingBottom:16px;">
+            <sc-for list="{{ kanbanColumns }}" as="col" hint-placeholder-count="5">
+              <div style="minWidth:260px; flex:1; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); borderRadius:14px; padding:14px;">
+                <div style="display:flex; justifyContent:space-between; alignItems:center; marginBottom:14px;">
+                  <span style="fontSize:13px; fontWeight:600; color:#CBD5E1;">{{ col.title }}</span>
+                  <span style="fontSize:12px; padding:3px 8px; borderRadius:9999px; background:rgba(255,255,255,.06); color:#94A3B8;">{{ col.count }}</span>
+                </div>
+                <sc-for list="{{ col.cards }}" as="card" hint-placeholder-count="2">
+                  <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:12px; padding:14px; marginBottom:10px;">
+                    <div style="fontSize:14px; fontWeight:500; color:#fff;">{{ card.name }}</div>
+                    <div style="fontSize:12.5px; color:#94A3B8; marginTop:4px;">{{ card.phone }} · {{ card.area }}</div>
+                    <div style="display:flex; justifyContent:space-between; alignItems:center; marginTop:8px;">
+                      <span style="fontSize:11.5px; color:#64748B;">{{ card.source }}</span>
+                      <span style="fontSize:11.5px; color:{{ card.slaColor }};">{{ card.age }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- List view -->
+        <sc-if value="{{ isLeadsListView }}" hint-placeholder-val="{{ true }}">
+          <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); borderRadius:16px; overflow:hidden;">
+            <div style="display:flex; padding:0 20px; height:44px; alignItems:center; background:rgba(255,255,255,.04); borderBottom:1px solid rgba(255,255,255,.08); fontSize:12px; textTransform:uppercase; letterSpacing:0.08em; color:#94A3B8; gap:12px;">
+              <span style="flex:2;">Name</span><span style="flex:2;">Phone</span><span style="flex:1.5;">Area</span><span style="flex:1;">Source</span><span style="flex:1;">Status</span><span style="flex:1;">Age</span><span style="flex:0.5;">Actions</span>
+            </div>
+            <sc-for list="{{ leadsTableRows }}" as="row" hint-placeholder-count="6">
+              <div style="display:flex; padding:0 20px; height:52px; alignItems:center; borderBottom:1px solid rgba(255,255,255,.06); fontSize:13.5px; gap:12px;">
+                <span style="flex:2; color:#E7ECF5; fontWeight:500;">{{ row.name }}</span>
+                <span style="flex:2; color:#94A3B8;">{{ row.phone }}</span>
+                <span style="flex:1.5; color:#94A3B8;">{{ row.area }}</span>
+                <span style="flex:1; color:#94A3B8;">{{ row.source }}</span>
+                <span style="flex:1;"><span style="{{ row.statusStyle }}">{{ row.status }}</span></span>
+                <span style="flex:1; color:{{ row.slaColor }}; fontSize:12.5px;">{{ row.age }}</span>
+                <span style="flex:0.5; color:#94A3B8; cursor:pointer;">⋯</span>
+              </div>
+            </sc-for>
+            <div style="display:flex; justifyContent:space-between; padding:12px 20px; fontSize:12.5px; color:#64748B;">
+              <span>Showing {{ leadsTableRows.length }} of {{ leadsTableRows.length }}</span>
+              <span>25 per page</span>
+            </div>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- ======= PROJECTS ======= -->
+      <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; justifyContent:space-between; alignItems:center; flexWrap:wrap; gap:12px; marginBottom:20px;">
+          <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#fff; margin:0;">Projects</h1>
+          <div style="display:flex; gap:8px;">
+            <button onClick="{{ setProjectsList }}" style="{{ projListBtnStyle }}">List</button>
+            <button onClick="{{ setProjectsBoard }}" style="{{ projBoardBtnStyle }}">Board</button>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:12px 16px; display:flex; flexWrap:wrap; gap:10px; alignItems:center; marginBottom:20px;">
+          <input type="text" placeholder="Search projects…" style="flex:1 1 200px; padding:9px 14px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:13.5px;" />
+          <span style="fontSize:13px; color:#64748B;">Status:</span>
+          <sc-for list="{{ projStatusFilters }}" as="f" hint-placeholder-count="4">
+            <button style="{{ f.style }}">{{ f.label }}</button>
+          </sc-for>
+        </div>
+
+        <!-- List view -->
+        <sc-if value="{{ isProjectsListView }}" hint-placeholder-val="{{ true }}">
+          <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); borderRadius:16px; overflow:hidden;">
+            <div style="display:flex; padding:0 20px; height:44px; alignItems:center; background:rgba(255,255,255,.04); borderBottom:1px solid rgba(255,255,255,.08); fontSize:12px; textTransform:uppercase; letterSpacing:0.08em; color:#94A3B8; gap:12px;">
+              <span style="flex:1;">Ref</span><span style="flex:2;">Customer</span><span style="flex:2;">Title</span><span style="flex:1.5;">Area</span><span style="flex:1;">Status</span><span style="flex:1.5;">Value</span><span style="flex:1;">Progress</span><span style="flex:0.5;"></span>
+            </div>
+            <sc-for list="{{ projectsTableRows }}" as="row" hint-placeholder-count="5">
+              <div style="display:flex; padding:0 20px; height:52px; alignItems:center; borderBottom:1px solid rgba(255,255,255,.06); fontSize:13.5px; gap:12px;">
+                <span style="flex:1; color:#FFB800; fontSize:12.5px;">{{ row.ref }}</span>
+                <span style="flex:2; color:#E7ECF5; fontWeight:500;">{{ row.customer }}</span>
+                <span style="flex:2; color:#CBD5E1;">{{ row.title }}</span>
+                <span style="flex:1.5; color:#94A3B8;">{{ row.area }}</span>
+                <span style="flex:1;"><span style="{{ row.statusStyle }}">{{ row.status }}</span></span>
+                <span style="flex:1.5; color:#E7ECF5; fontVariantNumeric:tabular-nums;">{{ row.value }}</span>
+                <span style="flex:1;">
+                  <div style="height:5px; borderRadius:9999px; background:rgba(255,255,255,.08); width:80px;">
+                    <div style="height:100%; borderRadius:9999px; background:linear-gradient(90deg,#FFB800,#FF8C00); width:{{ row.progressPct }};"></div>
+                  </div>
+                </span>
+                <span style="flex:0.5; color:#94A3B8; cursor:pointer;">⋯</span>
+              </div>
+            </sc-for>
+            <div style="display:flex; justifyContent:space-between; padding:12px 20px; fontSize:12.5px; color:#64748B;">
+              <span>Showing {{ projectsTableRows.length }} of {{ projectsTableRows.length }}</span>
+              <span>25 per page</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- Board view -->
+        <sc-if value="{{ isProjectsBoardView }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; gap:14px; overflow-x:auto; paddingBottom:16px;">
+            <sc-for list="{{ projKanbanColumns }}" as="col" hint-placeholder-count="5">
+              <div style="minWidth:240px; flex:1; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); borderRadius:14px; padding:14px;">
+                <div style="display:flex; justifyContent:space-between; alignItems:center; marginBottom:14px;">
+                  <span style="fontSize:13px; fontWeight:600; color:#CBD5E1;">{{ col.title }}</span>
+                  <span style="fontSize:12px; padding:3px 8px; borderRadius:9999px; background:rgba(255,255,255,.06); color:#94A3B8;">{{ col.count }}</span>
+                </div>
+                <sc-for list="{{ col.cards }}" as="card" hint-placeholder-count="2">
+                  <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:12px; padding:14px; marginBottom:10px;">
+                    <div style="fontSize:13px; fontWeight:500; color:#fff;">{{ card.title }}</div>
+                    <div style="fontSize:12px; color:#94A3B8; marginTop:3px;">{{ card.customer }}</div>
+                    <div style="fontSize:12.5px; color:#FFB800; marginTop:6px;">{{ card.value }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </sc-if>
+
+      <!-- ======= USERS ======= -->
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; justifyContent:space-between; alignItems:center; flexWrap:wrap; gap:12px; marginBottom:20px;">
+          <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#fff; margin:0;">Users</h1>
+          <button style="padding:10px 18px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:13.5px; cursor:pointer;">Add user</button>
+        </div>
+
+        <!-- Filter bar -->
+        <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:12px 16px; display:flex; flexWrap:wrap; gap:10px; alignItems:center; marginBottom:20px;">
+          <input type="text" placeholder="Search by name, email, phone…" style="flex:1 1 240px; padding:9px 14px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:13.5px;" />
+          <span style="fontSize:13px; color:#64748B;">Role:</span>
+          <sc-for list="{{ userRoleFilters }}" as="f" hint-placeholder-count="4">
+            <button style="{{ f.style }}">{{ f.label }}</button>
+          </sc-for>
+        </div>
+
+        <!-- Users table -->
+        <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); borderRadius:16px; overflow:hidden;">
+          <div style="display:flex; padding:0 20px; height:44px; alignItems:center; background:rgba(255,255,255,.04); borderBottom:1px solid rgba(255,255,255,.08); fontSize:12px; textTransform:uppercase; letterSpacing:0.08em; color:#94A3B8; gap:12px;">
+            <span style="flex:2;">User</span><span style="flex:2;">Email</span><span style="flex:1.5;">Phone</span><span style="flex:1;">Role</span><span style="flex:1;">Estimates</span><span style="flex:1;">Projects</span><span style="flex:1;">Last seen</span><span style="flex:0.5;"></span>
+          </div>
+          <sc-for list="{{ usersTableRows }}" as="row" hint-placeholder-count="6">
+            <div style="display:flex; padding:0 20px; height:56px; alignItems:center; borderBottom:1px solid rgba(255,255,255,.06); fontSize:13.5px; gap:12px;">
+              <span style="flex:2; display:flex; alignItems:center; gap:10px;">
+                <div style="width:32px; height:32px; borderRadius:9999px; background:{{ row.avatarBg }}; display:grid; placeItems:center; fontSize:12px; fontWeight:600; color:{{ row.avatarColor }}; flexShrink:0;">{{ row.initials }}</div>
+                <span style="color:#E7ECF5; fontWeight:500;">{{ row.name }}</span>
+              </span>
+              <span style="flex:2; color:#94A3B8;">{{ row.email }}</span>
+              <span style="flex:1.5; color:#94A3B8;">{{ row.phone }}</span>
+              <span style="flex:1;"><span style="{{ row.roleStyle }}">{{ row.role }}</span></span>
+              <span style="flex:1; color:#E7ECF5;">{{ row.estimates }}</span>
+              <span style="flex:1; color:#E7ECF5;">{{ row.projects }}</span>
+              <span style="flex:1; color:#64748B; fontSize:12.5px;">{{ row.lastSeen }}</span>
+              <span style="flex:0.5; color:#94A3B8; cursor:pointer;">⋯</span>
+            </div>
+          </sc-for>
+          <div style="display:flex; justifyContent:space-between; padding:12px 20px; fontSize:12.5px; color:#64748B;">
+            <span>Showing {{ usersTableRows.length }} of {{ usersTableRows.length }}</span>
+            <span>25 per page</span>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    page: 'dashboard',
+    period: '30d',
+    leadsView: 'list',
+    leadsStatusFilter: 'all',
+    projectsView: 'list',
+  };
+
+  goTo = (page) => () => this.setState({ page });
+  setPeriod = (p) => () => this.setState({ period: p });
+  setLeadsView = () => this.setState({ leadsView: 'list' });
+  setLeadsKanban = () => this.setState({ leadsView: 'kanban' });
+  setLeadsStatusFilter = (s) => () => this.setState({ leadsStatusFilter: s });
+  setProjectsList = () => this.setState({ projectsView: 'list' });
+  setProjectsBoard = () => this.setState({ projectsView: 'board' });
+
+  navStyle(active) {
+    return {
+      width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 10,
+      padding: '10px 12px', borderRadius: 10, border: 'none', cursor: 'pointer',
+      fontSize: 13.5, fontWeight: active ? 600 : 400, marginBottom: 2,
+      background: active ? 'rgba(255,184,0,.1)' : 'transparent',
+      color: active ? '#FFB800' : '#94A3B8',
+      borderLeft: active ? '2px solid #FFB800' : '2px solid transparent',
+    };
+  }
+  tabStyle(active) {
+    return {
+      padding: '8px 16px', borderRadius: 10, border: 'none', cursor: 'pointer',
+      fontSize: 13, fontWeight: 600,
+      background: active ? 'rgba(255,255,255,.1)' : 'rgba(255,255,255,.04)',
+      color: active ? '#fff' : '#94A3B8',
+    };
+  }
+  chipStyle(active) {
+    return {
+      padding: '6px 14px', borderRadius: 9999, border: active ? '1px solid rgba(255,184,0,.5)' : '1px solid rgba(255,255,255,.1)',
+      background: active ? 'rgba(255,184,0,.1)' : 'rgba(255,255,255,.04)',
+      color: active ? '#FFB800' : '#94A3B8', fontSize: 12.5, cursor: 'pointer', whiteSpace: 'nowrap',
+    };
+  }
+  statusChip(status) {
+    const map = {
+      'New': { bg: 'rgba(0,229,255,.12)', c: '#00E5FF' },
+      'Contacted': { bg: 'rgba(255,184,0,.12)', c: '#FFB800' },
+      'Qualified': { bg: 'rgba(139,92,246,.12)', c: '#A78BFA' },
+      'Converted': { bg: 'rgba(52,211,153,.12)', c: '#34D399' },
+      'Lost': { bg: 'rgba(248,113,113,.12)', c: '#F87171' },
+      'Survey requested': { bg: 'rgba(255,184,0,.12)', c: '#FFB800' },
+      'In progress': { bg: 'rgba(255,140,0,.12)', c: '#FF8C00' },
+      'Completed': { bg: 'rgba(52,211,153,.12)', c: '#34D399' },
+      'Commissioning': { bg: 'rgba(0,229,255,.12)', c: '#00E5FF' },
+      'Installation': { bg: 'rgba(255,140,0,.12)', c: '#FF8C00' },
+    };
+    const m = map[status] || { bg: 'rgba(255,255,255,.06)', c: '#94A3B8' };
+    return { display: 'inline-block', fontSize: 12, fontWeight: 500, padding: '3px 10px', borderRadius: 9999, background: m.bg, color: m.c, whiteSpace: 'nowrap' };
+  }
+  roleChip(role) {
+    const map = {
+      'Super Admin': { bg: 'rgba(255,184,0,.12)', c: '#FFB800' },
+      'Admin': { bg: 'rgba(139,92,246,.12)', c: '#A78BFA' },
+      'Sales': { bg: 'rgba(0,229,255,.12)', c: '#00E5FF' },
+      'Customer': { bg: 'rgba(255,255,255,.06)', c: '#94A3B8' },
+    };
+    const m = map[role] || { bg: 'rgba(255,255,255,.06)', c: '#94A3B8' };
+    return { display: 'inline-block', fontSize: 12, fontWeight: 500, padding: '3px 10px', borderRadius: 9999, background: m.bg, color: m.c, whiteSpace: 'nowrap' };
+  }
+
+  renderVals() {
+    const s = this.state;
+
+    const sidebarGroups = [
+      { label: 'Overview', items: [
+        { icon: '▣', label: 'Dashboard', onClick: this.goTo('dashboard'), style: this.navStyle(s.page === 'dashboard') },
+      ]},
+      { label: 'Manage', items: [
+        { icon: '⊕', label: 'Users', onClick: this.goTo('users'), style: this.navStyle(s.page === 'users') },
+        { icon: '≡', label: 'Estimations', onClick: this.goTo('estimates'), style: this.navStyle(s.page === 'estimates') },
+        { icon: '⬡', label: 'Projects', onClick: this.goTo('projects'), style: this.navStyle(s.page === 'projects') },
+        { icon: '↗', label: 'Leads', onClick: this.goTo('leads'), style: this.navStyle(s.page === 'leads') },
+      ]},
+      { label: 'Insights', items: [
+        { icon: '⊞', label: 'Analytics', onClick: this.goTo('dashboard'), style: this.navStyle(false) },
+        { icon: '¤', label: 'Revenue', onClick: this.goTo('dashboard'), style: this.navStyle(false) },
+      ]},
+      { label: 'System', items: [
+        { icon: '⊛', label: 'Settings', onClick: this.goTo('dashboard'), style: this.navStyle(false) },
+        { icon: '⊘', label: 'Roles', onClick: this.goTo('dashboard'), style: this.navStyle(false) },
+      ]},
+    ];
+
+    const pageTitles = { dashboard: 'Dashboard', leads: 'Leads', projects: 'Projects', users: 'Users', estimates: 'Estimations' };
+    const periods = ['7d', '30d', '90d', '12m'];
+    const periodOptions = periods.map(p => ({ label: p, onClick: this.setPeriod(p), style: this.chipStyle(s.period === p) }));
+
+    const dashKpis = [
+      { icon: '⊕', label: 'Total users', value: '1,847', delta: '+12%', deltaColor: '#34D399' },
+      { icon: '◉', label: 'Active users', value: '342', delta: '+8%', deltaColor: '#34D399' },
+      { icon: '≡', label: 'Saved estimates', value: '628', delta: '+18%', deltaColor: '#34D399' },
+      { icon: '¤', label: 'Pipeline value', value: 'PKR 94M', delta: '+22%', deltaColor: '#34D399' },
+      { icon: '⬡', label: 'Active projects', value: '23', delta: '+3', deltaColor: '#34D399' },
+      { icon: '▲', label: 'Revenue booked', value: 'PKR 38M', delta: '+15%', deltaColor: '#34D399' },
+      { icon: '₨', label: 'Revenue collected', value: 'PKR 31M', delta: 'PKR 7M outstanding', deltaColor: '#F59E0B' },
+      { icon: '◎', label: 'Website visitors', value: '12,480', delta: '-3%', deltaColor: '#F87171' },
+    ];
+
+    const chartBars = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].map((m, i) => ({
+      label: m, h1: (40 + Math.sin(i * 0.8) * 30 + i * 8) + 'px',
+    }));
+
+    const funnelSteps = [
+      { label: 'Visitors', pct: '100%', width: '100%' },
+      { label: 'Estimator started', pct: '34%', width: '34%' },
+      { label: 'Estimate completed', pct: '22%', width: '22%' },
+      { label: 'Account created', pct: '14%', width: '14%' },
+      { label: 'Survey requested', pct: '8%', width: '8%' },
+      { label: 'Project signed', pct: '5%', width: '5%' },
+    ];
+
+    const alertItems = [
+      { text: 'Survey requests unassigned > 24h', count: '3', dotColor: '#FFB800' },
+      { text: 'Estimates expiring within 3 days', count: '7', dotColor: '#FFB800' },
+      { text: 'Projects stale > 14 days', count: '2', dotColor: '#FF8C00' },
+      { text: 'Overdue payments', count: '4', dotColor: '#F87171' },
+      { text: 'Reviews awaiting moderation', count: '5', dotColor: '#00E5FF' },
+    ];
+
+    const recentActivity = [
+      { avatar: 'AK', text: 'Ahmed Khan completed an 8 kWp Hybrid estimate', time: '5 min ago' },
+      { avatar: 'FS', text: 'Fatima Shah requested a site survey', time: '22 min ago' },
+      { avatar: 'UR', text: 'Usman Raza — project advanced to Installation', time: '1 hr ago' },
+      { avatar: 'SA', text: 'Sara Ali signed up via Google', time: '2 hrs ago' },
+      { avatar: 'HB', text: 'Hassan Butt — payment PKR 720K recorded', time: '3 hrs ago' },
+    ];
+
+    // Leads data
+    const leadsData = [
+      { name: 'Bilal Ahmed', phone: '+92 321 4567890', area: 'Gulberg', source: 'Website', status: 'New', age: '2h ago', slaColor: '#34D399' },
+      { name: 'Ayesha Khan', phone: '+92 300 1234567', area: 'DHA Phase 6', source: 'WhatsApp', status: 'Contacted', age: '1d ago', slaColor: '#FFB800' },
+      { name: 'Tariq Mahmood', phone: '+92 333 9876543', area: 'Johar Town', source: 'Website', status: 'Qualified', age: '3d ago', slaColor: '#94A3B8' },
+      { name: 'Nadia Parveen', phone: '+92 312 5551234', area: 'Model Town', source: 'Referral', status: 'New', age: '5h ago', slaColor: '#FFB800' },
+      { name: 'Omar Farooq', phone: '+92 345 7778899', area: 'Bahria Town', source: 'Website', status: 'Converted', age: '1w ago', slaColor: '#94A3B8' },
+      { name: 'Zainab Malik', phone: '+92 301 2223344', area: 'Cantt', source: 'Walk-in', status: 'Lost', age: '2w ago', slaColor: '#94A3B8' },
+    ];
+    const leadsTableRows = leadsData.map(l => ({ ...l, statusStyle: this.statusChip(l.status) }));
+    const leadStatuses = ['All', 'New', 'Contacted', 'Qualified', 'Converted', 'Lost'];
+    const leadStatusFilters = leadStatuses.map(ls => ({
+      label: ls, onClick: this.setLeadsStatusFilter(ls.toLowerCase()),
+      style: this.chipStyle(s.leadsStatusFilter === ls.toLowerCase() || (ls === 'All' && s.leadsStatusFilter === 'all')),
+    }));
+
+    const kanbanColumns = [
+      { title: 'New', count: '2', cards: leadsData.filter(l => l.status === 'New').map(l => ({ ...l })) },
+      { title: 'Contacted', count: '1', cards: leadsData.filter(l => l.status === 'Contacted').map(l => ({ ...l })) },
+      { title: 'Qualified', count: '1', cards: leadsData.filter(l => l.status === 'Qualified').map(l => ({ ...l })) },
+      { title: 'Converted', count: '1', cards: leadsData.filter(l => l.status === 'Converted').map(l => ({ ...l })) },
+      { title: 'Lost', count: '1', cards: leadsData.filter(l => l.status === 'Lost').map(l => ({ ...l })) },
+    ];
+
+    // Projects data
+    const projectsData = [
+      { ref: 'PRJ-2607-001', customer: 'Ahmed Khan', title: '8 kWp Hybrid', area: 'Johar Town', status: 'In progress', value: 'PKR 1,790,000', progressPct: '60%' },
+      { ref: 'PRJ-2607-002', customer: 'Fatima Shah', title: '10 kWp On-grid', area: 'DHA Phase 5', status: 'Survey requested', value: 'PKR 2,130,000', progressPct: '10%' },
+      { ref: 'PRJ-2607-003', customer: 'Usman Raza', title: '6.5 kWp Hybrid', area: 'Bahria Town', status: 'Installation', value: 'PKR 1,565,000', progressPct: '75%' },
+      { ref: 'PRJ-2607-004', customer: 'Sara Ali', title: '12 kWp Hybrid', area: 'Model Town', status: 'Commissioning', value: 'PKR 2,680,000', progressPct: '90%' },
+      { ref: 'PRJ-2607-005', customer: 'Hassan Butt', title: '8 kWp Hybrid', area: 'Gulberg', status: 'Completed', value: 'PKR 1,820,000', progressPct: '100%' },
+    ];
+    const projectsTableRows = projectsData.map(p => ({ ...p, statusStyle: this.statusChip(p.status) }));
+    const projStatuses = ['All', 'Survey requested', 'In progress', 'Installation', 'Completed'];
+    const projStatusFilters = projStatuses.map(ps => ({ label: ps, style: this.chipStyle(ps === 'All') }));
+    const projKanbanColumns = [
+      { title: 'Survey', count: '1', cards: [{ title: '10 kWp On-grid', customer: 'Fatima Shah', value: 'PKR 2.13M' }] },
+      { title: 'Installation', count: '2', cards: [{ title: '8 kWp Hybrid', customer: 'Ahmed Khan', value: 'PKR 1.79M' }, { title: '6.5 kWp Hybrid', customer: 'Usman Raza', value: 'PKR 1.57M' }] },
+      { title: 'Commissioning', count: '1', cards: [{ title: '12 kWp Hybrid', customer: 'Sara Ali', value: 'PKR 2.68M' }] },
+      { title: 'Completed', count: '1', cards: [{ title: '8 kWp Hybrid', customer: 'Hassan Butt', value: 'PKR 1.82M' }] },
+    ];
+
+    // Users data
+    const usersData = [
+      { name: 'Ahmed Khan', email: 'ahmed@email.com', phone: '+92 321 456 7890', role: 'Customer', estimates: 3, projects: 1, lastSeen: '2h ago', initials: 'AK', avatarBg: 'rgba(255,184,0,.15)', avatarColor: '#FFB800' },
+      { name: 'Fatima Shah', email: 'fatima@email.com', phone: '+92 300 123 4567', role: 'Customer', estimates: 2, projects: 1, lastSeen: '1d ago', initials: 'FS', avatarBg: 'rgba(0,229,255,.15)', avatarColor: '#00E5FF' },
+      { name: 'Ali Raza', email: 'ali@alwahabsolar.pk', phone: '+92 333 987 6543', role: 'Sales', estimates: 0, projects: 8, lastSeen: '30m ago', initials: 'AR', avatarBg: 'rgba(52,211,153,.15)', avatarColor: '#34D399' },
+      { name: 'Sana Mirza', email: 'sana@alwahabsolar.pk', phone: '+92 312 555 1234', role: 'Admin', estimates: 0, projects: 12, lastSeen: '1h ago', initials: 'SM', avatarBg: 'rgba(139,92,246,.15)', avatarColor: '#A78BFA' },
+      { name: 'Hamza Sheikh', email: 'hamza@email.com', phone: '+92 345 777 8899', role: 'Customer', estimates: 1, projects: 0, lastSeen: '5d ago', initials: 'HS', avatarBg: 'rgba(255,140,0,.15)', avatarColor: '#FF8C00' },
+      { name: 'Owner', email: 'admin@alwahabsolar.pk', phone: '+92 42 111 765 765', role: 'Super Admin', estimates: 0, projects: 23, lastSeen: 'Now', initials: 'SA', avatarBg: 'rgba(255,184,0,.15)', avatarColor: '#FFB800' },
+    ];
+    const usersTableRows = usersData.map(u => ({ ...u, roleStyle: this.roleChip(u.role) }));
+    const userRoles = ['All', 'Customer', 'Sales', 'Admin', 'Super Admin'];
+    const userRoleFilters = userRoles.map(r => ({ label: r, style: this.chipStyle(r === 'All') }));
+
+    return {
+      sidebarGroups,
+      currentPageTitle: pageTitles[s.page] || 'Dashboard',
+      isDashboard: s.page === 'dashboard',
+      isLeads: s.page === 'leads',
+      isProjects: s.page === 'projects',
+      isUsers: s.page === 'users',
+      periodOptions, dashKpis, chartBars, funnelSteps, alertItems, recentActivity,
+
+      setLeadsView: this.setLeadsView, setLeadsKanban: this.setLeadsKanban,
+      isLeadsListView: s.leadsView === 'list', isLeadsKanbanView: s.leadsView === 'kanban',
+      leadsListBtnStyle: this.tabStyle(s.leadsView === 'list'),
+      leadsKanbanBtnStyle: this.tabStyle(s.leadsView === 'kanban'),
+      leadStatusFilters, leadsTableRows, kanbanColumns,
+
+      setProjectsList: this.setProjectsList, setProjectsBoard: this.setProjectsBoard,
+      isProjectsListView: s.projectsView === 'list', isProjectsBoardView: s.projectsView === 'board',
+      projListBtnStyle: this.tabStyle(s.projectsView === 'list'),
+      projBoardBtnStyle: this.tabStyle(s.projectsView === 'board'),
+      projStatusFilters, projectsTableRows, projKanbanColumns,
+
+      usersTableRows, userRoleFilters,
+    };
+  }
+}
+</script>
+</body>
+</html>

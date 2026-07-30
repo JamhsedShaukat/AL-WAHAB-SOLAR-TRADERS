@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @keyframes meshShift { 0%,100% { transform: translate3d(0,0,0) scale(1); } 33% { transform: translate3d(4%,-3%,0) scale(1.08); } 66% { transform: translate3d(-3%,4%,0) scale(.96); } }
+    @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,184,0,.45), 0 10px 40px -8px rgba(255,140,0,.5); } 50% { box-shadow: 0 0 0 12px rgba(255,184,0,0), 0 10px 50px -6px rgba(255,140,0,.7); } }
+    @keyframes shake { 10%,90% { transform: translateX(-1px); } 20%,80% { transform: translateX(2px); } 30%,50%,70% { transform: translateX(-4px); } 40%,60% { transform: translateX(4px); } }
+    body { margin:0; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    ::selection { background: rgba(255,184,0,.3); color:#fff; }
+    * { box-sizing: border-box; }
+    input::placeholder { color: rgba(148,163,184,.7); }
+  </style>
+</helmet>
+
+<div style="position:relative; min-height:100vh; background:radial-gradient(1200px 800px at 70% -10%, rgba(255,184,0,0.10), transparent 60%), radial-gradient(900px 700px at 10% 20%, rgba(0,229,255,0.06), transparent 55%), linear-gradient(180deg,#0A0F1E 0%,#070B16 45%,#05080F 100%); color:#E7ECF5; fontFamily:Manrope, sans-serif;">
+
+  <!-- Ambient blobs -->
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;">
+    <div style="position:absolute; top:-160px; right:-10%; width:55vh; height:55vh; borderRadius:9999px; opacity:.6; filter:blur(90px); background:radial-gradient(circle, rgba(255,184,0,.22), transparent 65%); animation: meshShift 22s ease-in-out infinite;"></div>
+    <div style="position:absolute; top:40%; left:-12%; width:50vh; height:50vh; borderRadius:9999px; opacity:.5; filter:blur(100px); background:radial-gradient(circle, rgba(0,229,255,.16), transparent 65%); animation: meshShift 28s ease-in-out infinite reverse;"></div>
+  </div>
+
+  <!-- SCREEN NAV (demo) -->
+  <sc-if value="{{ showDemoNav }}" hint-placeholder-val="{{ true }}">
+  <div style="position:fixed; bottom:12px; left:12px; zIndex:100; display:flex; gap:6px; flexWrap:wrap; maxWidth:320px;">
+    <sc-for list="{{ screenNav }}" as="nav" hint-placeholder-count="5">
+      <button onClick="{{ nav.onClick }}" style="{{ nav.style }}">{{ nav.label }}</button>
+    </sc-for>
+  </div>
+  </sc-if>
+
+  <!-- ============ AUTH: SIGN UP / LOG IN ============ -->
+  <sc-if value="{{ isAuth }}" hint-placeholder-val="{{ true }}">
+    <div style="position:relative; zIndex:1; minHeight:100vh; display:flex; flexWrap:wrap;">
+
+      <!-- LEFT PANEL (value prop) -->
+      <div style="flex:1 1 380px; maxWidth:520px; background:rgba(13,20,38,.55); border-right:1px solid rgba(255,255,255,.08); backdropFilter:blur(20px) saturate(140%); padding:48px 40px; display:flex; flexDirection:column; justifyContent:center;">
+        <div style="display:flex; alignItems:center; gap:10px; marginBottom:40px;">
+          <span style="display:grid; placeItems:center; height:36px; width:36px; borderRadius:12px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+            <img src="al-wahab-logo.png" alt="" style="width:30px; height:30px; objectFit:contain;" />
+          </span>
+          <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; fontWeight:600; color:#fff;">Al-Wahab <span style="color:#FFB800;">Solar Traders</span></span>
+        </div>
+        <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:32px; fontWeight:600; color:#fff; lineHeight:1.15; marginBottom:12px;">Save your estimate. Book a survey. Track your install.</h1>
+        <p style="color:#94A3B8; fontSize:15px; lineHeight:1.6; marginBottom:32px;">Create a free homeowner account to keep your solar estimate, book a free site survey, and follow your installation to completion.</p>
+        <div style="display:flex; flexDirection:column; gap:16px;">
+          <div style="display:flex; gap:12px; alignItems:center;"><span style="color:#FFB800; fontSize:16px;">✓</span><span style="color:#CBD5E1; fontSize:14.5px;">Installed by our own certified team</span></div>
+          <div style="display:flex; gap:12px; alignItems:center;"><span style="color:#FFB800; fontSize:16px;">✓</span><span style="color:#CBD5E1; fontSize:14.5px;">Your itemized estimate, saved</span></div>
+          <div style="display:flex; gap:12px; alignItems:center;"><span style="color:#FFB800; fontSize:16px;">✓</span><span style="color:#CBD5E1; fontSize:14.5px;">Track every phase of your install</span></div>
+        </div>
+        <div style="marginTop:auto; paddingTop:48px; fontSize:12.5px; color:#64748B;">© 2026 Al-Wahab Solar Traders</div>
+      </div>
+
+      <!-- RIGHT PANEL (form) -->
+      <div style="flex:1 1 420px; display:flex; alignItems:center; justifyContent:center; padding:48px 32px;">
+        <div style="width:100%; maxWidth:420px;">
+          <div style="display:flex; justifyContent:space-between; alignItems:center; marginBottom:24px;">
+            <span style="fontSize:13px; color:#94A3B8; padding:6px 14px; borderRadius:9999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04);">Homeowner account</span>
+          </div>
+
+          <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:26px; fontWeight:600; color:#fff;">{{ authTitle }}</h2>
+          <p style="color:#94A3B8; fontSize:14.5px; marginTop:4px;">{{ authSubtitle }}</p>
+
+          <!-- Pending estimate chip -->
+          <sc-if value="{{ hasPendingEstimate }}" hint-placeholder-val="{{ false }}">
+            <div style="marginTop:16px; padding:12px 16px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); display:flex; alignItems:center; gap:10px;">
+              <span style="fontSize:12px; color:#FFB800;">☀</span>
+              <span style="fontSize:13px; color:#CBD5E1;">Save your 6.5 kW estimate · PKR 1.47M–1.66M · Standard</span>
+            </div>
+          </sc-if>
+
+          <!-- Tab toggle -->
+          <div style="display:flex; borderRadius:9999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); padding:4px; marginTop:20px; marginBottom:20px;">
+            <button onClick="{{ goSignup }}" style="{{ signupTabStyle }}">Sign up</button>
+            <button onClick="{{ goLogin }}" style="{{ loginTabStyle }}">Log in</button>
+          </div>
+
+          <!-- Google -->
+          <button style="width:100%; padding:13px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); color:#fff; fontSize:14.5px; fontWeight:500; cursor:pointer; display:flex; alignItems:center; justifyContent:center; gap:10px;">
+            <span style="fontSize:18px;">G</span> Continue with Google
+          </button>
+
+          <div style="display:flex; alignItems:center; gap:12px; margin:18px 0;">
+            <div style="flex:1; height:1px; background:rgba(255,255,255,.08);"></div>
+            <span style="fontSize:13px; color:#64748B;">or</span>
+            <div style="flex:1; height:1px; background:rgba(255,255,255,.08);"></div>
+          </div>
+
+          <!-- Form -->
+          <form onSubmit="{{ submitAuth }}" style="display:flex; flexDirection:column; gap:14px;">
+            <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Full name</label>
+                <input type="text" value="{{ authName }}" onChange="{{ setAuthName }}" placeholder="Ahmed Khan" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+            </sc-if>
+            <div>
+              <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Phone or email</label>
+              <input type="text" value="{{ authIdentifier }}" onChange="{{ setAuthIdentifier }}" placeholder="+92 300 1234567 or you@email.com" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+            </div>
+            <div>
+              <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Password</label>
+              <div style="position:relative;">
+                <input type="{{ passwordInputType }}" value="{{ authPassword }}" onChange="{{ setAuthPassword }}" placeholder="Min 8 characters" style="width:100%; padding:12px 14px; paddingRight:48px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+                <button type="button" onClick="{{ toggleShowPassword }}" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94A3B8; fontSize:13px; cursor:pointer;">{{ showHideLabel }}</button>
+              </div>
+              <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ true }}">
+                <div style="marginTop:8px; height:4px; borderRadius:9999px; background:rgba(255,255,255,.08); overflow:hidden;">
+                  <div style="{{ strengthBarStyle }}"></div>
+                </div>
+                <div style="fontSize:12px; color:#94A3B8; marginTop:4px;">{{ strengthLabel }}</div>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ authError }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:12px 14px; borderRadius:12px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:#FCA5A5; fontSize:13.5px;">{{ authError }}</div>
+            </sc-if>
+
+            <button type="submit" style="width:100%; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer; marginTop:4px;">{{ submitLabel }}</button>
+          </form>
+
+          <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ goResetRequest }}" style="background:none; border:none; color:#94A3B8; fontSize:13px; cursor:pointer; marginTop:12px;">Forgot password?</button>
+          </sc-if>
+
+          <div style="fontSize:13px; color:#64748B; marginTop:16px; textAlign:center;">{{ switchPrompt }}</div>
+          <div style="fontSize:12px; color:#64748B; marginTop:12px; textAlign:center;">By continuing you agree to our Terms & Privacy Policy.</div>
+          <div style="fontSize:13px; color:#94A3B8; marginTop:16px; textAlign:center;">Questions? <span style="color:#FFB800; cursor:pointer;">Talk to our team →</span></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ OTP VERIFICATION ============ -->
+  <sc-if value="{{ isOtp }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative; zIndex:1; minHeight:100vh; display:flex; alignItems:center; justifyContent:center; padding:24px;">
+      <div style="width:100%; maxWidth:420px; background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:20px; padding:36px; textAlign:center;">
+        <div style="display:flex; justifyContent:center; marginBottom:24px;">
+          <span style="display:grid; placeItems:center; height:44px; width:44px; borderRadius:12px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+            <img src="al-wahab-logo.png" alt="" style="width:36px; height:36px; objectFit:contain;" />
+          </span>
+        </div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:22px; fontWeight:600; color:#fff;">Enter the code we sent to</h2>
+        <p style="color:#94A3B8; fontSize:14.5px; marginTop:4px;">+92 3•• ••• ••42</p>
+
+        <div style="display:flex; justifyContent:center; gap:10px; marginTop:28px; {{ otpShakeStyle }}">
+          <sc-for list="{{ otpDigits }}" as="digit" hint-placeholder-count="6">
+            <input type="text" maxlength="1" value="{{ digit.value }}" onChange="{{ digit.onChange }}" style="width:48px; height:56px; textAlign:center; fontSize:22px; fontWeight:600; color:#fff; borderRadius:12px; background:rgba(255,255,255,.04); border:{{ digit.border }}; outline:none;" />
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ otpError }}" hint-placeholder-val="{{ false }}">
+          <div style="marginTop:12px; fontSize:13px; color:#FCA5A5;">Invalid code. Please try again.</div>
+        </sc-if>
+
+        <div style="marginTop:24px; fontSize:13.5px; color:#94A3B8;">
+          <sc-if value="{{ canResend }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ resendOtp }}" style="background:none; border:none; color:#FFB800; fontSize:13.5px; cursor:pointer;">Resend code</button>
+          </sc-if>
+          <sc-if value="{{ canResend }}" hint-placeholder-val="{{ true }}">
+          </sc-if>
+          <sc-if value="{{ showCountdown }}" hint-placeholder-val="{{ true }}">
+            <span>Resend code in {{ countdown }}s</span>
+          </sc-if>
+        </div>
+        <button onClick="{{ goSignup }}" style="background:none; border:none; color:#94A3B8; fontSize:13px; cursor:pointer; marginTop:16px;">Change number</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ RESET PASSWORD ============ -->
+  <sc-if value="{{ isReset }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative; zIndex:1; minHeight:100vh; display:flex; alignItems:center; justifyContent:center; padding:24px;">
+      <div style="width:100%; maxWidth:420px; background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:20px; padding:36px;">
+        <div style="display:flex; justifyContent:center; marginBottom:24px;">
+          <span style="display:grid; placeItems:center; height:44px; width:44px; borderRadius:12px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+            <img src="al-wahab-logo.png" alt="" style="width:36px; height:36px; objectFit:contain;" />
+          </span>
+        </div>
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:22px; fontWeight:600; color:#fff; textAlign:center;">Reset your password</h2>
+
+        <sc-if value="{{ isResetStep1 }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ submitResetEmail }}" style="marginTop:24px; display:flex; flexDirection:column; gap:14px;">
+            <div>
+              <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Email address</label>
+              <input type="email" value="{{ resetEmail }}" onChange="{{ setResetEmail }}" placeholder="you@email.com" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+            </div>
+            <button type="submit" style="width:100%; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Send reset link</button>
+          </form>
+        </sc-if>
+
+        <sc-if value="{{ isResetStep2 }}" hint-placeholder-val="{{ false }}">
+          <div style="marginTop:24px; textAlign:center;">
+            <div style="fontSize:32px; color:#FFB800;">✓</div>
+            <p style="color:#CBD5E1; fontSize:14.5px; marginTop:12px; lineHeight:1.6;">If that address exists, a reset link is on its way. Check your inbox.</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isResetStep3 }}" hint-placeholder-val="{{ false }}">
+          <form onSubmit="{{ submitNewPassword }}" style="marginTop:24px; display:flex; flexDirection:column; gap:14px;">
+            <div>
+              <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">New password</label>
+              <input type="password" value="{{ newPassword }}" onChange="{{ setNewPassword }}" placeholder="Min 8 characters" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+            </div>
+            <div>
+              <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Confirm password</label>
+              <input type="password" value="{{ confirmPassword }}" onChange="{{ setConfirmPassword }}" placeholder="Repeat password" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+            </div>
+            <button type="submit" style="width:100%; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Set new password</button>
+          </form>
+        </sc-if>
+
+        <button onClick="{{ goLogin }}" style="width:100%; marginTop:20px; background:none; border:none; color:#94A3B8; fontSize:13.5px; cursor:pointer;">Back to log in</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ DASHBOARD ============ -->
+  <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ false }}">
+    <div style="position:relative; zIndex:1;">
+
+      <!-- Dashboard header -->
+      <header style="position:sticky; top:0; zIndex:50; background:rgba(7,11,22,.7); backdropFilter:blur(14px); borderBottom:1px solid rgba(255,255,255,.07);">
+        <div style="max-width:1200px; margin:0 auto; display:flex; alignItems:center; justifyContent:space-between; padding:16px 24px;">
+          <div style="display:flex; alignItems:center; gap:10px;">
+            <span style="display:grid; placeItems:center; height:32px; width:32px; borderRadius:10px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+              <img src="al-wahab-logo.png" alt="" style="width:26px; height:26px; objectFit:contain;" />
+            </span>
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Al-Wahab <span style="color:#FFB800;">Solar</span></span>
+          </div>
+          <div style="display:flex; alignItems:center; gap:12px;">
+            <button style="padding:6px 12px; borderRadius:9999px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#CBD5E1; fontSize:13px; cursor:pointer;">🔔</button>
+            <div style="display:flex; alignItems:center; gap:8px;">
+              <div style="width:32px; height:32px; borderRadius:9999px; background:rgba(255,184,0,.15); display:grid; placeItems:center; fontSize:14px; fontWeight:600; color:#FFB800;">AK</div>
+              <span style="fontSize:13.5px; color:#CBD5E1;">Ahmed</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main style="max-width:1200px; margin:0 auto; padding:32px 24px 80px;">
+        <!-- Greeting -->
+        <div style="display:flex; flexWrap:wrap; justifyContent:space-between; alignItems:center; gap:16px; marginBottom:28px;">
+          <div>
+            <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:28px; fontWeight:600; color:#fff;">Assalam-o-Alaikum, Ahmed</h1>
+            <p style="color:#94A3B8; fontSize:14.5px; marginTop:4px;">Your projects</p>
+          </div>
+          <div style="display:flex; gap:10px; alignItems:center;">
+            <!-- Demo toggle -->
+            <div style="display:flex; borderRadius:9999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); padding:3px;">
+              <button onClick="{{ showPopulated }}" style="{{ populatedTabStyle }}">Populated</button>
+              <button onClick="{{ showEmpty }}" style="{{ emptyTabStyle }}">Empty</button>
+            </div>
+            <button style="padding:11px 20px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:14px; cursor:pointer;">New estimate</button>
+          </div>
+        </div>
+
+        <!-- KPI row -->
+        <div style="display:flex; flexWrap:wrap; gap:16px; marginBottom:28px;">
+          <sc-for list="{{ kpiTiles }}" as="kpi" hint-placeholder-count="4">
+            <div style="flex:1 1 160px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:18px;">
+              <div style="fontSize:12.5px; color:#94A3B8;">{{ kpi.label }}</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:28px; fontWeight:600; color:#fff; marginTop:4px;">{{ kpi.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- POPULATED STATE -->
+        <sc-if value="{{ showProjectCards }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; flexWrap:wrap; gap:20px;">
+            <sc-for list="{{ projectCards }}" as="card" hint-placeholder-count="4">
+              <div style="flex:1 1 300px; maxWidth:400px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px; position:relative; overflow:hidden;">
+                <sc-if value="{{ card.progress }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute; bottom:0; left:0; right:0; height:4px; background:rgba(255,255,255,.06);">
+                    <div style="{{ card.progressStyle }}"></div>
+                  </div>
+                </sc-if>
+                <div style="display:flex; alignItems:center; gap:8px;">
+                  <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; fontWeight:600; color:#fff;">{{ card.size }}</span>
+                  <span style="fontSize:12px; padding:3px 10px; borderRadius:9999px; background:rgba(0,229,255,.12); color:#00E5FF;">{{ card.tier }}</span>
+                </div>
+                <div style="fontSize:13px; color:#94A3B8; marginTop:6px;">{{ card.area }}</div>
+                <div style="display:flex; alignItems:center; gap:10px; marginTop:10px;">
+                  <span style="{{ card.statusStyle }}">{{ card.status }}</span>
+                  <span style="fontSize:13px; color:#94A3B8;">{{ card.priceRange }}</span>
+                </div>
+                <div style="fontSize:13px; color:#64748B; marginTop:8px;">{{ card.context }}</div>
+                <div style="display:flex; justifyContent:space-between; alignItems:center; marginTop:14px;">
+                  <span style="fontSize:12px; color:#64748B;">Updated {{ card.updated }}</span>
+                  <button style="padding:8px 16px; borderRadius:10px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:13px; cursor:pointer;">{{ card.action }}</button>
+                </div>
+              </div>
+            </sc-for>
+
+            <!-- New estimate card -->
+            <div style="flex:1 1 300px; maxWidth:400px; border:2px dashed rgba(255,255,255,.12); borderRadius:16px; padding:22px; display:flex; flexDirection:column; alignItems:center; justifyContent:center; minHeight:180px; cursor:pointer;">
+              <div style="fontSize:24px; color:rgba(255,184,0,.5); marginBottom:8px;">+</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:15px; color:#CBD5E1;">Start a new estimate</div>
+              <div style="fontSize:13px; color:#64748B; marginTop:4px;">Price another home or system in ~2 minutes</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- EMPTY STATE -->
+        <sc-if value="{{ showEmptyState }}" hint-placeholder-val="{{ false }}">
+          <div style="textAlign:center; padding:80px 24px;">
+            <div style="width:64px; height:64px; margin:0 auto; borderRadius:20px; background:rgba(255,184,0,.1); display:grid; placeItems:center; marginBottom:20px;">
+              <span style="fontSize:28px; color:#FFB800;">☀</span>
+            </div>
+            <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:22px; fontWeight:600; color:#fff;">No projects yet</h2>
+            <p style="color:#94A3B8; fontSize:14.5px; marginTop:8px; maxWidth:420px; margin:8px auto 0; lineHeight:1.6;">Get a free, itemized solar estimate for your home in about two minutes — then save it here and book a free site survey.</p>
+            <button style="marginTop:24px; padding:14px 28px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Get your first estimate</button>
+          </div>
+        </sc-if>
+      </main>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'signup', // signup | login | otp | reset | dashboard
+    authTab: 'signup',
+    authName: '', authIdentifier: '', authPassword: '', showPassword: false,
+    authError: null,
+    otpDigits: ['', '', '', '', '', ''],
+    otpError: false, countdown: 60, canResend: false,
+    resetEmail: '', resetStep: 1,
+    newPassword: '', confirmPassword: '',
+    dashboardView: 'populated',
+    hasPendingEstimate: true,
+  };
+
+  componentDidMount() {
+    this._countdownInterval = null;
+  }
+  componentWillUnmount() {
+    if (this._countdownInterval) clearInterval(this._countdownInterval);
+  }
+
+  startCountdown = () => {
+    this.setState({ countdown: 60, canResend: false });
+    if (this._countdownInterval) clearInterval(this._countdownInterval);
+    this._countdownInterval = setInterval(() => {
+      this.setState(s => {
+        if (s.countdown <= 1) { clearInterval(this._countdownInterval); return { countdown: 0, canResend: true }; }
+        return { countdown: s.countdown - 1 };
+      });
+    }, 1000);
+  };
+
+  goSignup = () => this.setState({ screen: 'signup', authTab: 'signup', authError: null });
+  goLogin = () => this.setState({ screen: 'login', authTab: 'login', authError: null });
+  goOtp = () => { this.setState({ screen: 'otp', otpDigits: ['','','','','',''], otpError: false }); this.startCountdown(); };
+  goResetRequest = () => this.setState({ screen: 'reset', resetStep: 1, resetEmail: '' });
+  goDashboard = () => this.setState({ screen: 'dashboard' });
+
+  setAuthName = (e) => this.setState({ authName: e.target.value });
+  setAuthIdentifier = (e) => this.setState({ authIdentifier: e.target.value });
+  setAuthPassword = (e) => this.setState({ authPassword: e.target.value });
+  toggleShowPassword = () => this.setState(s => ({ showPassword: !s.showPassword }));
+
+  submitAuth = (e) => {
+    e.preventDefault();
+    if (this.state.authTab === 'signup') { this.goOtp(); }
+    else { this.goDashboard(); }
+  };
+
+  setOtpDigit = (idx) => (e) => {
+    const val = e.target.value.replace(/\D/g, '').slice(-1);
+    this.setState(s => {
+      const digits = [...s.otpDigits];
+      digits[idx] = val;
+      const allFilled = digits.every(d => d !== '');
+      if (allFilled) { setTimeout(() => this.goDashboard(), 400); }
+      return { otpDigits: digits, otpError: false };
+    });
+    if (val && idx < 5) {
+      const inputs = document.querySelectorAll('input[maxlength="1"]');
+      if (inputs[idx + 1]) inputs[idx + 1].focus();
+    }
+  };
+  resendOtp = () => this.startCountdown();
+
+  setResetEmail = (e) => this.setState({ resetEmail: e.target.value });
+  submitResetEmail = (e) => { e.preventDefault(); this.setState({ resetStep: 2 }); };
+  setNewPassword = (e) => this.setState({ newPassword: e.target.value });
+  setConfirmPassword = (e) => this.setState({ confirmPassword: e.target.value });
+  submitNewPassword = (e) => { e.preventDefault(); this.goDashboard(); };
+
+  showPopulated = () => this.setState({ dashboardView: 'populated' });
+  showEmpty = () => this.setState({ dashboardView: 'empty' });
+
+  passwordStrength(pw) {
+    if (!pw) return { score: 0, label: '', color: 'transparent' };
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    const colors = ['transparent', '#EF4444', '#F59E0B', '#FFB800', '#34D399'];
+    return { score, label: labels[score], color: colors[score], pct: score * 25 };
+  }
+
+  segStyle(active) {
+    return {
+      cursor: 'pointer', border: 'none', borderRadius: 9999, padding: '9px 20px', fontSize: 13.5, fontWeight: 600, flex: 1, textAlign: 'center',
+      background: active ? 'rgba(255,255,255,.1)' : 'transparent', color: active ? '#fff' : '#94A3B8',
+    };
+  }
+
+  statusStyle(status) {
+    const map = {
+      'Estimate saved': { bg: 'rgba(0,229,255,.12)', color: '#00E5FF' },
+      'Survey requested': { bg: 'rgba(255,184,0,.12)', color: '#FFB800' },
+      'In progress': { bg: 'rgba(255,140,0,.12)', color: '#FF8C00' },
+      'Completed': { bg: 'rgba(52,211,153,.12)', color: '#34D399' },
+    };
+    const m = map[status] || { bg: 'rgba(255,255,255,.06)', color: '#94A3B8' };
+    return { display: 'inline-block', fontSize: 12, fontWeight: 500, padding: '4px 10px', borderRadius: 9999, background: m.bg, color: m.color, border: '1px solid ' + m.color + '30', whiteSpace: 'nowrap' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const strength = this.passwordStrength(s.authPassword);
+
+    const screenNav = [
+      { label: 'Sign up', onClick: this.goSignup, style: this.segStyle(s.screen === 'signup') },
+      { label: 'Log in', onClick: this.goLogin, style: this.segStyle(s.screen === 'login') },
+      { label: 'OTP', onClick: this.goOtp, style: this.segStyle(s.screen === 'otp') },
+      { label: 'Reset', onClick: this.goResetRequest, style: this.segStyle(s.screen === 'reset') },
+      { label: 'Dashboard', onClick: this.goDashboard, style: this.segStyle(s.screen === 'dashboard') },
+    ];
+
+    const isSignup = s.screen === 'signup';
+    const isLogin = s.screen === 'login';
+
+    const kpiData = s.dashboardView === 'populated'
+      ? [{ label: 'Saved estimates', value: '3' }, { label: 'Active projects', value: '1' }, { label: 'In progress', value: '1' }, { label: 'Completed', value: '2' }]
+      : [{ label: 'Saved estimates', value: '0' }, { label: 'Active projects', value: '0' }, { label: 'In progress', value: '0' }, { label: 'Completed', value: '0' }];
+
+    const projectCards = [
+      { size: '8 kWp Hybrid', tier: 'Standard', area: 'Johar Town, Lahore', status: 'In progress', priceRange: 'PKR 1.68M–1.90M', context: 'Installation 60% done', updated: '2 hours ago', action: 'Track installation', progress: true, progressStyle: { height: '100%', width: '60%', background: 'linear-gradient(90deg,#FFB800,#FF8C00)', borderRadius: 9999 }, statusStyle: this.statusStyle('In progress') },
+      { size: '6.5 kWp Hybrid', tier: 'Standard', area: 'DHA Phase 5, Lahore', status: 'Estimate saved', priceRange: 'PKR 1.47M–1.66M', context: 'Ready for site survey', updated: '3 days ago', action: 'Book a free site survey', progress: false, progressStyle: {}, statusStyle: this.statusStyle('Estimate saved') },
+      { size: '10 kWp On-grid', tier: 'Premium', area: 'Bahria Town, Lahore', status: 'Completed', priceRange: 'PKR 2.30M–2.60M', context: 'Commissioned · net metering live', updated: '2 weeks ago', action: 'Leave a review', progress: false, progressStyle: {}, statusStyle: this.statusStyle('Completed') },
+    ];
+
+    const otpDigits = s.otpDigits.map((val, i) => ({
+      value: val,
+      onChange: this.setOtpDigit(i),
+      border: val ? '1px solid rgba(255,184,0,.5)' : '1px solid rgba(255,255,255,.1)',
+    }));
+
+    return {
+      screenNav,
+      showDemoNav: s.screen !== 'dashboard',
+      isAuth: s.screen === 'signup' || s.screen === 'login',
+      isSignup, isLogin,
+      isOtp: s.screen === 'otp',
+      isReset: s.screen === 'reset',
+      isDashboard: s.screen === 'dashboard',
+
+      authTitle: isSignup ? 'Create your account' : 'Welcome back',
+      authSubtitle: isSignup ? 'It takes less than a minute.' : 'Log in to your homeowner account.',
+      submitLabel: isSignup ? 'Create account' : 'Log in',
+      switchPrompt: isSignup ? 'Already have an account? Log in' : "Don't have an account? Sign up",
+
+      signupTabStyle: this.segStyle(s.authTab === 'signup'),
+      loginTabStyle: this.segStyle(s.authTab === 'login'),
+      goSignup: this.goSignup, goLogin: this.goLogin,
+
+      authName: s.authName, setAuthName: this.setAuthName,
+      authIdentifier: s.authIdentifier, setAuthIdentifier: this.setAuthIdentifier,
+      authPassword: s.authPassword, setAuthPassword: this.setAuthPassword,
+      showPassword: s.showPassword, toggleShowPassword: this.toggleShowPassword,
+      passwordInputType: s.showPassword ? 'text' : 'password',
+      showHideLabel: s.showPassword ? 'Hide' : 'Show',
+      submitAuth: this.submitAuth,
+      authError: s.authError,
+      hasPendingEstimate: s.hasPendingEstimate,
+      goResetRequest: this.goResetRequest,
+
+      strengthBarStyle: { height: '100%', width: strength.pct + '%', background: strength.color, borderRadius: 9999, transition: 'width 200ms' },
+      strengthLabel: strength.label,
+
+      // OTP
+      otpDigits,
+      otpError: s.otpError,
+      otpShakeStyle: s.otpError ? 'animation: shake 0.5s' : '',
+      countdown: s.countdown,
+      canResend: s.canResend,
+      showCountdown: !s.canResend,
+      resendOtp: this.resendOtp,
+
+      // Reset
+      resetEmail: s.resetEmail, setResetEmail: this.setResetEmail,
+      submitResetEmail: this.submitResetEmail,
+      isResetStep1: s.screen === 'reset' && s.resetStep === 1,
+      isResetStep2: s.screen === 'reset' && s.resetStep === 2,
+      isResetStep3: s.screen === 'reset' && s.resetStep === 3,
+      newPassword: s.newPassword, setNewPassword: this.setNewPassword,
+      confirmPassword: s.confirmPassword, setConfirmPassword: this.setConfirmPassword,
+      submitNewPassword: this.submitNewPassword,
+
+      // Dashboard
+      showPopulated: this.showPopulated, showEmpty: this.showEmpty,
+      populatedTabStyle: this.segStyle(s.dashboardView === 'populated'),
+      emptyTabStyle: this.segStyle(s.dashboardView === 'empty'),
+      showProjectCards: s.dashboardView === 'populated',
+      showEmptyState: s.dashboardView === 'empty',
+      kpiTiles: kpiData,
+      projectCards,
+      goDashboard: this.goDashboard,
+    };
+  }
+}
+</script>
+</body>
+</html>

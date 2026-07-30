@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @keyframes meshShift { 0%,100% { transform: translate3d(0,0,0) scale(1); } 33% { transform: translate3d(4%,-3%,0) scale(1.08); } 66% { transform: translate3d(-3%,4%,0) scale(.96); } }
+    body { margin:0; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    ::selection { background: rgba(255,184,0,.3); color:#fff; }
+    * { box-sizing: border-box; }
+    input::placeholder, textarea::placeholder { color: rgba(148,163,184,.7); }
+  </style>
+</helmet>
+
+<div style="position:relative; min-height:100vh; background:radial-gradient(1200px 800px at 70% -10%, rgba(255,184,0,0.10), transparent 60%), radial-gradient(900px 700px at 10% 20%, rgba(0,229,255,0.06), transparent 55%), linear-gradient(180deg,#0A0F1E 0%,#070B16 45%,#05080F 100%); color:#E7ECF5; fontFamily:Manrope, sans-serif;">
+
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;">
+    <div style="position:absolute; top:-160px; right:-10%; width:55vh; height:55vh; borderRadius:9999px; opacity:.6; filter:blur(90px); background:radial-gradient(circle, rgba(255,184,0,.22), transparent 65%); animation:meshShift 22s ease-in-out infinite;"></div>
+    <div style="position:absolute; top:40%; left:-12%; width:50vh; height:50vh; borderRadius:9999px; opacity:.5; filter:blur(100px); background:radial-gradient(circle, rgba(0,229,255,.16), transparent 65%); animation:meshShift 28s ease-in-out infinite reverse;"></div>
+  </div>
+
+  <!-- Nav -->
+  <div style="position:fixed; bottom:12px; left:12px; zIndex:100; display:flex; gap:5px; flexWrap:wrap; maxWidth:520px;">
+    <sc-for list="{{ screenNav }}" as="nav" hint-placeholder-count="7">
+      <button onClick="{{ nav.onClick }}" style="{{ nav.style }}">{{ nav.label }}</button>
+    </sc-for>
+  </div>
+
+  <!-- HEADER -->
+  <header style="position:sticky; top:0; zIndex:50; background:rgba(7,11,22,.7); backdropFilter:blur(14px); borderBottom:1px solid rgba(255,255,255,.07);">
+    <div style="max-width:1200px; margin:0 auto; display:flex; alignItems:center; justifyContent:space-between; padding:16px 24px;">
+      <div style="display:flex; alignItems:center; gap:10px;">
+        <span style="display:grid; placeItems:center; height:32px; width:32px; borderRadius:10px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+          <img src="al-wahab-logo.png" alt="" style="width:26px; height:26px; objectFit:contain;" />
+        </span>
+        <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">Al-Wahab <span style="color:#FFB800;">Solar Traders</span></span>
+      </div>
+      <sc-if value="{{ showUserMenu }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; alignItems:center; gap:12px;">
+          <button onClick="{{ goNotifications }}" style="position:relative; padding:8px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#CBD5E1; fontSize:14px; cursor:pointer;">
+            ◎<sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ true }}"><span style="position:absolute; top:5px; right:5px; width:7px; height:7px; borderRadius:9999px; background:#FFB800;"></span></sc-if>
+          </button>
+          <div style="width:32px; height:32px; borderRadius:9999px; background:rgba(255,184,0,.15); display:grid; placeItems:center; fontSize:13px; fontWeight:600; color:#FFB800;">AK</div>
+        </div>
+      </sc-if>
+    </div>
+  </header>
+
+  <!-- ============ ABOUT ============ -->
+  <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ true }}">
+    <main style="position:relative; zIndex:1; max-width:1200px; margin:0 auto; padding:48px 24px 96px;">
+      <div style="textAlign:center; maxWidth:720px; margin:0 auto 48px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">About Al-Wahab</div>
+        <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:clamp(2rem,4vw,3rem); fontWeight:600; color:#fff; marginTop:12px;">A Lahore solar company that shows its numbers</h1>
+        <p style="color:#94A3B8; fontSize:16px; lineHeight:1.65; marginTop:16px;">Al-Wahab Solar Traders supplies and installs solar systems across Lahore. We built this estimator because homeowners kept telling us the same thing: every dealer quotes a different number and nobody explains it. So we put our pricing online, itemized, before you ever speak to us.</p>
+      </div>
+      <div style="display:flex; flexWrap:wrap; gap:16px; marginBottom:48px;">
+        <sc-for list="{{ aboutStats }}" as="stat" hint-placeholder-count="4">
+          <div style="flex:1 1 160px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px; textAlign:center;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:32px; fontWeight:600; color:#FFB800;">{{ stat.value }}</div>
+            <div style="fontSize:13.5px; color:#94A3B8; marginTop:6px;">{{ stat.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:22px; color:#fff; marginBottom:20px;">Our promise</h2>
+      <div style="display:flex; flexWrap:wrap; gap:20px; marginBottom:48px;">
+        <sc-for list="{{ aboutCards }}" as="card" hint-placeholder-count="3">
+          <div style="flex:1 1 280px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:24px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; fontWeight:600; color:#fff;">{{ card.title }}</div>
+            <div style="fontSize:14.5px; color:#94A3B8; marginTop:8px; lineHeight:1.55;">{{ card.body }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="textAlign:center; padding:48px 0; borderTop:1px solid rgba(255,255,255,.07);">
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; color:#fff;">Ready to see your solar number?</h2>
+        <p style="color:#94A3B8; fontSize:15px; marginTop:8px;">Get a free, itemized estimate in about 2 minutes.</p>
+        <button style="marginTop:20px; padding:14px 28px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Get your free estimate</button>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ============ CONTACT ============ -->
+  <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+    <main style="position:relative; zIndex:1; max-width:1200px; margin:0 auto; padding:48px 24px 96px;">
+      <div style="textAlign:center; maxWidth:600px; margin:0 auto 40px;">
+        <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.18em; color:#FFB800;">Contact</div>
+        <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:32px; fontWeight:600; color:#fff; marginTop:10px;">Talk to our team</h1>
+        <p style="color:#94A3B8; fontSize:15px; marginTop:8px;">Questions about solar, pricing, or your project? We're here to help.</p>
+      </div>
+      <div style="display:flex; flexWrap:wrap; gap:28px;">
+        <div style="flex:1 1 300px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:20px; padding:28px;">
+          <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginBottom:20px;">Get in touch</div>
+          <sc-for list="{{ contactInfo }}" as="item" hint-placeholder-count="5">
+            <div style="display:flex; gap:12px; alignItems:flex-start; marginBottom:16px;">
+              <span style="color:#FFB800; fontSize:15px; marginTop:2px;">{{ item.icon }}</span>
+              <div>
+                <div style="fontSize:13px; color:#94A3B8;">{{ item.label }}</div>
+                <div style="fontSize:14.5px; color:#E7ECF5; marginTop:2px;">{{ item.value }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="flex:1 1 360px; background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px) saturate(140%); borderRadius:20px; padding:28px;">
+          <sc-if value="{{ contactSubmitted }}" hint-placeholder-val="{{ false }}">
+            <div style="textAlign:center; padding:32px 0;">
+              <div style="fontSize:32px; color:#FFB800;">✓</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginTop:10px;">Message sent</div>
+              <div style="fontSize:14.5px; color:#94A3B8; marginTop:6px;">We'll call you within one working day.</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notContactSubmitted }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ submitContact }}" style="display:flex; flexDirection:column; gap:14px;">
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Full name</label>
+                <input type="text" required placeholder="Your name" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Email</label>
+                <input type="email" required placeholder="you@email.com" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Phone</label>
+                <input type="tel" placeholder="+92 300 1234567" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div>
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Message</label>
+                <textarea rows="4" placeholder="How can we help?" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px; resize:vertical;"></textarea>
+              </div>
+              <button type="submit" style="width:100%; padding:14px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Send message</button>
+            </form>
+          </sc-if>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ============ MY ESTIMATES ============ -->
+  <sc-if value="{{ isEstimates }}" hint-placeholder-val="{{ false }}">
+    <main style="position:relative; zIndex:1; max-width:1200px; margin:0 auto; padding:32px 24px 96px;">
+      <div style="display:flex; justifyContent:space-between; alignItems:center; flexWrap:wrap; gap:12px; marginBottom:20px;">
+        <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#fff; margin:0;">My estimates</h1>
+        <button style="padding:10px 18px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:13.5px; cursor:pointer;">New estimate</button>
+      </div>
+      <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:12px 16px; display:flex; flexWrap:wrap; gap:10px; alignItems:center; marginBottom:20px;">
+        <input type="text" placeholder="Search estimates…" style="flex:1 1 200px; padding:9px 14px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:13.5px;" />
+        <sc-for list="{{ estStatusFilters }}" as="f" hint-placeholder-count="4">
+          <button style="{{ f.style }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:flex; flexWrap:wrap; gap:16px;">
+        <sc-for list="{{ estimateCards }}" as="card" hint-placeholder-count="4">
+          <div style="flex:1 1 300px; maxWidth:400px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+            <div style="display:flex; justifyContent:space-between; alignItems:center;">
+              <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; fontWeight:600; color:#fff;">{{ card.size }}</span>
+              <span style="fontSize:12px; color:#64748B;">{{ card.ref }}</span>
+            </div>
+            <div style="display:flex; alignItems:center; gap:8px; marginTop:8px;">
+              <span style="fontSize:12px; padding:3px 10px; borderRadius:9999px; background:rgba(0,229,255,.12); color:#00E5FF;">{{ card.tier }}</span>
+              <span style="fontSize:12px; padding:3px 10px; borderRadius:9999px; background:rgba(255,255,255,.06); color:#94A3B8;">{{ card.type }}</span>
+            </div>
+            <div style="fontSize:13px; color:#94A3B8; marginTop:8px;">{{ card.area }}</div>
+            <div style="display:flex; justifyContent:space-between; alignItems:center; marginTop:12px;">
+              <span style="fontSize:15px; color:#FFB800; fontWeight:600;">{{ card.priceRange }}</span>
+              <span style="{{ card.statusStyle }}">{{ card.status }}</span>
+            </div>
+            <div style="display:flex; justifyContent:space-between; alignItems:center; marginTop:12px; paddingTop:12px; borderTop:1px solid rgba(255,255,255,.06);">
+              <div style="fontSize:12px; color:#64748B;">{{ card.created }} · Valid {{ card.validUntil }}</div>
+              <div style="display:flex; gap:6px;">
+                <button style="padding:6px 12px; borderRadius:8px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#94A3B8; fontSize:12px; cursor:pointer;">PDF</button>
+                <button style="padding:6px 12px; borderRadius:8px; background:rgba(255,184,0,.1); border:1px solid rgba(255,184,0,.3); color:#FFB800; fontSize:12px; cursor:pointer;">View</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ============ PROFILE & SETTINGS ============ -->
+  <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+    <main style="position:relative; zIndex:1; max-width:900px; margin:0 auto; padding:32px 24px 96px;">
+      <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#fff; marginBottom:24px;">Profile & settings</h1>
+      <div style="display:flex; flexWrap:wrap; gap:24px;">
+        <!-- Tab rail -->
+        <div style="flex:0 0 180px; display:flex; flexDirection:column; gap:4px;">
+          <sc-for list="{{ profileTabs }}" as="tab" hint-placeholder-count="4">
+            <button onClick="{{ tab.onClick }}" style="{{ tab.style }}">{{ tab.label }}</button>
+          </sc-for>
+        </div>
+        <!-- Tab content -->
+        <div style="flex:1 1 400px;">
+          <sc-if value="{{ isProfileTab }}" hint-placeholder-val="{{ true }}">
+            <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:28px;">
+              <div style="display:flex; alignItems:center; gap:16px; marginBottom:24px;">
+                <div style="width:64px; height:64px; borderRadius:9999px; background:rgba(255,184,0,.15); display:grid; placeItems:center; fontSize:24px; fontWeight:600; color:#FFB800;">AK</div>
+                <div>
+                  <div style="fontSize:18px; fontWeight:600; color:#fff;">Ahmed Khan</div>
+                  <div style="fontSize:13px; color:#94A3B8;">Member since Jul 2026</div>
+                </div>
+              </div>
+              <sc-for list="{{ profileFields }}" as="field" hint-placeholder-count="5">
+                <div style="marginBottom:16px;">
+                  <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">{{ field.label }}</label>
+                  <input type="text" value="{{ field.value }}" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+                </div>
+              </sc-for>
+              <button style="padding:12px 24px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:14px; cursor:pointer;">Save changes</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isSecurityTab }}" hint-placeholder-val="{{ false }}">
+            <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:28px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginBottom:20px;">Security</div>
+              <div style="marginBottom:20px;">
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">Current password</label>
+                <input type="password" placeholder="Enter current password" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <div style="marginBottom:20px;">
+                <label style="fontSize:13px; fontWeight:500; color:#CBD5E1; marginBottom:6px; display:block;">New password</label>
+                <input type="password" placeholder="Min 8 characters" style="width:100%; padding:12px 14px; borderRadius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#fff; fontSize:15px;" />
+              </div>
+              <button style="padding:12px 24px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:14px; cursor:pointer;">Update password</button>
+              <div style="marginTop:28px; paddingTop:20px; borderTop:1px solid rgba(255,255,255,.08);">
+                <div style="display:flex; justifyContent:space-between; alignItems:center;">
+                  <div><div style="fontSize:15px; color:#fff;">Two-factor authentication</div><div style="fontSize:13px; color:#94A3B8; marginTop:2px;">Add an extra layer of security</div></div>
+                  <div style="width:44px; height:24px; borderRadius:9999px; background:rgba(255,255,255,.12); padding:2px; cursor:pointer;"><div style="width:20px; height:20px; borderRadius:9999px; background:#94A3B8;"></div></div>
+                </div>
+              </div>
+              <div style="marginTop:28px; paddingTop:20px; borderTop:1px solid rgba(255,255,255,.08);">
+                <div style="fontSize:15px; color:#fff; marginBottom:12px;">Active sessions</div>
+                <div style="fontSize:13.5px; color:#CBD5E1; padding:10px 0; borderBottom:1px solid rgba(255,255,255,.06);">Chrome on Windows · Lahore · Current session</div>
+                <div style="fontSize:13.5px; color:#94A3B8; padding:10px 0;">Safari on iPhone · Lahore · 2 days ago</div>
+                <button style="marginTop:12px; padding:8px 16px; borderRadius:10px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:#FCA5A5; fontSize:13px; cursor:pointer;">Sign out everywhere</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isPrefsTab }}" hint-placeholder-val="{{ false }}">
+            <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:28px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginBottom:20px;">Preferences</div>
+              <div style="marginBottom:20px;">
+                <div style="fontSize:14px; color:#CBD5E1; marginBottom:8px;">Language</div>
+                <div style="display:flex; gap:8px;">
+                  <button style="padding:10px 20px; borderRadius:10px; background:rgba(255,184,0,.1); border:1px solid rgba(255,184,0,.5); color:#FFB800; fontSize:14px; cursor:pointer;">English</button>
+                  <button style="padding:10px 20px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#94A3B8; fontSize:14px; cursor:pointer;">اردو</button>
+                </div>
+              </div>
+              <div>
+                <div style="fontSize:14px; color:#CBD5E1; marginBottom:12px;">Notification preferences</div>
+                <sc-for list="{{ notifPrefs }}" as="pref" hint-placeholder-count="4">
+                  <div style="display:flex; justifyContent:space-between; alignItems:center; padding:10px 0; borderBottom:1px solid rgba(255,255,255,.06);">
+                    <span style="fontSize:14px; color:#E7ECF5;">{{ pref.label }}</span>
+                    <div style="display:flex; gap:12px;">
+                      <sc-for list="{{ pref.channels }}" as="ch" hint-placeholder-count="3">
+                        <span style="fontSize:12px; padding:4px 10px; borderRadius:9999px; background:{{ ch.bg }}; color:{{ ch.color }};">{{ ch.label }}</span>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isDataTab }}" hint-placeholder-val="{{ false }}">
+            <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:28px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginBottom:20px;">Your data</div>
+              <div style="marginBottom:24px;">
+                <div style="fontSize:15px; color:#E7ECF5; marginBottom:4px;">Download my data</div>
+                <div style="fontSize:13px; color:#94A3B8; marginBottom:12px;">Export all your estimates, projects and profile data as JSON.</div>
+                <button style="padding:10px 18px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#CBD5E1; fontSize:13.5px; cursor:pointer;">Download data</button>
+              </div>
+              <div style="paddingTop:20px; borderTop:1px solid rgba(255,255,255,.08);">
+                <div style="fontSize:15px; color:#FCA5A5; marginBottom:4px;">Delete my account</div>
+                <div style="fontSize:13px; color:#94A3B8; marginBottom:12px;">Permanently delete your account and all associated data. This action cannot be undone.</div>
+                <button style="padding:10px 18px; borderRadius:10px; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:#FCA5A5; fontSize:13.5px; cursor:pointer;">Delete account</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ============ NOTIFICATIONS ============ -->
+  <sc-if value="{{ isNotifications }}" hint-placeholder-val="{{ false }}">
+    <main style="position:relative; zIndex:1; max-width:800px; margin:0 auto; padding:32px 24px 96px;">
+      <div style="display:flex; justifyContent:space-between; alignItems:center; marginBottom:24px;">
+        <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#fff; margin:0;">Notifications</h1>
+        <button style="padding:8px 16px; borderRadius:10px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#94A3B8; fontSize:13px; cursor:pointer;">Mark all read</button>
+      </div>
+      <sc-for list="{{ notifGroups }}" as="group" hint-placeholder-count="3">
+        <div style="marginBottom:24px;">
+          <div style="fontSize:13px; fontWeight:600; color:#64748B; textTransform:uppercase; letterSpacing:0.1em; marginBottom:12px;">{{ group.label }}</div>
+          <sc-for list="{{ group.items }}" as="notif" hint-placeholder-count="3">
+            <div style="display:flex; gap:14px; padding:14px 16px; borderRadius:14px; background:{{ notif.bg }}; marginBottom:8px; cursor:pointer;">
+              <div style="width:36px; height:36px; borderRadius:12px; background:{{ notif.iconBg }}; display:grid; placeItems:center; flexShrink:0;">
+                <span style="fontSize:16px; color:{{ notif.iconColor }};">{{ notif.icon }}</span>
+              </div>
+              <div style="flex:1;">
+                <div style="fontSize:14px; color:#E7ECF5; fontWeight:{{ notif.weight }};">{{ notif.title }}</div>
+                <div style="fontSize:13px; color:#94A3B8; marginTop:3px;">{{ notif.body }}</div>
+                <div style="fontSize:12px; color:#64748B; marginTop:4px;">{{ notif.time }}</div>
+              </div>
+              <sc-if value="{{ notif.unread }}" hint-placeholder-val="{{ false }}">
+                <div style="width:8px; height:8px; borderRadius:9999px; background:#FFB800; flexShrink:0; marginTop:6px;"></div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </main>
+  </sc-if>
+
+  <!-- ============ ERROR PAGES ============ -->
+  <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+    <main style="position:relative; zIndex:1; minHeight:80vh; display:flex; alignItems:center; justifyContent:center; padding:24px;">
+      <div style="textAlign:center; maxWidth:480px;">
+        <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:96px; fontWeight:700; backgroundImage:linear-gradient(100deg,#FFD466 0%,#FFB800 40%,#FF8C00 100%); WebkitBackgroundClip:text; WebkitTextFillColor:transparent;">{{ errorCode }}</div>
+        <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:26px; fontWeight:600; color:#fff; marginTop:8px;">{{ errorTitle }}</h1>
+        <p style="color:#94A3B8; fontSize:15px; marginTop:8px;">{{ errorBody }}</p>
+        <div style="display:flex; justifyContent:center; gap:12px; marginTop:28px;">
+          <button onClick="{{ goAbout }}" style="padding:13px 24px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:15px; cursor:pointer;">Back to home</button>
+          <button style="padding:13px 24px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); color:#fff; fontWeight:500; fontSize:15px; cursor:pointer;">Get an estimate</button>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    page: 'about',
+    contactSubmitted: false,
+    profileTab: 'profile',
+    errorType: '404',
+  };
+
+  goTo = (page) => () => this.setState({ page, contactSubmitted: false });
+  goAbout = () => this.setState({ page: 'about' });
+  goNotifications = () => this.setState({ page: 'notifications' });
+  submitContact = (e) => { e.preventDefault(); this.setState({ contactSubmitted: true }); };
+  setProfileTab = (tab) => () => this.setState({ profileTab: tab });
+  setErrorType = (t) => () => this.setState({ errorType: t });
+
+  tabStyle(active) {
+    return { width: '100%', textAlign: 'left', padding: '10px 14px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: active ? 600 : 400, background: active ? 'rgba(255,184,0,.1)' : 'transparent', color: active ? '#FFB800' : '#94A3B8', borderLeft: active ? '2px solid #FFB800' : '2px solid transparent' };
+  }
+  chipStyle(active) {
+    return { padding: '6px 14px', borderRadius: 9999, border: active ? '1px solid rgba(255,184,0,.5)' : '1px solid rgba(255,255,255,.1)', background: active ? 'rgba(255,184,0,.1)' : 'rgba(255,255,255,.04)', color: active ? '#FFB800' : '#94A3B8', fontSize: 12.5, cursor: 'pointer', whiteSpace: 'nowrap' };
+  }
+  statusChip(status) {
+    const map = { 'Saved': { bg: 'rgba(0,229,255,.12)', c: '#00E5FF' }, 'Expired': { bg: 'rgba(248,113,113,.12)', c: '#F87171' }, 'Converted': { bg: 'rgba(52,211,153,.12)', c: '#34D399' } };
+    const m = map[status] || { bg: 'rgba(255,255,255,.06)', c: '#94A3B8' };
+    return { display: 'inline-block', fontSize: 12, fontWeight: 500, padding: '3px 10px', borderRadius: 9999, background: m.bg, color: m.c, whiteSpace: 'nowrap' };
+  }
+  navBtnStyle(active) {
+    return { padding: '7px 14px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 12.5, fontWeight: 600, background: active ? 'rgba(255,255,255,.1)' : 'rgba(255,255,255,.04)', color: active ? '#fff' : '#94A3B8' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const pages = ['about','contact','estimates','profile','notifications','error'];
+    const labels = { about: 'About', contact: 'Contact', estimates: 'My Estimates', profile: 'Profile', notifications: 'Notifications', error: 'Errors' };
+    const screenNav = pages.map(p => ({ label: labels[p], onClick: this.goTo(p), style: this.navBtnStyle(s.page === p) }));
+
+    const aboutStats = [
+      { value: '10+', label: 'Years in business' },
+      { value: '1,200+', label: 'Installs completed' },
+      { value: '7.4 MW', label: 'Deployed across Lahore' },
+      { value: '4.8', label: 'Average rating' },
+    ];
+    const aboutCards = [
+      { title: 'One company, start to finish', body: 'Design, supply, installation, net metering and service — all in-house. No subcontractors to chase.' },
+      { title: 'Priced before you call', body: 'Our rates are published in every estimate. What you see itemized online is the basis of your quotation.' },
+      { title: 'Local, and here afterwards', body: 'We are a Lahore business. When you need service in year three, we are still a short drive away.' },
+    ];
+
+    const contactInfo = [
+      { icon: '◉', label: 'Address', value: 'Lahore, Pakistan' },
+      { icon: '◎', label: 'Phone', value: '+92 42 111 765 765' },
+      { icon: '↗', label: 'WhatsApp', value: 'Chat with us' },
+      { icon: '⊕', label: 'Email', value: 'info@alwahabsolar.pk' },
+      { icon: '⊛', label: 'Hours', value: 'Mon–Sat, 9 AM – 6 PM' },
+    ];
+
+    const estStatuses = ['All', 'Saved', 'Expired', 'Converted'];
+    const estStatusFilters = estStatuses.map(st => ({ label: st, style: this.chipStyle(st === 'All') }));
+    const estimateCards = [
+      { ref: 'EST-2607-A1', size: '8 kWp Hybrid', tier: 'Standard', type: 'Hybrid', area: 'Johar Town, Lahore', priceRange: 'PKR 1.68M–1.90M', status: 'Saved', created: '25 Jul', validUntil: '8 Aug', statusStyle: this.statusChip('Saved') },
+      { ref: 'EST-2607-A2', size: '6.5 kWp Hybrid', tier: 'Standard', type: 'Hybrid', area: 'DHA Phase 5, Lahore', priceRange: 'PKR 1.47M–1.66M', status: 'Saved', created: '22 Jul', validUntil: '5 Aug', statusStyle: this.statusChip('Saved') },
+      { ref: 'EST-2607-A3', size: '10 kWp On-grid', tier: 'Economy', type: 'On-grid', area: 'Model Town, Lahore', priceRange: 'PKR 1.53M–1.73M', status: 'Expired', created: '10 Jul', validUntil: '24 Jul', statusStyle: this.statusChip('Expired') },
+      { ref: 'EST-2607-A4', size: '8 kWp Hybrid', tier: 'Premium', type: 'Hybrid', area: 'Bahria Town, Lahore', priceRange: 'PKR 2.18M–2.47M', status: 'Converted', created: '5 Jul', validUntil: '19 Jul', statusStyle: this.statusChip('Converted') },
+    ];
+
+    const profileTabs = [
+      { label: 'Profile', onClick: this.setProfileTab('profile'), style: this.tabStyle(s.profileTab === 'profile') },
+      { label: 'Security', onClick: this.setProfileTab('security'), style: this.tabStyle(s.profileTab === 'security') },
+      { label: 'Preferences', onClick: this.setProfileTab('prefs'), style: this.tabStyle(s.profileTab === 'prefs') },
+      { label: 'Data', onClick: this.setProfileTab('data'), style: this.tabStyle(s.profileTab === 'data') },
+    ];
+    const profileFields = [
+      { label: 'Full name', value: 'Ahmed Khan' },
+      { label: 'Phone', value: '+92 321 456 7890' },
+      { label: 'Email', value: 'ahmed@email.com' },
+      { label: 'City', value: 'Lahore' },
+      { label: 'Area', value: 'Johar Town' },
+    ];
+
+    const onBg = 'rgba(255,184,0,.1)'; const onC = '#FFB800';
+    const offBg = 'rgba(255,255,255,.06)'; const offC = '#64748B';
+    const notifPrefs = [
+      { label: 'Estimate updates', channels: [{ label: 'In-app', bg: onBg, color: onC }, { label: 'Email', bg: onBg, color: onC }, { label: 'SMS', bg: offBg, color: offC }] },
+      { label: 'Project milestones', channels: [{ label: 'In-app', bg: onBg, color: onC }, { label: 'Email', bg: onBg, color: onC }, { label: 'SMS', bg: onBg, color: onC }] },
+      { label: 'Payment reminders', channels: [{ label: 'In-app', bg: onBg, color: onC }, { label: 'Email', bg: onBg, color: onC }, { label: 'SMS', bg: onBg, color: onC }] },
+      { label: 'Marketing & tips', channels: [{ label: 'In-app', bg: offBg, color: offC }, { label: 'Email', bg: onBg, color: onC }, { label: 'SMS', bg: offBg, color: offC }] },
+    ];
+
+    const notifGroups = [
+      { label: 'Today', items: [
+        { icon: '⬡', iconBg: 'rgba(255,184,0,.12)', iconColor: '#FFB800', title: 'Installation progress update', body: 'DC wiring completed — 12 strings connected and tested on your 8 kWp project.', time: '2 hours ago', unread: true, weight: 600, bg: 'rgba(255,184,0,.04)' },
+        { icon: '◉', iconBg: 'rgba(0,229,255,.12)', iconColor: '#00E5FF', title: 'Estimate expiring soon', body: 'Your 6.5 kWp Hybrid estimate expires in 3 days. Save it to lock the price.', time: '5 hours ago', unread: true, weight: 600, bg: 'rgba(255,184,0,.04)' },
+      ]},
+      { label: 'This week', items: [
+        { icon: '↗', iconBg: 'rgba(52,211,153,.12)', iconColor: '#34D399', title: 'Payment confirmed', body: 'Mid-install payment of PKR 716,000 has been recorded.', time: '2 days ago', unread: false, weight: 400, bg: 'rgba(255,255,255,.02)' },
+        { icon: '⊕', iconBg: 'rgba(139,92,246,.12)', iconColor: '#A78BFA', title: 'Welcome to Al-Wahab Solar', body: 'Your account has been created. You can now save estimates and track projects.', time: '5 days ago', unread: false, weight: 400, bg: 'rgba(255,255,255,.02)' },
+      ]},
+      { label: 'Earlier', items: [
+        { icon: '≡', iconBg: 'rgba(255,255,255,.06)', iconColor: '#94A3B8', title: 'Estimate saved', body: 'Your 8 kWp Hybrid Standard estimate has been saved.', time: '2 weeks ago', unread: false, weight: 400, bg: 'rgba(255,255,255,.02)' },
+      ]},
+    ];
+
+    const errors = {
+      '404': { code: '404', title: 'This page has set.', body: "The link you followed doesn't exist any more." },
+      '500': { code: '500', title: 'Something went dark.', body: 'Our team has been notified. Please try again in a moment.' },
+      'offline': { code: '—', title: "You're offline.", body: 'Your saved estimates will sync when you reconnect.' },
+    };
+    const err = errors[s.errorType] || errors['404'];
+
+    return {
+      screenNav, showUserMenu: s.page !== 'error', hasUnread: true,
+      isAbout: s.page === 'about', isContact: s.page === 'contact', isEstimates: s.page === 'estimates',
+      isProfile: s.page === 'profile', isNotifications: s.page === 'notifications', isError: s.page === 'error',
+      goAbout: this.goAbout, goNotifications: this.goNotifications,
+
+      aboutStats, aboutCards, contactInfo,
+      contactSubmitted: s.contactSubmitted, notContactSubmitted: !s.contactSubmitted, submitContact: this.submitContact,
+      estStatusFilters, estimateCards,
+      profileTabs, profileFields, notifPrefs,
+      isProfileTab: s.profileTab === 'profile', isSecurityTab: s.profileTab === 'security',
+      isPrefsTab: s.profileTab === 'prefs', isDataTab: s.profileTab === 'data',
+      notifGroups,
+      errorCode: err.code, errorTitle: err.title, errorBody: err.body,
+    };
+  }
+}
+</script>
+</body>
+</html>

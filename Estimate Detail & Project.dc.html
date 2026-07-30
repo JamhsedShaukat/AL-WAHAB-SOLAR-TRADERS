@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @keyframes meshShift { 0%,100% { transform: translate3d(0,0,0) scale(1); } 33% { transform: translate3d(4%,-3%,0) scale(1.08); } 66% { transform: translate3d(-3%,4%,0) scale(.96); } }
+    body { margin:0; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    ::selection { background: rgba(255,184,0,.3); color:#fff; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+
+<div style="position:relative; min-height:100vh; background:radial-gradient(1200px 800px at 70% -10%, rgba(255,184,0,0.10), transparent 60%), radial-gradient(900px 700px at 10% 20%, rgba(0,229,255,0.06), transparent 55%), linear-gradient(180deg,#0A0F1E 0%,#070B16 45%,#05080F 100%); color:#E7ECF5; fontFamily:Manrope, sans-serif;">
+
+  <!-- Ambient blobs -->
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;">
+    <div style="position:absolute; top:-160px; right:-10%; width:55vh; height:55vh; borderRadius:9999px; opacity:.6; filter:blur(90px); background:radial-gradient(circle, rgba(255,184,0,.22), transparent 65%); animation:meshShift 22s ease-in-out infinite;"></div>
+    <div style="position:absolute; top:40%; left:-12%; width:50vh; height:50vh; borderRadius:9999px; opacity:.5; filter:blur(100px); background:radial-gradient(circle, rgba(0,229,255,.16), transparent 65%); animation:meshShift 28s ease-in-out infinite reverse;"></div>
+  </div>
+
+  <!-- Page toggle -->
+  <div style="position:fixed; bottom:12px; left:12px; zIndex:100; display:flex; gap:6px;">
+    <button onClick="{{ goEstimate }}" style="{{ estBtnStyle }}">Estimate Detail</button>
+    <button onClick="{{ goProject }}" style="{{ projBtnStyle }}">Project Detail</button>
+  </div>
+
+  <!-- HEADER -->
+  <header style="position:sticky; top:0; zIndex:50; background:rgba(7,11,22,.7); backdropFilter:blur(14px); borderBottom:1px solid rgba(255,255,255,.07);">
+    <div style="max-width:1200px; margin:0 auto; display:flex; alignItems:center; gap:14px; padding:14px 24px;">
+      <button style="display:grid; placeItems:center; height:40px; width:40px; borderRadius:12px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); color:#fff; cursor:pointer;">←</button>
+      <span style="display:flex; alignItems:center; gap:8px;">
+        <span style="display:grid; placeItems:center; height:28px; width:28px; borderRadius:9px; background:linear-gradient(135deg,#FFB800,#FF8C00); overflow:hidden;">
+          <img src="al-wahab-logo.png" alt="" style="width:22px; height:22px; objectFit:contain;" />
+        </span>
+        <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:15.5px; fontWeight:600; color:#fff;">Al-Wahab <span style="color:#FFB800;">Solar</span></span>
+      </span>
+      <span style="flex:1;"></span>
+      <div style="display:flex; alignItems:center; gap:10px;">
+        <div style="width:32px; height:32px; borderRadius:9999px; background:rgba(255,184,0,.15); display:grid; placeItems:center; fontSize:13px; fontWeight:600; color:#FFB800;">AK</div>
+        <span style="fontSize:13.5px; color:#CBD5E1;">Ahmed</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ FULL ESTIMATE DETAIL ============ -->
+  <sc-if value="{{ isEstimate }}" hint-placeholder-val="{{ true }}">
+    <main style="position:relative; zIndex:1; max-width:1200px; margin:0 auto; padding:32px 24px 120px;">
+
+      <!-- Eyebrow + heading -->
+      <div style="fontSize:13px; fontWeight:600; textTransform:uppercase; letterSpacing:0.16em; color:#FFB800;">Your estimate is ready</div>
+      <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:28px; fontWeight:600; color:#fff; marginTop:8px; marginBottom:4px;">Your solar estimate</h1>
+      <p style="color:#94A3B8; fontSize:15px; lineHeight:1.6; maxWidth:720px;">A transparent, itemized estimate for an <strong style="color:#E7ECF5;">8 kWp Hybrid</strong> system in Lahore — built on live market prices. Review the cost, timeline and what to expect, then save it and book your free site survey.</p>
+
+      <!-- S1: Cost breakdown -->
+      <section style="marginTop:36px;">
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:21px; color:#fff; marginBottom:6px;">1. Cost breakdown</h2>
+        <p style="color:#94A3B8; fontSize:14px; marginBottom:20px;">Every component, itemized — no hidden costs.</p>
+
+        <!-- Recommended system panel -->
+        <div style="background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.25); borderRadius:16px; padding:22px; marginBottom:20px;">
+          <div style="display:flex; flexWrap:wrap; justifyContent:space-between; alignItems:center; gap:12px;">
+            <div>
+              <div style="fontSize:13px; color:#FFB800; fontWeight:600;">Recommended system</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:28px; fontWeight:600; color:#fff; marginTop:4px;">8 kWp Hybrid <span style="fontSize:14px; padding:4px 12px; borderRadius:9999px; background:rgba(0,229,255,.12); color:#00E5FF; verticalAlign:middle;">Standard</span></div>
+              <div style="fontSize:13.5px; color:#94A3B8; marginTop:6px;">The sweet spot of price, efficiency and warranty for most Lahore homes.</div>
+            </div>
+          </div>
+          <div style="display:flex; flexWrap:wrap; gap:16px; marginTop:16px;">
+            <sc-for list="{{ systemSpecs }}" as="spec" hint-placeholder-count="4">
+              <div style="flex:1 1 140px; background:rgba(255,255,255,.04); borderRadius:10px; padding:12px;">
+                <div style="fontSize:11.5px; color:#94A3B8;">{{ spec.label }}</div>
+                <div style="fontSize:15px; color:#fff; fontWeight:500; marginTop:2px;">{{ spec.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Itemized table -->
+        <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); backdropFilter:blur(20px); borderRadius:16px; overflow:hidden;">
+          <div style="padding:16px 20px; borderBottom:1px solid rgba(255,255,255,.08);">
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff;">Itemized cost</span>
+          </div>
+          <sc-for list="{{ lineItems }}" as="item" hint-placeholder-count="8">
+            <div style="display:flex; justifyContent:space-between; alignItems:baseline; padding:14px 20px; borderBottom:1px solid rgba(255,255,255,.06);">
+              <div>
+                <div style="fontSize:14.5px; color:#E7ECF5;">{{ item.name }}</div>
+                <div style="fontSize:12.5px; color:#64748B;">{{ item.spec }}</div>
+              </div>
+              <div style="fontSize:14.5px; color:#E7ECF5; fontVariantNumeric:tabular-nums; whiteSpace:nowrap;">{{ item.amount }}</div>
+            </div>
+          </sc-for>
+          <div style="display:flex; justifyContent:space-between; padding:16px 20px; borderBottom:1px solid rgba(255,255,255,.08);">
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:15px; color:#fff;">Subtotal</span>
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; fontWeight:600; color:#fff;">PKR 1,790,000</span>
+          </div>
+          <div style="display:flex; justifyContent:space-between; alignItems:center; padding:16px 20px;">
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:15px; color:#fff;">Estimated range</span>
+            <span style="fontFamily:'Space Grotesk',sans-serif; fontSize:20px; fontWeight:600; backgroundImage:linear-gradient(100deg,#FFD466 0%,#FFB800 40%,#FF8C00 100%); WebkitBackgroundClip:text; WebkitTextFillColor:transparent;">PKR 1,680,000 – 1,900,000</span>
+          </div>
+          <div style="padding:0 20px 16px; fontSize:12.5px; color:#64748B;">±6% market buffer applied · Prices valid as of 29 Jul 2026</div>
+        </div>
+      </section>
+
+      <!-- S2: Timeline -->
+      <section style="marginTop:36px;">
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:21px; color:#fff; marginBottom:6px;">2. Estimated time</h2>
+        <p style="color:#94A3B8; fontSize:14px; marginBottom:20px;">Your system runs within a week — net metering takes longer because of LESCO approval.</p>
+        <div style="display:flex; flexWrap:wrap; gap:20px;">
+          <sc-for list="{{ timelines }}" as="tl" hint-placeholder-count="2">
+            <div style="flex:1 1 320px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:4px;">{{ tl.title }}</div>
+              <div style="fontSize:13px; color:#FFB800; marginBottom:16px;">{{ tl.duration }}</div>
+              <sc-for list="{{ tl.steps }}" as="step" hint-placeholder-count="4">
+                <div style="display:flex; gap:12px; marginBottom:14px;">
+                  <div style="display:flex; flexDirection:column; alignItems:center;">
+                    <div style="width:24px; height:24px; borderRadius:9999px; background:rgba(255,184,0,.15); border:2px solid rgba(255,184,0,.4); display:grid; placeItems:center; fontSize:11px; fontWeight:600; color:#FFB800;">{{ step.n }}</div>
+                    <div style="width:2px; flex:1; background:rgba(255,255,255,.08); marginTop:4px;"></div>
+                  </div>
+                  <div style="paddingBottom:8px;">
+                    <div style="fontSize:14px; color:#E7ECF5;">{{ step.label }}</div>
+                    <div style="fontSize:12px; color:#64748B; marginTop:2px;">{{ step.time }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- S4: Energy & savings -->
+      <section style="marginTop:36px;">
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:21px; color:#fff; marginBottom:6px;">3. Energy & savings</h2>
+        <div style="display:flex; flexWrap:wrap; gap:16px; marginTop:16px;">
+          <sc-for list="{{ energyStats }}" as="stat" hint-placeholder-count="4">
+            <div style="flex:1 1 160px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:18px; textAlign:center;">
+              <div style="fontSize:12.5px; color:#94A3B8;">{{ stat.label }}</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:24px; fontWeight:600; color:#FFB800; marginTop:6px;">{{ stat.value }}</div>
+              <div style="fontSize:12px; color:#64748B; marginTop:2px;">{{ stat.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:12px; padding:14px 18px; marginTop:16px; fontSize:13px; color:#94A3B8; lineHeight:1.55;">Based on LESCO net metering — surplus daytime units are credited against your grid usage. Actual savings vary with tariff slabs and weather.</div>
+      </section>
+
+      <!-- S5: Included / Not included -->
+      <section style="marginTop:36px;">
+        <div style="display:flex; flexWrap:wrap; gap:20px;">
+          <div style="flex:1 1 320px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginBottom:14px;">What's included</div>
+            <sc-for list="{{ included }}" as="item" hint-placeholder-count="7">
+              <div style="display:flex; gap:10px; alignItems:flex-start; marginBottom:10px; fontSize:13.5px;">
+                <span style="color:#FFB800; fontSize:14px; lineHeight:1.4;">✓</span>
+                <span style="color:#CBD5E1; lineHeight:1.45;">{{ item }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="flex:1 1 320px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:22px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#fff; marginBottom:14px;">Not included</div>
+            <sc-for list="{{ excluded }}" as="item" hint-placeholder-count="6">
+              <div style="display:flex; gap:10px; alignItems:flex-start; marginBottom:10px; fontSize:13.5px;">
+                <span style="color:#64748B; fontSize:14px; lineHeight:1.4;">—</span>
+                <span style="color:#94A3B8; lineHeight:1.45;">{{ item }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <!-- S6: Warranties -->
+      <section style="marginTop:36px;">
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:21px; color:#fff; marginBottom:16px;">4. Warranties</h2>
+        <div style="background:rgba(13,20,38,.55); border:1px solid rgba(255,255,255,.1); borderRadius:16px; overflow:hidden;">
+          <sc-for list="{{ warranties }}" as="w" hint-placeholder-count="5">
+            <div style="display:flex; justifyContent:space-between; padding:14px 20px; borderBottom:1px solid rgba(255,255,255,.06); fontSize:14px;">
+              <span style="color:#E7ECF5;">{{ w.component }}</span>
+              <span style="color:#FFB800; fontWeight:500;">{{ w.term }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- S7: Tier comparison -->
+      <section style="marginTop:36px;">
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:21px; color:#fff; marginBottom:6px;">5. Compare equipment tiers</h2>
+        <p style="color:#94A3B8; fontSize:14px; marginBottom:20px;">Switch tier to re-price your estimate. Standard is pre-selected as the best value.</p>
+        <div style="display:flex; flexWrap:wrap; gap:16px;">
+          <sc-for list="{{ tierCards }}" as="tier" hint-placeholder-count="3">
+            <div style="flex:1 1 240px; background:rgba(255,255,255,.035); border:{{ tier.border }}; borderRadius:16px; padding:22px; position:relative;">
+              <sc-if value="{{ tier.chosen }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute; top:-10px; right:16px; fontSize:11px; fontWeight:600; padding:3px 10px; borderRadius:9999px; background:#FFB800; color:#05080F;">Chosen</span>
+              </sc-if>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:19px; fontWeight:600; color:#fff;">{{ tier.name }}</div>
+              <div style="fontSize:13px; color:#94A3B8; marginTop:4px;">{{ tier.tagline }}</div>
+              <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; fontWeight:600; color:#FFB800; marginTop:12px;">{{ tier.priceRange }}</div>
+              <div style="marginTop:14px; borderTop:1px solid rgba(255,255,255,.08); paddingTop:14px;">
+                <sc-for list="{{ tier.specs }}" as="spec" hint-placeholder-count="4">
+                  <div style="display:flex; justifyContent:space-between; fontSize:13px; padding:5px 0;">
+                    <span style="color:#94A3B8;">{{ spec.label }}</span>
+                    <span style="color:#E7ECF5;">{{ spec.value }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Disclaimer -->
+      <div style="marginTop:36px; padding:18px 22px; borderRadius:14px; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); fontSize:13px; color:#64748B; lineHeight:1.6;">This estimate is indicative and valid for 14 days from 29 Jul 2026. Final pricing, specifications, phases and tasks are confirmed by our engineer after a free site survey.</div>
+
+      <!-- Sticky action bar -->
+      <div style="position:fixed; bottom:0; left:0; right:0; zIndex:40; background:rgba(13,20,38,.85); borderTop:1px solid rgba(255,255,255,.1); backdropFilter:blur(16px); padding:14px 24px;">
+        <div style="max-width:1200px; margin:0 auto; display:flex; flexWrap:wrap; justifyContent:flex-end; gap:10px;">
+          <button style="padding:12px 20px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); color:#CBD5E1; fontSize:14px; cursor:pointer;">Download PDF</button>
+          <button style="padding:12px 20px; borderRadius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); color:#CBD5E1; fontSize:14px; cursor:pointer;">Switch tier</button>
+          <button style="padding:12px 24px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:14.5px; cursor:pointer;">Save & book a free site survey</button>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- ============ PROJECT DETAIL ============ -->
+  <sc-if value="{{ isProject }}" hint-placeholder-val="{{ false }}">
+    <main style="position:relative; zIndex:1; max-width:1200px; margin:0 auto; padding:32px 24px 120px;">
+
+      <!-- Header -->
+      <div style="display:flex; flexWrap:wrap; justifyContent:space-between; alignItems:flex-start; gap:16px; marginBottom:28px;">
+        <div>
+          <div style="fontSize:13px; color:#94A3B8; marginBottom:6px;">← Back to dashboard · PRJ-2607-001</div>
+          <h1 style="fontFamily:'Space Grotesk',sans-serif; fontSize:26px; fontWeight:600; color:#fff; margin:0;">8 kWp Hybrid — Johar Town</h1>
+          <div style="display:flex; alignItems:center; gap:10px; marginTop:8px;">
+            <span style="fontSize:12px; fontWeight:500; padding:4px 12px; borderRadius:9999px; background:rgba(255,140,0,.12); color:#FF8C00; border:1px solid rgba(255,140,0,.25); whiteSpace:nowrap;">In progress</span>
+            <span style="fontSize:13px; color:#94A3B8;">Contract: <strong style="color:#E7ECF5;">PKR 1,790,000</strong></span>
+          </div>
+        </div>
+        <div style="display:flex; alignItems:center; gap:16px;">
+          <!-- Progress ring (simplified) -->
+          <div style="position:relative; width:64px; height:64px;">
+            <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);">
+              <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="4"></circle>
+              <circle cx="32" cy="32" r="28" fill="none" stroke="#FFB800" stroke-width="4" stroke-dasharray="176" stroke-dashoffset="70" stroke-linecap="round"></circle>
+            </svg>
+            <div style="position:absolute; inset:0; display:grid; placeItems:center; fontFamily:'Space Grotesk',sans-serif; fontSize:16px; fontWeight:600; color:#fff;">60%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase tracker -->
+      <section style="marginBottom:32px;">
+        <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginBottom:16px;">Project phases</h2>
+        <div style="display:flex; flexWrap:wrap; gap:4px;">
+          <sc-for list="{{ phases }}" as="phase" hint-placeholder-count="6">
+            <div style="flex:1 1 140px; position:relative;">
+              <div style="display:flex; flexDirection:column; alignItems:center; gap:6px;">
+                <div style="width:32px; height:32px; borderRadius:9999px; display:grid; placeItems:center; background:{{ phase.circleBg }}; border:{{ phase.circleBorder }}; fontSize:14px; color:{{ phase.circleColor }};">{{ phase.icon }}</div>
+                <div style="fontSize:12px; color:{{ phase.labelColor }}; textAlign:center; fontWeight:{{ phase.labelWeight }};">{{ phase.name }}</div>
+              </div>
+              <div style="position:absolute; top:16px; left:calc(50% + 20px); right:-4px; height:2px; background:{{ phase.connectorColor }};"></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Active phase expanded -->
+      <section style="background:rgba(255,184,0,.04); border:1px solid rgba(255,184,0,.2); borderRadius:16px; padding:22px; marginBottom:28px;">
+        <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:17px; color:#FFB800; marginBottom:4px;">Phase 3: Installation</div>
+        <div style="fontSize:13px; color:#94A3B8; marginBottom:16px;">Currently active — 4 of 6 tasks completed</div>
+        <sc-for list="{{ installTasks }}" as="task" hint-placeholder-count="6">
+          <div style="display:flex; alignItems:center; gap:12px; padding:10px 0; borderBottom:1px solid rgba(255,255,255,.06);">
+            <span style="fontSize:16px; width:20px; textAlign:center; color:{{ task.iconColor }};">{{ task.icon }}</span>
+            <span style="flex:1; fontSize:14px; color:{{ task.textColor }};">{{ task.name }}</span>
+            <span style="fontSize:12px; color:#64748B;">{{ task.assignee }}</span>
+            <span style="fontSize:12px; color:#64748B;">{{ task.date }}</span>
+          </div>
+        </sc-for>
+      </section>
+
+      <!-- Two-column body -->
+      <div style="display:flex; flexWrap:wrap; gap:24px;">
+
+        <!-- Left: Timeline -->
+        <div style="flex:1 1 400px;">
+          <h2 style="fontFamily:'Space Grotesk',sans-serif; fontSize:18px; color:#fff; marginBottom:16px;">Project timeline</h2>
+          <sc-for list="{{ projectUpdates }}" as="update" hint-placeholder-count="5">
+            <div style="display:flex; gap:14px; marginBottom:20px;">
+              <div style="display:flex; flexDirection:column; alignItems:center;">
+                <div style="width:10px; height:10px; borderRadius:9999px; background:{{ update.dotColor }}; flexShrink:0;"></div>
+                <div style="width:2px; flex:1; background:rgba(255,255,255,.08); marginTop:4px;"></div>
+              </div>
+              <div style="paddingBottom:8px;">
+                <div style="fontSize:14px; color:#E7ECF5;">{{ update.text }}</div>
+                <div style="fontSize:12px; color:#64748B; marginTop:3px;">{{ update.time }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- Right: Info cards -->
+        <div style="flex:1 1 300px; maxWidth:380px; display:flex; flexDirection:column; gap:16px;">
+
+          <!-- System specs -->
+          <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:12px;">Your system</div>
+            <sc-for list="{{ projectSpecs }}" as="spec" hint-placeholder-count="5">
+              <div style="display:flex; justifyContent:space-between; fontSize:13.5px; padding:6px 0; borderBottom:1px solid rgba(255,255,255,.05);">
+                <span style="color:#94A3B8;">{{ spec.label }}</span>
+                <span style="color:#E7ECF5;">{{ spec.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- Team -->
+          <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:12px;">Your team</div>
+            <sc-for list="{{ team }}" as="member" hint-placeholder-count="2">
+              <div style="display:flex; alignItems:center; gap:10px; padding:8px 0;">
+                <div style="width:32px; height:32px; borderRadius:9999px; background:{{ member.bg }}; display:grid; placeItems:center; fontSize:12px; fontWeight:600; color:{{ member.color }};">{{ member.initials }}</div>
+                <div style="flex:1;">
+                  <div style="fontSize:13.5px; color:#E7ECF5;">{{ member.name }}</div>
+                  <div style="fontSize:12px; color:#64748B;">{{ member.role }}</div>
+                </div>
+                <button style="padding:6px 12px; borderRadius:8px; background:rgba(0,229,255,.1); border:none; color:#00E5FF; fontSize:12px; cursor:pointer;">{{ member.action }}</button>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- Documents -->
+          <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:12px;">Documents</div>
+            <sc-for list="{{ documents }}" as="doc" hint-placeholder-count="4">
+              <div style="display:flex; justifyContent:space-between; alignItems:center; padding:8px 0; borderBottom:1px solid rgba(255,255,255,.05);">
+                <div style="display:flex; alignItems:center; gap:8px;">
+                  <span style="fontSize:14px; color:#FFB800;">◉</span>
+                  <span style="fontSize:13.5px; color:#CBD5E1;">{{ doc.name }}</span>
+                </div>
+                <button style="padding:4px 10px; borderRadius:8px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#94A3B8; fontSize:12px; cursor:pointer;">↓</button>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- Payments -->
+          <div style="background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.09); borderRadius:16px; padding:20px;">
+            <div style="fontFamily:'Space Grotesk',sans-serif; fontSize:16px; color:#fff; marginBottom:12px;">Payments</div>
+            <sc-for list="{{ payments }}" as="pay" hint-placeholder-count="3">
+              <div style="display:flex; justifyContent:space-between; alignItems:center; padding:8px 0; borderBottom:1px solid rgba(255,255,255,.05);">
+                <div>
+                  <div style="fontSize:13.5px; color:#E7ECF5;">{{ pay.label }}</div>
+                  <div style="fontSize:12px; color:#64748B;">{{ pay.date }}</div>
+                </div>
+                <div style="textAlign:right;">
+                  <div style="fontSize:14px; color:#E7ECF5; fontVariantNumeric:tabular-nums;">{{ pay.amount }}</div>
+                  <span style="{{ pay.statusStyle }}">{{ pay.status }}</span>
+                </div>
+              </div>
+            </sc-for>
+            <div style="display:flex; justifyContent:space-between; marginTop:12px; paddingTop:12px; borderTop:1px solid rgba(255,255,255,.08); fontSize:13.5px;">
+              <span style="color:#94A3B8;">Outstanding</span>
+              <span style="color:#FFB800; fontWeight:600;">PKR 358,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky footer -->
+      <div style="position:fixed; bottom:0; left:0; right:0; zIndex:40; background:rgba(13,20,38,.85); borderTop:1px solid rgba(255,255,255,.1); backdropFilter:blur(16px); padding:14px 24px;">
+        <div style="max-width:1200px; margin:0 auto; display:flex; flexWrap:wrap; justifyContent:flex-end; gap:10px;">
+          <a href="#" style="padding:12px 20px; borderRadius:12px; background:rgba(0,229,255,.1); border:1px solid rgba(0,229,255,.25); color:#00E5FF; fontSize:14px; textDecoration:none; cursor:pointer;">Message our team</a>
+          <button style="padding:12px 24px; borderRadius:12px; border:none; background:linear-gradient(90deg,#FFB800,#FF8C00); color:#05080F; fontWeight:600; fontSize:14.5px; cursor:pointer;">Track installation</button>
+        </div>
+      </div>
+    </main>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { page: 'estimate' };
+
+  goEstimate = () => this.setState({ page: 'estimate' });
+  goProject = () => this.setState({ page: 'project' });
+
+  tabStyle(active) {
+    return { padding: '8px 16px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, background: active ? 'rgba(255,255,255,.1)' : 'rgba(255,255,255,.04)', color: active ? '#fff' : '#94A3B8' };
+  }
+
+  renderVals() {
+    const s = this.state;
+
+    const systemSpecs = [
+      { label: 'Panels', value: '14 × 585W Tier-1' },
+      { label: 'Inverter', value: '8 kW Hybrid' },
+      { label: 'Battery', value: '5 kWh Lithium' },
+      { label: 'Structure', value: 'Standard · Good' },
+    ];
+
+    const lineItems = [
+      { name: 'Solar panels', spec: '14 × 585W mono PERC · Tier-1', amount: 'PKR 605,600' },
+      { name: 'Hybrid inverter', spec: '8 kW hybrid inverter', amount: 'PKR 360,000' },
+      { name: 'Battery storage', spec: '5 kWh lithium-ion', amount: 'PKR 330,000' },
+      { name: 'Mounting structure', spec: 'Standard, good quality (hot-dip galvanised)', amount: 'PKR 161,200' },
+      { name: 'Wiring & BOS', spec: 'DC/AC wiring, breakers, SPDs, earthing', amount: 'PKR 117,200' },
+      { name: 'Net metering', spec: 'Application + bi-directional meter', amount: 'PKR 60,000' },
+      { name: 'Installation labour', spec: 'Installation & commissioning', amount: 'PKR 107,440' },
+      { name: 'Transport', spec: 'Delivery to site', amount: 'PKR 25,000' },
+    ];
+
+    const timelines = [
+      { title: 'System installed & running', duration: '~1 week from order', steps: [
+        { n: '1', label: 'Order confirmed', time: 'Day 1' },
+        { n: '2', label: 'Procurement', time: 'Day 1–3' },
+        { n: '3', label: 'Installation', time: 'Day 3–5' },
+        { n: '4', label: 'Commissioning', time: 'Day 5–7' },
+      ]},
+      { title: 'Net metering live', duration: '~5–9 weeks', steps: [
+        { n: '1', label: 'Application submitted', time: 'Week 1' },
+        { n: '2', label: 'Documentation review', time: 'Week 2–3' },
+        { n: '3', label: 'LESCO inspection', time: 'Week 4–6' },
+        { n: '4', label: 'Meter install & approval', time: 'Week 6–9' },
+      ]},
+    ];
+
+    const energyStats = [
+      { label: 'Monthly generation', value: '800', sub: 'units/month' },
+      { label: 'Bill coverage', value: '82%', sub: 'of your usage' },
+      { label: 'Estimated savings', value: 'PKR 36,015', sub: 'per month' },
+      { label: 'Payback period', value: '4.1', sub: 'years' },
+    ];
+
+    const included = [
+      'Supply of all listed equipment',
+      'Mounting structure & complete installation',
+      'DC/AC wiring, breakers, SPDs & earthing',
+      'Net-metering application & meter coordination',
+      'Testing, commissioning & power-on',
+      'Monitoring app setup',
+      'Standard component warranties',
+      'Our 1–2 year workmanship cover',
+    ];
+    const excluded = [
+      'Roof waterproofing or major civil repairs',
+      'Extra elevated structure beyond standard height',
+      'Home load / DB upgrades or rewiring',
+      'LESCO security fees & applicable taxes',
+      'Diesel-generator integration',
+      'Battery expansion beyond quoted capacity',
+      'Price changes after the validity date',
+    ];
+
+    const warranties = [
+      { component: 'Solar panels', term: '12yr product · 25yr performance' },
+      { component: 'Inverter', term: '5–10 years' },
+      { component: 'Battery', term: '8–10 years' },
+      { component: 'Mounting structure', term: '10 years' },
+      { component: 'Workmanship', term: '1–2 years (Al-Wahab)' },
+    ];
+
+    const tierCards = [
+      { name: 'Economy', tagline: 'Lowest price', priceRange: 'PKR 1,440,000 – 1,630,000', chosen: false,
+        border: '1px solid rgba(255,255,255,.09)',
+        specs: [{ label: 'Panels', value: 'Tier-2 mono' }, { label: 'Inverter', value: 'Standard hybrid' }, { label: 'Battery', value: '5 kWh' }, { label: 'Warranty', value: 'Standard' }] },
+      { name: 'Standard', tagline: 'Best value', priceRange: 'PKR 1,680,000 – 1,900,000', chosen: true,
+        border: '2px solid rgba(255,184,0,.6)',
+        specs: [{ label: 'Panels', value: 'Tier-1 mono PERC' }, { label: 'Inverter', value: 'Premium hybrid' }, { label: 'Battery', value: '5 kWh' }, { label: 'Warranty', value: 'Extended' }] },
+      { name: 'Premium', tagline: 'Best quality', priceRange: 'PKR 2,180,000 – 2,470,000', chosen: false,
+        border: '1px solid rgba(255,255,255,.09)',
+        specs: [{ label: 'Panels', value: 'Tier-1 N-type' }, { label: 'Inverter', value: 'Top-tier hybrid' }, { label: 'Battery', value: '5 kWh LFP' }, { label: 'Warranty', value: 'Premium' }] },
+    ];
+
+    // PROJECT DATA
+    const phases = [
+      { name: 'Survey', icon: '✓', circleBg: '#FFB800', circleBorder: 'none', circleColor: '#05080F', labelColor: '#FFB800', labelWeight: 600, connectorColor: '#FFB800' },
+      { name: 'Agreement', icon: '✓', circleBg: '#FFB800', circleBorder: 'none', circleColor: '#05080F', labelColor: '#FFB800', labelWeight: 600, connectorColor: '#FFB800' },
+      { name: 'Installation', icon: '3', circleBg: 'transparent', circleBorder: '2px solid #FFB800', circleColor: '#FFB800', labelColor: '#FFB800', labelWeight: 600, connectorColor: 'rgba(255,255,255,.1)' },
+      { name: 'Testing', icon: '4', circleBg: 'transparent', circleBorder: '2px solid rgba(255,255,255,.2)', circleColor: '#64748B', labelColor: '#64748B', labelWeight: 400, connectorColor: 'rgba(255,255,255,.06)' },
+      { name: 'Net metering', icon: '5', circleBg: 'transparent', circleBorder: '2px solid rgba(255,255,255,.2)', circleColor: '#64748B', labelColor: '#64748B', labelWeight: 400, connectorColor: 'rgba(255,255,255,.06)' },
+      { name: 'Handover', icon: '6', circleBg: 'transparent', circleBorder: '2px solid rgba(255,255,255,.2)', circleColor: '#64748B', labelColor: '#64748B', labelWeight: 400, connectorColor: 'transparent' },
+    ];
+
+    const installTasks = [
+      { name: 'Panel mounting on roof structure', icon: '✓', iconColor: '#34D399', textColor: '#94A3B8', assignee: 'Crew A', date: '24 Jul' },
+      { name: 'Inverter & battery installation', icon: '✓', iconColor: '#34D399', textColor: '#94A3B8', assignee: 'Crew A', date: '24 Jul' },
+      { name: 'DC wiring & string connections', icon: '✓', iconColor: '#34D399', textColor: '#94A3B8', assignee: 'Crew A', date: '25 Jul' },
+      { name: 'AC wiring & DB integration', icon: '✓', iconColor: '#34D399', textColor: '#94A3B8', assignee: 'Crew A', date: '25 Jul' },
+      { name: 'Earthing & surge protection', icon: '○', iconColor: '#FFB800', textColor: '#E7ECF5', assignee: 'Crew A', date: 'Today' },
+      { name: 'Final inspection & cleanup', icon: '○', iconColor: '#64748B', textColor: '#64748B', assignee: 'Crew A', date: 'Pending' },
+    ];
+
+    const projectUpdates = [
+      { text: 'DC wiring completed — 12 strings connected and tested', time: '25 Jul · 4:30 PM', dotColor: '#FFB800' },
+      { text: 'All panels mounted — 14 × 585W installed on RCC structure', time: '24 Jul · 6:15 PM', dotColor: '#FFB800' },
+      { text: 'Inverter and battery unit secured in utility room', time: '24 Jul · 2:00 PM', dotColor: '#FFB800' },
+      { text: 'Equipment delivered to site — all items verified', time: '23 Jul · 10:30 AM', dotColor: '#34D399' },
+      { text: 'Procurement complete — order dispatched from warehouse', time: '22 Jul · 3:00 PM', dotColor: '#34D399' },
+      { text: 'Agreement signed — project created', time: '20 Jul · 11:00 AM', dotColor: '#00E5FF' },
+      { text: 'Site survey completed — design confirmed by engineer', time: '18 Jul · 5:00 PM', dotColor: '#00E5FF' },
+    ];
+
+    const projectSpecs = [
+      { label: 'System', value: '8 kWp Hybrid' },
+      { label: 'Tier', value: 'Standard' },
+      { label: 'Panels', value: '14 × 585W' },
+      { label: 'Inverter', value: '8 kW Hybrid' },
+      { label: 'Battery', value: '5 kWh Lithium' },
+      { label: 'Roof', value: 'RCC · 1,200 sq ft' },
+    ];
+
+    const team = [
+      { name: 'Ali Raza', role: 'Sales lead', initials: 'AR', bg: 'rgba(52,211,153,.15)', color: '#34D399', action: 'Call' },
+      { name: 'Kamran Sheikh', role: 'Crew lead', initials: 'KS', bg: 'rgba(255,184,0,.15)', color: '#FFB800', action: 'WhatsApp' },
+    ];
+
+    const documents = [
+      { name: 'Project agreement' },
+      { name: 'Advance invoice — PKR 716K' },
+      { name: 'Equipment warranty cards' },
+      { name: 'Site survey report' },
+    ];
+
+    const paidChip = { display: 'inline-block', fontSize: 11, padding: '2px 8px', borderRadius: 9999, background: 'rgba(52,211,153,.12)', color: '#34D399', whiteSpace: 'nowrap' };
+    const dueChip = { display: 'inline-block', fontSize: 11, padding: '2px 8px', borderRadius: 9999, background: 'rgba(255,184,0,.12)', color: '#FFB800', whiteSpace: 'nowrap' };
+    const payments = [
+      { label: 'Advance (40%)', amount: 'PKR 716,000', date: '20 Jul 2026', status: 'Paid', statusStyle: paidChip },
+      { label: 'Mid-install (40%)', amount: 'PKR 716,000', date: '26 Jul 2026', status: 'Paid', statusStyle: paidChip },
+      { label: 'Completion (20%)', amount: 'PKR 358,000', date: 'On commissioning', status: 'Due', statusStyle: dueChip },
+    ];
+
+    return {
+      isEstimate: s.page === 'estimate',
+      isProject: s.page === 'project',
+      goEstimate: this.goEstimate, goProject: this.goProject,
+      estBtnStyle: this.tabStyle(s.page === 'estimate'),
+      projBtnStyle: this.tabStyle(s.page === 'project'),
+      currentPageTitle: s.page === 'estimate' ? 'Estimate Detail' : 'Project Detail',
+      systemSpecs, lineItems, timelines, energyStats, included, excluded, warranties, tierCards,
+      phases, installTasks, projectUpdates, projectSpecs, team, documents, payments,
+    };
+  }
+}
+</script>
+</body>
+</html>
