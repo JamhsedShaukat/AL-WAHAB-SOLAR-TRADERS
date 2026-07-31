@@ -1,20 +1,41 @@
-// Shared type definitions for Al-Wahab Solar
-// Types will be moved here from apps as the migration progresses
+export type {
+  ApiError,
+  ApiErrorCode,
+  ApiResponse,
+  ApiResult,
+  Paginated,
+  PaginationMeta,
+  PaginationQuery,
+  SortDirection,
+} from "./api";
 
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  data: T;
-  message?: string;
-  meta?: {
-    page?: number;
-    limit?: number;
-    total?: number;
-  };
-}
+export {
+  PERMISSION_KEYS,
+  ROLE_KEYS,
+  STAFF_ROLES,
+  isStaff,
+  type AuthTokens,
+  type PermissionKey,
+  type Role,
+  type RoleKey,
+  type SessionUser,
+} from "./auth";
 
-export interface ApiError {
-  success: false;
-  message: string;
-  statusCode: number;
-  errors?: Record<string, string[]>;
-}
+export type { UserProfile, UserStatus } from "./user";
+
+export type {
+  ConnectionPhase,
+  Estimate,
+  EstimateGoal,
+  EstimateInputs,
+  EstimateLineItem,
+  EstimatePriority,
+  EstimateResult,
+  EstimateStatus,
+  StructureQuality,
+  StructureType,
+  SystemType,
+  TierKey,
+} from "./estimate";
+
+export type { Project, ProjectStatus, TaskStatus } from "./project";

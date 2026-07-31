@@ -6,7 +6,21 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/"],
+        disallow: [
+          "/admin",
+          "/api/",
+          // Client portal — authenticated, nothing to index.
+          "/dashboard",
+          "/estimates",
+          "/projects",
+          "/notifications",
+          "/profile",
+          // Auth screens.
+          "/login",
+          "/signup",
+          "/verify",
+          "/reset",
+        ],
       },
     ],
     sitemap: "https://alwahabsolar.pk/sitemap.xml",

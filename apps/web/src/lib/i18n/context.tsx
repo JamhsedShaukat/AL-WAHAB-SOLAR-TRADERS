@@ -38,9 +38,16 @@ const translations: Record<Locale, Record<TranslationKey, string>> = { en, ur };
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
 
-  // Read cookie on mount
+  // Read cookie on mount. This cannot be a lazy useState initialiser: the
+  // server has no `document`, so it would always resolve to "en" and cause a
+  // hydration mismatch for Urdu visitors.
+  //
+  // The real fix is to read the cookie server-side in the root layout and pass
+  // it in as the initial locale, which also removes the brief flash of English.
+  // That makes every route dynamic, so it is deliberately deferred.
   useEffect(() => {
     const saved = getCookie("locale") as Locale | undefined;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- see above
     if (saved === "ur") setLocaleState("ur");
   }, []);
 

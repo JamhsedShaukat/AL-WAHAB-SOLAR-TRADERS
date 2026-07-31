@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { LogoMark } from "@/components/brand/logo-mark";
-import { cn } from "@/lib/utils";
+import { cn } from "@wahab/utils";
 
 interface LogoProps {
   className?: string;
+  /** Where the lock-up links to. Defaults to the public homepage. */
+  href?: string;
 }
 
-export function Logo({ className }: LogoProps) {
+export function Logo({ className, href = "/" }: LogoProps) {
   return (
     <Link
-      href="/"
+      href={href}
       className={cn(
         "focus-ring flex items-center gap-2.5 rounded-lg group",
         className,

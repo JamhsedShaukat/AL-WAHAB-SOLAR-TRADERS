@@ -4,7 +4,7 @@ import {
   CalendarCheck,
   Wrench,
 } from "lucide-react";
-import { Container } from "@/components/ui/container";
+import { Container } from "@wahab/ui";
 import { SectionHeading } from "@/components/marketing/section-heading";
 
 const steps = [

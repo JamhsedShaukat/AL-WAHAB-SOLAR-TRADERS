@@ -4,8 +4,14 @@
   "private": true,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tsconfig/*": "./tsconfig/*"
+  },
+  "files": ["src", "tsconfig"],
   "scripts": {
-    "clean": "rm -rf dist node_modules"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist node_modules .turbo"
   },
   "devDependencies": {
     "typescript": "^5"

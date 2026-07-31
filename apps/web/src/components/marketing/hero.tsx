@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, FileUp, LayoutGrid, Sun } from "lucide-react";
-import { Container } from "@/components/ui/container";
+import { Container } from "@wahab/ui";
 
 export function Hero() {
   return (

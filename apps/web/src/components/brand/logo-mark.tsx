@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@wahab/utils";
 
 interface LogoMarkProps {
   className?: string;

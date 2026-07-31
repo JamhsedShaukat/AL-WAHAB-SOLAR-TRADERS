@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Container } from "@/components/ui/container";
+import { Container } from "@wahab/ui";
 import { SectionHeading } from "@/components/marketing/section-heading";
-import { cn } from "@/lib/utils";
+import { cn } from "@wahab/utils";
 
 const categories = [
   {

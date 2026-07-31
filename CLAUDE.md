@@ -8,16 +8,30 @@ Al-Wahab Solar Traders is a solar estimation platform built as a Turborepo monor
 
 ```
 apps/
-  web/          → Next.js 16 frontend (App Router)
+  web/          → Next.js 16 frontend — marketing site, client portal, admin portal
   api/          → NestJS REST backend
 packages/
-  ui/           → Shared UI components
-  types/        → Shared TypeScript types/interfaces
-  config/       → Shared configuration (ESLint, Tailwind, TypeScript)
-  utils/        → Shared utility functions
+  ui/           → Shared UI primitives (@wahab/ui)
+  types/        → Shared domain + API types (@wahab/types)
+  utils/        → Shared utility functions (@wahab/utils)
+  config/       → Shared TS configs + app constants (@wahab/config)
+docs/           → Product, technical, design and admin specs
+design/         → Design-tool exports, reference screens, brand assets
 prisma/         → Prisma schema, migrations, seed
 docker/         → Dockerfiles and docker-compose
 ```
+
+All three web surfaces live in **one** Next.js app, separated by route group:
+
+| Surface       | Route group  | URLs                                                 |
+| ------------- | ------------ | ---------------------------------------------------- |
+| Marketing     | `(marketing)` | `/`, `/about`, `/faq`, `/contact`, `/estimate`, legal |
+| Auth          | `(auth)`      | `/login`, `/signup`, `/verify`, `/reset`             |
+| Client portal | `(portal)`    | `/dashboard`, `/estimates`, `/projects`, `/profile`  |
+| Admin portal  | `(admin)`     | `/admin/**`                                          |
+
+Each group owns its own `layout.tsx` (shell, chrome, metadata). Never let one
+group import another group's layout or shell components.
 
 ## Tech Stack
 
@@ -58,14 +72,27 @@ docker/         → Dockerfiles and docker-compose
 
 ```
 apps/web/src/
-  app/            → Next.js App Router pages and layouts
-  components/     → UI components (organized by feature)
+  app/
+    (marketing)/  → Public site
+    (auth)/       → Login, signup, verify, reset
+    (portal)/     → Client portal (authenticated)
+    (admin)/      → Admin portal, staff only
+    layout.tsx    → Root layout: fonts, metadata, LocaleProvider
+    globals.css   → Design tokens, glass surfaces, keyframes
+  components/
+    admin/        → Admin-only shell + widgets
+    portal/       → Portal-only shell + widgets
+    marketing/    → Marketing sections
+    auth/         → Auth card
+    layout/       → Marketing header/footer
+    brand/        → Logo + logo mark
+    shared/       → Used by more than one route group
   services/       → API call abstractions
   hooks/          → Custom React hooks
-  lib/            → Utility libraries (i18n, seo, etc.)
-  types/          → Frontend-specific types
+  lib/            → i18n, seo, navigation config
+  types/          → Frontend-only types
   store/          → State management
-  utils/          → Helper functions
+  utils/          → Frontend-only helpers
 ```
 
 ### Conventions
@@ -74,10 +101,22 @@ apps/web/src/
 - Place API calls in `services/` files, never inline in components
 - Use custom hooks for reusable stateful logic
 - Environment variables: prefix with `NEXT_PUBLIC_` for client-side only
-- Import shared packages as `@wahab/types`, `@wahab/utils`, etc.
+- Generic, reusable primitives (Button, Input, Dialog…) live in `@wahab/ui` —
+  **not** in `apps/web`. Anything route-group-specific stays in the app.
+- `cn()` comes from `@wahab/utils`. Never redefine it locally.
+- Tailwind only scans this app by default. Any new shared package containing
+  class names needs an `@source` line in `globals.css`, or its styles are
+  silently dropped from the build.
 - Use `class-variance-authority` for component variants
-- Use `clsx` + `tailwind-merge` via the `cn()` utility for class merging
+- Nav entries live in `src/lib/navigation.ts`, typed against `PermissionKey`
 - Never put backend logic in the frontend
+
+### Auth gating
+
+Route protection belongs in **`apps/web/src/proxy.ts`**. Next.js 16 renamed
+`middleware.ts` → `proxy.ts`; the old filename does nothing. Portal routes
+redirect to `/login` when unauthenticated, and `/admin/**` returns **404** (not
+403) for non-staff, per `docs/05-admin-panel.md`.
 
 ### Component Pattern
 
@@ -109,24 +148,35 @@ export async function getEstimate(id: string): Promise<Estimate> {
 
 ### File Structure
 
+All cross-cutting concerns live under `common/` — there are no top-level
+`guards/`, `filters/`, `decorators/` or `interceptors/` directories.
+
 ```
 apps/api/src/
+  main.ts           → Bootstrap: prefix, helmet, CORS, pipes, filters
+  app.module.ts     → Composition root
+  config/           → Env validation + typed config module
+  common/
+    decorators/     → @Public, @RequirePermissions, @CurrentUser
+    dto/            → PaginationQueryDto and other shared DTOs
+    filters/        → AllExceptionsFilter (the only error formatter)
+    interceptors/   → ResponseInterceptor (the only envelope builder)
+    guards/         → Auth and permission guards
+    pagination.ts   → paginate() helper
+  database/         → Prisma module + service
   modules/
-    auth/           → Authentication (JWT, guards)
-    users/          → User management
-    estimates/      → Solar estimates
-    dashboard/      → Dashboard data
-    analytics/      → Usage analytics
-    settings/       → App settings
-  common/           → Shared decorators, pipes, filters
-  config/           → Configuration module
-  database/         → Database module, Prisma service
-  middlewares/      → HTTP middlewares
-  guards/           → Auth & role guards
-  decorators/       → Custom decorators
-  filters/          → Exception filters
-  interceptors/    → Response interceptors
+    health/         → Liveness probe
+    auth/           → JWT issue/refresh, OTP, guards
+    users/          → Customer + staff profiles, roles
+    estimates/      → Estimator engine, saved estimates
+    projects/       → Installations, phases, tasks, payments
+    dashboard/      → Aggregates for portal + admin overview
+    analytics/      → Funnel, traffic, revenue reporting
+    settings/       → Business settings, rate cards, content
 ```
+
+`/admin` is **not** a module. Admin screens are served by the domain modules
+above, gated with `@RequirePermissions(...)`.
 
 ### Module Pattern
 
@@ -137,6 +187,18 @@ Each module contains:
 - `*.module.ts` — Module definition
 - `dto/` — Data Transfer Objects (validated with class-validator)
 - `entities/` — Type definitions
+
+### Global wiring (already in place)
+
+- `ValidationPipe` — `whitelist: true`, `forbidNonWhitelisted: true`
+- `AllExceptionsFilter` — maps every throw to the error envelope, hides 5xx detail
+- `ResponseInterceptor` — wraps handler returns in the success envelope
+- `ThrottlerGuard` — registered as `APP_GUARD`, configured from env
+- `helmet()` + CORS from `CORS_ORIGIN`
+- Global prefix `api`, so routes are served at `/api/**`
+
+Controllers return **plain data**. To attach pagination, return
+`paginate(items, total, page, limit)` — never build the envelope by hand.
 
 ### Conventions
 
@@ -225,24 +287,19 @@ model Estimate {
 
 ## Environment Variables
 
-### Frontend (.env.local)
+Each app owns its own env files. There is **no** root `.env`.
 
-```
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
+- `apps/web/.env.example` → `apps/web/.env.local`
+- `apps/api/.env.example` → `apps/api/.env`
 
-### Backend (.env)
+The API validates its environment at boot in `src/config/env.validation.ts`;
+a missing or malformed value fails startup rather than surfacing later. Add new
+variables there, to the app's `.env.example`, and to `turbo.json`'s `build.env`
+list so caching stays correct.
 
-```
-DATABASE_URL=postgresql://user:pass@localhost:5432/wahab_solar
-JWT_SECRET=your-secret-key
-JWT_EXPIRY=15m
-JWT_REFRESH_EXPIRY=7d
-PORT=3001
-CORS_ORIGIN=http://localhost:3000
-NODE_ENV=development
-```
+Numeric env fields need an explicit `@Type(() => Number)` — inferred property
+types emit `design:type` of `Object`, so class-transformer cannot coerce the
+string on its own.
 
 ## Git Conventions
 
@@ -257,12 +314,13 @@ NODE_ENV=development
 ```bash
 # Development
 pnpm dev              # Start all apps
-pnpm dev --filter web # Start frontend only
-pnpm dev --filter api # Start backend only
+pnpm dev:web          # Frontend only  (http://localhost:3000)
+pnpm dev:api          # Backend only   (http://localhost:3001/api)
 
 # Build
 pnpm build            # Build all
-pnpm build --filter web
+pnpm build:web
+pnpm build:api
 
 # Database
 pnpm prisma migrate dev    # Run migrations
@@ -289,8 +347,19 @@ The project is being migrated in phases. Each phase must:
 Current phases:
 
 - Phase 1: Monorepo setup, move frontend ✓
-- Phase 2: NestJS backend, Prisma, PostgreSQL
-- Phase 3: Connect frontend to backend
-- Phase 4: Authentication architecture
-- Phase 5: Shared packages
+- Phase 2a: Shared packages (`@wahab/ui`, `types`, `utils`, `config`) ✓
+- Phase 2b: NestJS skeleton — config, envelope, filter, throttling, health ✓
+- Phase 2c: Route groups for auth, client portal, admin portal ✓
+- Phase 3: Prisma schema + PostgreSQL, `database/` module
+- Phase 4: Authentication — JWT, OTP, guards, `apps/web/src/proxy.ts` gating
+- Phase 5: Estimator engine + portal/admin screens against real data
 - Phase 6: Docker & production config
+
+## Known inconsistency
+
+`docs/02-technical-design.md` (v2.0) specifies **Supabase with Next.js route
+handlers** — no separate backend. This repo instead uses a **standalone NestJS
+API with Prisma and PostgreSQL**, per this file and the current project
+direction. Where the two disagree on *architecture*, this file wins. The docs
+remain authoritative for **domain content**: the data model, pricing engine,
+permission matrix, screen specs and copy.
