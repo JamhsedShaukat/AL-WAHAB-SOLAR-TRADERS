@@ -5,7 +5,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname, "../../"),
   },
-  transpilePackages: ["@wahab/ui", "@wahab/types", "@wahab/utils", "@wahab/config"],
+  transpilePackages: [
+    "@wahab/ui",
+    "@wahab/types",
+    "@wahab/utils",
+    "@wahab/config",
+  ],
 };
 
 export default nextConfig;

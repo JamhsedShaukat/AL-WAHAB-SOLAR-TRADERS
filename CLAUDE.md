@@ -21,15 +21,15 @@ docker/         → Dockerfiles and docker-compose
 
 ## Tech Stack
 
-| Layer        | Technology                  |
-| ------------ | --------------------------- |
-| Frontend     | Next.js 16, React 19, Tailwind CSS 4, App Router |
-| Backend      | NestJS, REST API            |
-| Database     | PostgreSQL                  |
-| ORM          | Prisma                      |
-| Monorepo     | Turborepo                   |
-| Pkg Manager  | pnpm (workspaces)           |
-| Language     | TypeScript (strict mode)    |
+| Layer       | Technology                                       |
+| ----------- | ------------------------------------------------ |
+| Frontend    | Next.js 16, React 19, Tailwind CSS 4, App Router |
+| Backend     | NestJS, REST API                                 |
+| Database    | PostgreSQL                                       |
+| ORM         | Prisma                                           |
+| Monorepo    | Turborepo                                        |
+| Pkg Manager | pnpm (workspaces)                                |
+| Language    | TypeScript (strict mode)                         |
 
 ## Critical Rules
 
@@ -85,11 +85,11 @@ apps/web/src/
 // ✅ Good — small, typed, focused
 interface Props {
   title: string;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
 }
 
-export function MyComponent({ title, variant = 'primary' }: Props) {
-  return <div className={cn('base-class', variants[variant])}>{title}</div>;
+export function MyComponent({ title, variant = "primary" }: Props) {
+  return <div className={cn("base-class", variants[variant])}>{title}</div>;
 }
 ```
 
@@ -97,8 +97,8 @@ export function MyComponent({ title, variant = 'primary' }: Props) {
 
 ```tsx
 // services/estimates.ts
-import { api } from '@/lib/api';
-import type { Estimate } from '@wahab/types';
+import { api } from "@/lib/api";
+import type { Estimate } from "@wahab/types";
 
 export async function getEstimate(id: string): Promise<Estimate> {
   return api.get(`/estimates/${id}`);
@@ -131,6 +131,7 @@ apps/api/src/
 ### Module Pattern
 
 Each module contains:
+
 - `*.controller.ts` — Route handlers
 - `*.service.ts` — Business logic
 - `*.module.ts` — Module definition
@@ -160,17 +161,17 @@ Each module contains:
 
 ### API Response Codes
 
-| Code | Usage                        |
-| ---- | ---------------------------- |
-| 200  | Success                      |
-| 201  | Created                      |
-| 400  | Validation error             |
-| 401  | Unauthorized                 |
-| 403  | Forbidden                    |
-| 404  | Not found                    |
-| 409  | Conflict                     |
-| 429  | Rate limited                 |
-| 500  | Internal server error        |
+| Code | Usage                 |
+| ---- | --------------------- |
+| 200  | Success               |
+| 201  | Created               |
+| 400  | Validation error      |
+| 401  | Unauthorized          |
+| 403  | Forbidden             |
+| 404  | Not found             |
+| 409  | Conflict              |
+| 429  | Rate limited          |
+| 500  | Internal server error |
 
 ## Database Standards
 
@@ -225,12 +226,14 @@ model Estimate {
 ## Environment Variables
 
 ### Frontend (.env.local)
+
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ### Backend (.env)
+
 ```
 DATABASE_URL=postgresql://user:pass@localhost:5432/wahab_solar
 JWT_SECRET=your-secret-key
@@ -278,11 +281,13 @@ docker compose down        # Stop all services
 ## Migration Phases
 
 The project is being migrated in phases. Each phase must:
+
 1. Be completed fully before moving to the next
 2. Not break any existing UI or functionality
 3. Be verified with a working build
 
 Current phases:
+
 - Phase 1: Monorepo setup, move frontend ✓
 - Phase 2: NestJS backend, Prisma, PostgreSQL
 - Phase 3: Connect frontend to backend
