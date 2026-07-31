@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════
+   AL-WAHAB SOLAR TRADERS — DESIGN TOKENS
+   Source: 03-Design-System-and-Screen-Specs.md §2
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Static tokens (colors, shadows, animations) ─── */
+@theme {
+  /* Brand colors — print / PDF / email only */
+  --color-wahab-blue: #023489;
+  --color-wahab-gold: #f5ac3c;
+
+  /* UI palette — preserved from the existing site */
+  --color-gold: #ffb800;
+  --color-amber: #ff8c00;
+  --color-cyan: #00e5ff;
+  --color-navy-900: #0a0f1e;
+  --color-navy-950: #05080f;
+  --color-ink: #e7ecf5;
+
+  /* Shadows */
+  --shadow-cta: 0 10px 30px -8px rgba(255, 140, 0, 0.55);
+  --shadow-cta-hover: 0 14px 40px -6px rgba(255, 140, 0, 0.75);
+  --shadow-mark: 0 0 20px -2px rgba(255, 184, 0, 0.6);
+  --shadow-card: 0 20px 60px -30px rgba(0, 0, 0, 0.8);
+
+  /* Animations */
+  --animate-glow: glow 2.6s ease-in-out infinite;
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-shimmer: shimmer 1.6s infinite;
+}
+
+/* ─── Font tokens (reference next/font CSS variables at runtime) ─── */
+@theme inline {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-urdu: var(--font-noto-nastaliq-urdu), serif;
+}
+
+/* ─── Keyframes ─── */
+@keyframes glow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: var(--p-op, 0.6);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(var(--p-dx, 0));
+    opacity: 0;
+  }
+}
+
+@keyframes meshShift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(3%, -3%) scale(1.03);
+  }
+  50% {
+    transform: translate(-2%, 4%) scale(0.97);
+  }
+  75% {
+    transform: translate(4%, 2%) scale(1.02);
+  }
+}
+
+/* ─── Base styles ─── */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background:
+    radial-gradient(
+        1200px 800px at 70% -10%,
+        rgba(255, 184, 0, 0.1),
+        transparent 60%
+      )
+      fixed,
+    radial-gradient(
+      900px 700px at 10% 20%,
+      rgba(0, 229, 255, 0.06),
+      transparent 55%
+    ),
+    linear-gradient(#0a0f1e 0%, #070b16 45%, #05080f 100%);
+  color: #e7ecf5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── Glass surfaces ─── */
+.glass {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(14px);
+}
+
+.glass-strong {
+  background: rgba(13, 20, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
+/* ─── Text gradients ─── */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #ffd466, #ffb800 45%, #ff8c00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #8af4ff, #00e5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ─── Focus ring — used site-wide ─── */
+.focus-ring {
+  @apply focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-offset-2 focus-visible:ring-offset-navy-900 outline-none;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

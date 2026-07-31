@@ -1,0 +1,5 @@
+// Custom React hooks
+// Place reusable stateful logic here
+//
+// Example:
+// export function useMediaQuery(query: string): boolean { ... }

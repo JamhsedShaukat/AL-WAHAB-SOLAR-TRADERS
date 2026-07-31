@@ -1,0 +1,10 @@
+// API service abstractions
+// Place all API calls here, never inline in components
+//
+// Example:
+// import { api } from '@/lib/api';
+// import type { Estimate } from '@wahab/types';
+//
+// export async function getEstimate(id: string): Promise<Estimate> {
+//   return api.get(`/estimates/${id}`);
+// }
