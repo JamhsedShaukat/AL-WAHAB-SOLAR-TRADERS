@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@wahab/utils";
 import { Logo } from "@/components/brand/logo";
 import { useLocale } from "@/lib/i18n/context";
 import type { TranslationKey } from "@/lib/i18n/translations/en";

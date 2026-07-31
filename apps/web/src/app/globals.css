@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
+/* Tailwind auto-detects sources under this app only. The shared primitives in
+   @wahab/ui live outside that tree, so their classes must be scanned too. */
+@source "../../../../packages/ui/src";
+
 /* ═══════════════════════════════════════════════════════
    AL-WAHAB SOLAR TRADERS — DESIGN TOKENS
-   Source: 03-Design-System-and-Screen-Specs.md §2
+   Source: docs/03-design-system.md §2
    ═══════════════════════════════════════════════════════ */
 
 /* ─── Static tokens (colors, shadows, animations) ─── */

@@ -9,6 +9,7 @@
     "clean": "rm -rf dist node_modules"
   },
   "devDependencies": {
+    "@wahab/config": "workspace:*",
     "typescript": "^5"
   }
 }

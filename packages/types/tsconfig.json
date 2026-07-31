@@ -1,18 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["ES2017"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "declaration": true,
-    "declarationMap": true,
-    "noEmit": true
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "extends": "@wahab/config/tsconfig/base.json",
+  "include": ["src"]
 }

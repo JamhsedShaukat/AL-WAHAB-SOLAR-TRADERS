@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/ui/container";
+import { Container } from "@wahab/ui";
 
 export const metadata: Metadata = {
   title: "Terms of Service",

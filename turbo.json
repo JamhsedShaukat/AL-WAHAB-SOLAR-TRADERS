@@ -1,5 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["NODE_ENV"],
+  "globalDependencies": ["packages/config/tsconfig/*.json"],
   "tasks": {
     "dev": {
       "cache": false,
@@ -7,7 +9,23 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": [
+        "NEXT_PUBLIC_*",
+        "DATABASE_URL",
+        "JWT_SECRET",
+        "JWT_EXPIRY",
+        "JWT_REFRESH_EXPIRY",
+        "CORS_ORIGIN",
+        "PORT",
+        "RATE_LIMIT_MAX",
+        "RATE_LIMIT_TTL"
+      ]
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "persistent": true
     },
     "lint": {
       "dependsOn": ["^build"]

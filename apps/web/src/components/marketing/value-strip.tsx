@@ -4,7 +4,7 @@ import {
   Users,
   Heart,
 } from "lucide-react";
-import { Container } from "@/components/ui/container";
+import { Container } from "@wahab/ui";
 import { Marquee } from "@/components/marketing/marquee";
 
 const cards = [
