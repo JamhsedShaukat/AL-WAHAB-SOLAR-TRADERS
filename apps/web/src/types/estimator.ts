@@ -24,11 +24,41 @@ export interface WizardAnswers {
   netMetering?: boolean;
 }
 
+export interface EstimateLineItem {
+  label: string;
+  qty: number;
+  unitLabel: string;
+  unitPricePkr: number;
+  totalPkr: number;
+}
+
+export interface EstimateResult {
+  ref: string;
+  systemKw: number;
+  panelCount: number;
+  panelWatts: number;
+  batteryKwh: number;
+  inverterKw: number;
+  lineItems: EstimateLineItem[];
+  totalPkr: number;
+  monthlyBillBefore: number;
+  monthlyBillAfter: number;
+  monthlySavingsPkr: number;
+  annualSavingsPkr: number;
+  paybackYears: number;
+  co2KgAnnual: number;
+  generationKwhAnnual: number;
+  answers: WizardAnswers;
+  createdAt: string;
+}
+
 export interface WizardState {
   currentStep: number;
   totalSteps: number;
   answers: WizardAnswers;
   started: boolean;
+  computing: boolean;
+  result: EstimateResult | null;
 }
 
 export type WizardAction =
@@ -36,4 +66,5 @@ export type WizardAction =
   | { type: "SET_ANSWER"; payload: Partial<WizardAnswers> }
   | { type: "NEXT_STEP" }
   | { type: "GO_TO_STEP"; step: number }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "SET_RESULT"; result: EstimateResult };
