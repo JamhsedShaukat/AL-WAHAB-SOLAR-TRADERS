@@ -21,7 +21,11 @@ export function EntryScreen({ onSelect }: EntryScreenProps) {
         </p>
       </Roshni>
 
-      <div className="space-y-3" role="radiogroup" aria-label="Choose how to start">
+      <div
+        className="space-y-3"
+        role="radiogroup"
+        aria-label="Choose how to start"
+      >
         <OptionCard
           icon={Upload}
           title="Upload your LESCO bill"

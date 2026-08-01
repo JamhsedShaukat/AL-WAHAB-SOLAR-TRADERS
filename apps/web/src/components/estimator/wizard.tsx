@@ -44,9 +44,15 @@ function reducer(state: WizardState, action: WizardAction): WizardState {
       };
     }
     case "NEXT_STEP":
-      return { ...state, currentStep: Math.min(state.currentStep + 1, state.totalSteps) };
+      return {
+        ...state,
+        currentStep: Math.min(state.currentStep + 1, state.totalSteps),
+      };
     case "GO_TO_STEP":
-      return { ...state, currentStep: Math.max(0, Math.min(action.step, state.totalSteps)) };
+      return {
+        ...state,
+        currentStep: Math.max(0, Math.min(action.step, state.totalSteps)),
+      };
     case "RESET":
       return initialState;
     default:
@@ -63,7 +69,7 @@ export function Wizard({ children }: WizardProps) {
 
   const handleEntry = useCallback(
     (method: EntryMethod) => dispatch({ type: "START", entryMethod: method }),
-    []
+    [],
   );
 
   const goBack = useCallback(() => {
@@ -93,7 +99,7 @@ export function Wizard({ children }: WizardProps) {
         <div
           className={cn(
             "transition-all duration-200",
-            state.started ? "animate-in fade-in slide-in-from-bottom-2" : ""
+            state.started ? "animate-in fade-in slide-in-from-bottom-2" : "",
           )}
         >
           {!state.started ? (

@@ -31,7 +31,7 @@ export function OptionCard({
         "focus-ring relative w-full rounded-2xl p-5 text-left transition-all duration-200 glass",
         selected
           ? "border-gold/60 bg-gold/[0.07]"
-          : "hover:border-white/20 hover:bg-white/5"
+          : "hover:border-white/20 hover:bg-white/5",
       )}
     >
       {/* Selected check */}
