@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import { Container } from "@wahab/ui";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+import { Wizard } from "@/components/estimator/wizard";
 
 export const metadata: Metadata = {
-  title: "Get your estimate",
+  title: "Free solar estimate",
   description:
-    "Answer a few questions or upload your LESCO bill to get an accurate solar estimate in about two minutes.",
+    "Get an itemized solar estimate for your Lahore home in about 2 minutes. Upload your LESCO bill or answer a few questions.",
 };
 
 export default function EstimatePage() {
   return (
-    <Container className="py-24 sm:py-32">
-      <PagePlaceholder
-        title="Get your estimate"
-        description="Answer a few questions or upload your LESCO bill for an accurate estimate in about two minutes."
-        spec="docs/03-design-system.md §S-06 – §S-09"
-      />
-    </Container>
+    <div className="pt-32 pb-24 sm:pt-36">
+      <div className="mx-auto w-full max-w-[1200px] px-6 sm:px-10">
+        <Wizard />
+      </div>
+    </div>
   );
 }
