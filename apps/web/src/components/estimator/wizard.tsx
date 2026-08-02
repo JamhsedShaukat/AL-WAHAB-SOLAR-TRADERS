@@ -1,11 +1,22 @@
 "use client";
 
-import { useReducer, useCallback } from "react";
+import { useReducer, useCallback, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@wahab/utils";
 import { EntryScreen } from "@/components/estimator/entry-screen";
 import { SummaryRail } from "@/components/estimator/summary-rail";
 import { ProgressBar } from "@/components/estimator/progress-bar";
+import { Step1BillConfirm } from "@/components/estimator/steps/step1-bill-confirm";
+import { Step2Goal } from "@/components/estimator/steps/step2-goal";
+import { Step3SystemType } from "@/components/estimator/steps/step3-system-type";
+import { Step4Backup } from "@/components/estimator/steps/step4-backup";
+import { Step5Roof } from "@/components/estimator/steps/step5-roof";
+import { Step6Structure } from "@/components/estimator/steps/step6-structure";
+import { Step7Priority } from "@/components/estimator/steps/step7-priority";
+import { Step8NetMetering } from "@/components/estimator/steps/step8-net-metering";
+import { BuildingAnimation } from "@/components/estimator/building-animation";
+import { ResultCard } from "@/components/estimator/result-card";
+import { computeEstimate } from "@/lib/pricing/engine";
 import type {
   WizardState,
   WizardAction,
@@ -22,6 +33,8 @@ const initialState: WizardState = {
   totalSteps: 8,
   answers: {},
   started: false,
+  computing: false,
+  result: null,
 };
 
 function reducer(state: WizardState, action: WizardAction): WizardState {
@@ -44,10 +57,13 @@ function reducer(state: WizardState, action: WizardAction): WizardState {
       };
     }
     case "NEXT_STEP":
-      return {
-        ...state,
-        currentStep: Math.min(state.currentStep + 1, state.totalSteps),
-      };
+      // transition to computing when the last step advances
+      if (state.currentStep >= state.totalSteps) {
+        return { ...state, computing: true };
+      }
+      return { ...state, currentStep: state.currentStep + 1 };
+    case "SET_RESULT":
+      return { ...state, computing: false, result: action.result };
     case "GO_TO_STEP":
       return {
         ...state,
@@ -64,6 +80,54 @@ interface WizardProps {
   children?: React.ReactNode;
 }
 
+// ongrid:         1=bill 2=goal 3=type 4=roof 5=structure 6=priority 7=netMetering
+// hybrid/offgrid: 1=bill 2=goal 3=type 4=backup 5=roof 6=structure 7=priority 8=netMetering
+function renderStep(
+  state: WizardState,
+  onNext: (payload: Partial<WizardAnswers>) => void,
+) {
+  const { currentStep, answers } = state;
+  const isOnGrid = answers.systemType === "ongrid";
+
+  if (currentStep === 1)
+    return <Step1BillConfirm answers={answers} onNext={onNext} />;
+  if (currentStep === 2) return <Step2Goal answers={answers} onNext={onNext} />;
+  if (currentStep === 3)
+    return <Step3SystemType answers={answers} onNext={onNext} />;
+  if (currentStep === 4) {
+    return isOnGrid ? (
+      <Step5Roof answers={answers} onNext={onNext} />
+    ) : (
+      <Step4Backup answers={answers} onNext={onNext} />
+    );
+  }
+  if (currentStep === 5) {
+    return isOnGrid ? (
+      <Step6Structure answers={answers} onNext={onNext} />
+    ) : (
+      <Step5Roof answers={answers} onNext={onNext} />
+    );
+  }
+  if (currentStep === 6) {
+    return isOnGrid ? (
+      <Step7Priority answers={answers} onNext={onNext} />
+    ) : (
+      <Step6Structure answers={answers} onNext={onNext} />
+    );
+  }
+  if (currentStep === 7) {
+    return isOnGrid ? (
+      <Step8NetMetering answers={answers} onNext={onNext} />
+    ) : (
+      <Step7Priority answers={answers} onNext={onNext} />
+    );
+  }
+  if (currentStep === 8)
+    return <Step8NetMetering answers={answers} onNext={onNext} />;
+
+  return null;
+}
+
 export function Wizard({ children }: WizardProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -71,6 +135,30 @@ export function Wizard({ children }: WizardProps) {
     (method: EntryMethod) => dispatch({ type: "START", entryMethod: method }),
     [],
   );
+
+  const handleNext = useCallback((payload: Partial<WizardAnswers>) => {
+    if (Object.keys(payload).length > 0) {
+      dispatch({ type: "SET_ANSWER", payload });
+    }
+    dispatch({ type: "NEXT_STEP" });
+  }, []);
+
+  const handleReset = useCallback(() => dispatch({ type: "RESET" }), []);
+
+  // Run the pricing engine after the animation delay
+  useEffect(() => {
+    if (!state.computing) return;
+    const timer = setTimeout(() => {
+      const result = computeEstimate(state.answers);
+      try {
+        sessionStorage.setItem(`estimate-${result.ref}`, JSON.stringify(result));
+      } catch {
+        // sessionStorage unavailable — detail page will show fallback
+      }
+      dispatch({ type: "SET_RESULT", result });
+    }, 2200);
+    return () => clearTimeout(timer);
+  }, [state.computing, state.answers]);
 
   const goBack = useCallback(() => {
     if (state.currentStep <= 1) dispatch({ type: "RESET" });
@@ -81,8 +169,8 @@ export function Wizard({ children }: WizardProps) {
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
       {/* Main column */}
       <div className="min-w-0">
-        {/* Progress + back */}
-        {state.started && (
+        {/* Progress + back — hidden during computing/result */}
+        {state.started && !state.computing && !state.result && (
           <div className="mb-6 space-y-4">
             <button
               onClick={goBack}
@@ -102,14 +190,14 @@ export function Wizard({ children }: WizardProps) {
             state.started ? "animate-in fade-in slide-in-from-bottom-2" : "",
           )}
         >
-          {!state.started ? (
+          {state.computing ? (
+            <BuildingAnimation />
+          ) : state.result ? (
+            <ResultCard result={state.result} onReset={handleReset} />
+          ) : !state.started ? (
             <EntryScreen onSelect={handleEntry} />
           ) : (
-            <div className="glass rounded-2xl p-6 sm:p-8">
-              <p className="text-center text-[15px] text-slate-400">
-                Step {state.currentStep} content will be built in Phase 11.
-              </p>
-            </div>
+            renderStep(state, handleNext)
           )}
         </div>
       </div>
