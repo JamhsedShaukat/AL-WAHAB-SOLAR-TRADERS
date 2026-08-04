@@ -30,7 +30,10 @@ const BATTERY_PRICE: Record<Priority, number> = {
   best_quality: 100_000,
 };
 
-const STRUCTURE_PRICE: Record<StructureType, Record<StructureQuality, number>> = {
+const STRUCTURE_PRICE: Record<
+  StructureType,
+  Record<StructureQuality, number>
+> = {
   standard: { medium: 8_000, good: 13_000 },
   customized: { medium: 14_000, good: 22_000 },
 };
@@ -170,7 +173,9 @@ export function computeEstimate(answers: WizardAnswers): EstimateResult {
   const monthlySavingsPkr = Math.round(monthlySavedUnits * tariff);
   const annualSavingsPkr = monthlySavingsPkr * 12;
   const paybackYears = Math.round((totalPkr / annualSavingsPkr) * 10) / 10;
-  const generationKwhAnnual = Math.round(systemKw * PEAK_SUN_HOURS * 365 * DERATING);
+  const generationKwhAnnual = Math.round(
+    systemKw * PEAK_SUN_HOURS * 365 * DERATING,
+  );
   const co2KgAnnual = Math.round(generationKwhAnnual * 0.45);
   const monthlyBillBefore = Math.round(monthlyUnits * tariff);
   const monthlyBillAfter = Math.max(0, monthlyBillBefore - monthlySavingsPkr);
