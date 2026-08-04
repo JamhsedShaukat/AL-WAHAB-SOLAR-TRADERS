@@ -17,12 +17,12 @@ export function Logo({ className, href = "/" }: LogoProps) {
         className,
       )}
     >
-      <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-linear-to-br from-gold to-amber shadow-mark">
-        <LogoMark className="h-5 w-5 text-navy-950" />
-      </span>
+      <LogoMark className="h-10 w-10 shrink-0" />
       <span className="font-display text-[18px] font-semibold leading-tight tracking-tight text-white">
-        Al-Wahab <span className="text-gold">Solar Traders</span>
+        Al-Wahab{" "}
+        <span className="text-gold">Solar Traders</span>
       </span>
     </Link>
   );
 }
+

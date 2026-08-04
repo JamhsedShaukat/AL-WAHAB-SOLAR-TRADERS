@@ -127,45 +127,64 @@
 - [x] Detail page sections: hero, cost breakdown, savings & ROI, system specs, timeline, warranties
 - [x] Sticky action bar on detail page (Share + Get a formal quote)
 
-### Phase 13 — Auth UI
+### Phase 13 — Auth UI ✅
 
-- [ ] Auth layout (split-screen)
-- [ ] Sign up form
-- [ ] Login form
-- [ ] OTP input (/verify)
-- [ ] Password reset (/reset)
-- [ ] Pending estimate chip
+- [x] Auth layout updated (minimal wrapper, each page owns its own grid)
+- [x] `AuthPanelLeft` — Split-screen left panel: sun-ray decoration, logo, "Save your estimate. Compare. Track.", 3 benefit rows with gold check icons, copyright
+- [x] `PasswordInput` — Password field with show/hide toggle and 4-bar strength meter (weak/fair/good/strong)
+- [x] `PendingEstimateChip` — Reads sessionStorage, shows estimate summary chip when arriving from estimator
+- [x] `AuthForm` — Combined sign-up/log-in client component with: segmented tabs, Google button, field validation, loading state (1.4 s simulated), redirect on success
+- [x] `OtpForm` — 6 auto-advancing digit inputs, paste-aware, 60 s resend countdown, "Change number" link, disabled submit until all 6 filled
+- [x] `ResetForm` — Step 1: email input → loading → "Check your inbox" state; Step 2 (preview): new password + confirm with strength meter → done state
+- [x] `/signup` page — full split-screen layout with left panel + AuthForm (initialTab="signup")
+- [x] `/login` page — full split-screen layout with left panel + AuthForm (initialTab="login")
+- [x] `/verify` page — centred card with OtpForm
+- [x] `/reset` page — centred card with ResetForm
+- [x] `rayPulse` + `shake` keyframes added to globals.css
+- [x] All pages tested: validation, strength meter, loading state, redirect flows, OTP paste
+- [x] Bug fix: field validation errors now clear immediately on user input (clearError on onChange)
 
-### Phase 14 — Customer Dashboard UI
+### Phase 14 — Customer Dashboard UI ✅
 
-- [ ] Dashboard layout
-- [ ] KPI tiles, project/estimate cards
-- [ ] Empty state
-- [ ] Estimates list (/estimates)
-- [ ] Compare view (/estimates/compare)
+- [x] `StatusChip` — 7 statuses (estimate_saved, survey_requested, survey_scheduled, quotation_issued, in_progress, completed, expired) with distinct colors and lucide icons
+- [x] `KpiTile` — icon + large number + label, `glass rounded-2xl` surface
+- [x] `ProjectCard` — full card anatomy: icon tile, size/tier, area, status chip, price, context line, gold progress bar (in_progress), timestamp, contextual CTA per status
+- [x] `DashboardEmptyState` — sun icon cluster with gold glow halo + cyan home badge, "No projects yet" heading, body copy, "Get your first estimate" CTA
+- [x] `/dashboard` page — greeting, KPI row (2-col mobile, 4-col sm+), cards grid (1→2→3 col), "Start a new estimate" dashed card, empty state via `?empty=1`
+- [x] `EstimatesList` — client component: search input, status filter dropdown, Filters button, compare CTA (2–3 selected), desktop table + mobile card list, validity chips (amber <3d, red expired)
+- [x] `/estimates` page — page header with "New estimate" CTA + EstimatesList
+- [x] `/estimates/compare` page — 3-column sticky-header comparison table, differing rows highlighted with gold left border, CTA cards below; horizontal scroll on mobile
+- [x] All pages tested: dashboard populated, dashboard empty, estimates list (filter/search), compare view
 
-### Phase 15 — Project Detail & Review UI
+### Phase 15 — Project Detail & Review UI ✅
 
-- [ ] Project detail page (/projects/[ref])
-- [ ] Phase tracker component
-- [ ] Documents, payments, team cards
-- [ ] Notifications page
-- [ ] Profile page (4 tabs)
-- [ ] Review form
+- [x] `PhaseTracker` — 6-phase accordion; completed phases show check icon + filled bar; active phase auto-expands with task list (status icons, owner, date); pending phases are muted
+- [x] `/projects` page — project cards with progress bar, status chip, contract value, click-through to detail
+- [x] `/projects/[ref]` page — header (title, StatusChip, ref, contract value, 60% progress ring), PhaseTracker, two-column body: updates timeline | system specs + team (call/WhatsApp buttons) + documents (download) + payments (paid/due/pending chips + progress bar), sticky footer bar with "Message our team"
+- [x] `/projects/[ref]/review` page — star rating (hover labels), textarea (char counter, 20-char min), photo upload, consent checkbox, disabled submit until valid; success state with checkmark
+- [x] `/notifications` page — grouped Today/This week/Earlier, tinted type icons, unread gold dot, "Mark all read" button, empty state
+- [x] `/profile` page — `ProfileTabs` client component with 4 tabs:
+  - **Profile**: avatar initials, name/phone/email/city/area/address fields, Save changes
+  - **Security**: change password, 2FA toggle, active sessions list + "Sign out everywhere"
+  - **Preferences**: language EN/Urdu toggle, notification matrix (in-app/email/SMS per event)
+  - **Data**: download JSON export, delete account with typed-phrase confirmation dialog
+- [x] All pages tested: projects list, project detail + phase tracker, review form, notifications, profile tabs
 
-### Phase 16 — Error Pages
+### Phase 16 — Error Pages ✅
 
-- [ ] 404 page
-- [ ] 500 error boundary
-- [ ] Maintenance page
+- [x] `app/not-found.tsx` — 404 page: sun icon with gold glow, gradient "404" heading, body copy, gold "Go home" CTA + `BackButton` ("Go back" with `window.history.back()`)
+- [x] `app/error.tsx` — 500 error boundary (client): amber triangle icon, gradient "500", error digest shown, "Try again" CTA calls `reset()`
+- [x] `app/global-error.tsx` — global error fallback (client, replaces root layout): inline styles, same amber/gold pattern, "Try again" button
+- [x] `app/(marketing)/maintenance/page.tsx` — maintenance page under marketing layout: animated sun, "Back shortly" heading, urgency copy, contact card (phone + WhatsApp)
+- [x] `components/shared/back-button.tsx` — client component for `window.history.back()` (React blocks `javascript:` hrefs)
+- [x] All pages tested: 404 ✓ (renders correctly with both CTAs), maintenance ✓, admin shell ✓
 
-### Phase 17 — Admin Shell
+### Phase 17 — Admin Shell ✅
 
-- [ ] Admin layout (sidebar + topbar)
-- [ ] Admin sidebar (collapsible, grouped nav)
-- [ ] Admin topbar (breadcrumbs, search, avatar)
-- [ ] RoleGuard component
-- [ ] Permission helpers
+- [x] `AdminSidebar` enhanced — collapsible to 72 px icon rail; collapse state via `useState`; icon rail shows item icons with `title` tooltip; active item styled `bg-gold/10 text-gold border-l-2 border-gold` per spec; `LogoMark` shown when collapsed, `Logo` when expanded; "Collapse / Expand" toggle button at bottom
+- [x] `AdminTopbar` enhanced — breadcrumbs (desktop, built from `usePathname()` + segment label map); ⌘K search trigger button with `Ctrl+K` kbd badge; notification bell with `DropdownMenu` showing last 3 admin notifications (unread gold dot, "Mark all read", "View all" link); `Super Admin` gold role badge; `SA` avatar with `DropdownMenu` (profile, settings, docs link, separator, sign out)
+- [x] `lib/permissions.ts` — `hasPermission()`, `hasAnyPermission()`, `hasRole()`, `isStaff()` helpers using `SessionUser` from `@wahab/types`
+- [x] `components/admin/role-guard.tsx` — server-side `RoleGuard` component; non-staff → `notFound()` (404 not 403 per spec); missing permission → `notFound()`; wraps page children
 
 ### Phase 18 — Admin Data Components
 

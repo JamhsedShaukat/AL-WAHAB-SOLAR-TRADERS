@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AuthCard } from "@/components/auth/auth-card";
+import { AuthPanelLeft } from "@/components/auth/auth-panel-left";
+import { AuthForm } from "@/components/auth/auth-form";
 
 export const metadata: Metadata = {
   title: "Log in",
@@ -8,25 +9,19 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <AuthCard
-      title="Log in"
-      description="Welcome back. Log in to see your saved estimates and project updates."
-      footer={
-        <>
-          New here?{" "}
-          <Link
-            href="/signup"
-            className="focus-ring rounded text-gold transition-colors hover:text-amber"
-          >
-            Create an account
-          </Link>
-        </>
-      }
-    >
-      <p className="text-[14px] text-slate-500">
-        Form not built yet — specified in{" "}
-        <code className="text-slate-400">docs/03-design-system.md §S-12</code>.
-      </p>
-    </AuthCard>
+    <div className="grid min-h-dvh lg:grid-cols-[1.05fr_1fr]">
+      <AuthPanelLeft />
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-8 px-6 py-12">
+        <main className="w-full max-w-110">
+          <AuthForm initialTab="login" />
+        </main>
+        <Link
+          href="/"
+          className="focus-ring rounded-lg text-[14px] text-slate-400 transition-colors hover:text-white"
+        >
+          Back to site
+        </Link>
+      </div>
+    </div>
   );
 }
