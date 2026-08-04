@@ -122,9 +122,9 @@ export function computeEstimate(answers: WizardAnswers): EstimateResult {
       ? [
           {
             label: "Battery storage",
-            qty: batteryKwh,
-            unitLabel: "kWh LFP",
-            unitPricePkr: BATTERY_PRICE[priority],
+            qty: 1,
+            unitLabel: `${batteryKwh} kWh LFP`,
+            unitPricePkr: batteryCost,
             totalPkr: batteryCost,
           },
         ]
