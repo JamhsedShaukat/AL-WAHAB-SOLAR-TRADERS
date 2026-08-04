@@ -59,7 +59,10 @@ export function PhaseTracker({ phases }: PhaseTrackerProps) {
         return (
           <div
             key={phase.id}
-            className={cn("border-b border-white/6", i === phases.length - 1 && "border-b-0")}
+            className={cn(
+              "border-b border-white/6",
+              i === phases.length - 1 && "border-b-0",
+            )}
           >
             {/* Phase header */}
             <button

@@ -42,8 +42,8 @@ export default function ReviewFormPage() {
             Thank you!
           </h1>
           <p className="mx-auto mt-3 max-w-sm text-[15px] leading-relaxed text-slate-400">
-            Your review is with our team for approval. It will appear on our site
-            once verified — usually within 24 hours.
+            Your review is with our team for approval. It will appear on our
+            site once verified — usually within 24 hours.
           </p>
           <Link
             href="/projects"
@@ -86,7 +86,9 @@ export default function ReviewFormPage() {
           <div className="text-[14px] font-semibold text-white">
             12 kWp Hybrid — DHA Phase 6
           </div>
-          <div className="text-[12px] text-slate-500">PRJ-2607-0088 · Completed</div>
+          <div className="text-[12px] text-slate-500">
+            PRJ-2607-0088 · Completed
+          </div>
         </div>
       </div>
 
@@ -166,7 +168,9 @@ export default function ReviewFormPage() {
             <span className="text-[13px] text-slate-400">
               Click to upload or drag & drop
             </span>
-            <span className="text-[11px] text-slate-600">PNG, JPG up to 5 MB</span>
+            <span className="text-[11px] text-slate-600">
+              PNG, JPG up to 5 MB
+            </span>
             <input type="file" accept="image/*" className="sr-only" />
           </label>
         </div>

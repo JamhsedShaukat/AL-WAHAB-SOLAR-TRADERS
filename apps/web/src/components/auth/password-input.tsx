@@ -102,7 +102,11 @@ export function PasswordInput({
           className="focus-ring absolute right-3 top-1/2 -translate-y-1/2 rounded p-1 text-slate-400 transition-colors hover:text-white"
           aria-label={visible ? "Hide password" : "Show password"}
         >
-          {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          {visible ? (
+            <EyeOff className="h-4 w-4" />
+          ) : (
+            <Eye className="h-4 w-4" />
+          )}
         </button>
       </div>
 
@@ -122,7 +126,10 @@ export function PasswordInput({
             ))}
           </div>
           <span
-            className={cn("text-[12px] capitalize", STRENGTH_TEXT_COLORS[strength])}
+            className={cn(
+              "text-[12px] capitalize",
+              STRENGTH_TEXT_COLORS[strength],
+            )}
           >
             {strength} password
           </span>

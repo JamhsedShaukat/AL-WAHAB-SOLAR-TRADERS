@@ -55,8 +55,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             maxWidth: 380,
           }}
         >
-          A fatal error occurred and the application could not recover. Our
-          team has been notified.
+          A fatal error occurred and the application could not recover. Our team
+          has been notified.
         </p>
         <button
           type="button"

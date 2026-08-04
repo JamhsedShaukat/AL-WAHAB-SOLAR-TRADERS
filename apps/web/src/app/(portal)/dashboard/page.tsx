@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CircleCheckBig, Folder, Hammer, Inbox, Plus } from "lucide-react";
+import {
+  ArrowRight,
+  CircleCheckBig,
+  Folder,
+  Hammer,
+  Inbox,
+  Plus,
+} from "lucide-react";
 import { KpiTile } from "@/components/portal/kpi-tile";
-import { ProjectCard, type DashboardCard } from "@/components/portal/project-card";
+import {
+  ProjectCard,
+  type DashboardCard,
+} from "@/components/portal/project-card";
 import { DashboardEmptyState } from "@/components/portal/dashboard-empty-state";
 
 export const metadata: Metadata = {
@@ -65,7 +75,9 @@ interface DashboardPageProps {
   searchParams: Promise<{ empty?: string }>;
 }
 
-export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+export default async function DashboardPage({
+  searchParams,
+}: DashboardPageProps) {
   const { empty } = await searchParams;
   const isEmpty = empty === "1";
 
@@ -123,7 +135,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
                   Price another home or system in ~2 minutes
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-gold" aria-hidden="true" />
+              <ArrowRight
+                className="h-4 w-4 text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-gold"
+                aria-hidden="true"
+              />
             </Link>
           </div>
         </>

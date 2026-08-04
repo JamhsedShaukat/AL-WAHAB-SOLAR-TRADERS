@@ -54,9 +54,24 @@ function useBreadcrumbs() {
 }
 
 const MOCK_NOTIFICATIONS = [
-  { id: 1, text: "New lead from Gulberg — 8 kWp", time: "2 min ago", unread: true },
-  { id: 2, text: "Project PRJ-2607-0012 phase completed", time: "1 hr ago", unread: true },
-  { id: 3, text: "Estimate EST-0441 awaiting approval", time: "3 hr ago", unread: false },
+  {
+    id: 1,
+    text: "New lead from Gulberg — 8 kWp",
+    time: "2 min ago",
+    unread: true,
+  },
+  {
+    id: 2,
+    text: "Project PRJ-2607-0012 phase completed",
+    time: "1 hr ago",
+    unread: true,
+  },
+  {
+    id: 3,
+    text: "Estimate EST-0441 awaiting approval",
+    time: "3 hr ago",
+    unread: false,
+  },
 ];
 
 export function AdminTopbar() {
@@ -166,7 +181,9 @@ export function AdminTopbar() {
                   {!n.unread && <span className="mt-1.5 h-2 w-2 shrink-0" />}
                   <div className="min-w-0 flex-1">
                     <p className="text-[13px] text-slate-200">{n.text}</p>
-                    <p className="mt-0.5 text-[11px] text-slate-500">{n.time}</p>
+                    <p className="mt-0.5 text-[11px] text-slate-500">
+                      {n.time}
+                    </p>
                   </div>
                 </div>
               ))}

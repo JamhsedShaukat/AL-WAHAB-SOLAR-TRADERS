@@ -30,6 +30,12 @@ export function hasRole(
 /** Returns true for any staff role that may access /admin. */
 export function isStaff(user: SessionUser | null | undefined): boolean {
   if (!user) return false;
-  const STAFF: RoleKey[] = ["viewer", "sales", "operations", "admin", "super_admin"];
+  const STAFF: RoleKey[] = [
+    "viewer",
+    "sales",
+    "operations",
+    "admin",
+    "super_admin",
+  ];
   return user.roles.some((r) => STAFF.includes(r));
 }

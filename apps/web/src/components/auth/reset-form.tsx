@@ -63,10 +63,11 @@ export function ResetForm() {
           <CheckCircle2 className="h-7 w-7 text-gold" />
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="font-display text-xl font-semibold text-white">Check your inbox</h2>
+          <h2 className="font-display text-xl font-semibold text-white">
+            Check your inbox
+          </h2>
           <p className="text-[14px] leading-relaxed text-slate-400">
-            If{" "}
-            <span className="font-medium text-white">{contact}</span>{" "}is
+            If <span className="font-medium text-white">{contact}</span> is
             registered, a reset link is on its way. Check spam if you don&apos;t
             see it within a minute.
           </p>
@@ -90,7 +91,11 @@ export function ResetForm() {
 
   if (step === "new-password") {
     return (
-      <form onSubmit={handleNewPassword} noValidate className="flex flex-col gap-4">
+      <form
+        onSubmit={handleNewPassword}
+        noValidate
+        className="flex flex-col gap-4"
+      >
         <p className="text-[14px] text-slate-400">
           Choose a new password for your account.
         </p>
@@ -113,7 +118,12 @@ export function ResetForm() {
           error={confirmError}
           disabled={loading}
         />
-        <Button type="submit" size="lg" className="w-full mt-1" disabled={loading}>
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full mt-1"
+          disabled={loading}
+        >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
@@ -135,7 +145,8 @@ export function ResetForm() {
             Password updated
           </h2>
           <p className="text-[14px] text-slate-400">
-            Your password has been changed. You can now log in with your new password.
+            Your password has been changed. You can now log in with your new
+            password.
           </p>
         </div>
         <Button asChild size="lg" className="w-full">

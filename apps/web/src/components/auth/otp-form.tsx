@@ -38,7 +38,10 @@ export function OtpForm() {
     if (char && idx < DIGITS - 1) focusAt(idx + 1);
   }
 
-  function handleKeyDown(idx: number, e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(
+    idx: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) {
     if (e.key === "Backspace") {
       if (digits[idx]) {
         const next = [...digits];
@@ -56,7 +59,10 @@ export function OtpForm() {
 
   function handlePaste(e: React.ClipboardEvent) {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, DIGITS);
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, DIGITS);
     if (!pasted) return;
     const next = Array(DIGITS).fill("");
     pasted.split("").forEach((ch, i) => (next[i] = ch));
@@ -144,7 +150,12 @@ export function OtpForm() {
         </p>
       )}
 
-      <Button type="submit" size="lg" className="w-full" disabled={loading || filled < DIGITS}>
+      <Button
+        type="submit"
+        size="lg"
+        className="w-full"
+        disabled={loading || filled < DIGITS}
+      >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verify code"}
       </Button>
 
@@ -160,7 +171,9 @@ export function OtpForm() {
               : "text-gold hover:text-amber",
           )}
         >
-          {countdown > 0 ? `Resend code in 0:${String(countdown).padStart(2, "0")}` : "Resend code"}
+          {countdown > 0
+            ? `Resend code in 0:${String(countdown).padStart(2, "0")}`
+            : "Resend code"}
         </button>
         <button
           type="button"

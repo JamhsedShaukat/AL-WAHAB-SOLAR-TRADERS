@@ -56,10 +56,15 @@ export default function ProjectsPage() {
                   <div className="font-display text-[18px] font-semibold text-white">
                     {p.title}
                   </div>
-                  <div className="mt-0.5 text-[12px] text-slate-500">{p.area}</div>
+                  <div className="mt-0.5 text-[12px] text-slate-500">
+                    {p.area}
+                  </div>
                 </div>
               </div>
-              <ArrowRight className="h-4 w-4 shrink-0 text-slate-600 transition-transform group-hover:translate-x-1 group-hover:text-gold" aria-hidden="true" />
+              <ArrowRight
+                className="h-4 w-4 shrink-0 text-slate-600 transition-transform group-hover:translate-x-1 group-hover:text-gold"
+                aria-hidden="true"
+              />
             </div>
 
             <div className="flex items-center justify-between gap-2">

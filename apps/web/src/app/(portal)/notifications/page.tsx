@@ -15,7 +15,12 @@ export const metadata: Metadata = {
   title: "Notifications",
 };
 
-type NotifType = "project_update" | "payment_due" | "phase_completed" | "survey_scheduled" | "review_request";
+type NotifType =
+  | "project_update"
+  | "payment_due"
+  | "phase_completed"
+  | "survey_scheduled"
+  | "review_request";
 
 interface Notification {
   id: string;
@@ -27,10 +32,16 @@ interface Notification {
   unread: boolean;
 }
 
-const ICON_CONFIG: Record<NotifType, { Icon: React.ElementType; className: string }> = {
+const ICON_CONFIG: Record<
+  NotifType,
+  { Icon: React.ElementType; className: string }
+> = {
   project_update: { Icon: Hammer, className: "bg-amber/10 text-amber" },
   payment_due: { Icon: CreditCard, className: "bg-red-500/10 text-red-400" },
-  phase_completed: { Icon: CircleCheckBig, className: "bg-emerald-500/10 text-emerald-400" },
+  phase_completed: {
+    Icon: CircleCheckBig,
+    className: "bg-emerald-500/10 text-emerald-400",
+  },
   survey_scheduled: { Icon: Sun, className: "bg-gold/10 text-gold" },
   review_request: { Icon: FileText, className: "bg-cyan/10 text-cyan" },
 };
@@ -153,7 +164,10 @@ export default function NotificationsPage() {
                           {n.title}
                         </span>
                         {n.unread && (
-                          <span className="h-2 w-2 shrink-0 rounded-full bg-gold" aria-label="Unread" />
+                          <span
+                            className="h-2 w-2 shrink-0 rounded-full bg-gold"
+                            aria-label="Unread"
+                          />
                         )}
                       </div>
                       <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">

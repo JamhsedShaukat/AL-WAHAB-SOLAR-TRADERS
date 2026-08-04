@@ -78,7 +78,11 @@ const ROWS: CompareRow[] = [
   { label: "Area", key: "area" },
   { label: "Panels", key: "panelCount", format: (v) => `${v} × 500W` },
   { label: "Inverter", key: "inverterKw", format: (v) => `${v} kW` },
-  { label: "Battery", key: "batteryKwh", format: (v) => (Number(v) > 0 ? `${v} kWh` : "—") },
+  {
+    label: "Battery",
+    key: "batteryKwh",
+    format: (v) => (Number(v) > 0 ? `${v} kWh` : "—"),
+  },
   {
     label: "Price range",
     key: "priceLowPkr",
@@ -167,10 +171,7 @@ export default function CompareEstimatesPage() {
               const diff = isDiffRow(row, estimates);
               const isLast = ri === ROWS.length - 1;
               return (
-                <tr
-                  key={row.key}
-                  className={cn(diff && "bg-gold/2.5")}
-                >
+                <tr key={row.key} className={cn(diff && "bg-gold/2.5")}>
                   {/* Label */}
                   <td
                     className={cn(
@@ -188,7 +189,9 @@ export default function CompareEstimatesPage() {
                       className={cn(
                         "glass border-t border-white/5 px-5 py-3.5 text-[14px] text-white",
                         diff && "font-medium",
-                        isLast && i === estimates.length - 1 && "rounded-br-2xl",
+                        isLast &&
+                          i === estimates.length - 1 &&
+                          "rounded-br-2xl",
                       )}
                     >
                       {formatValue(row, est)}
@@ -204,26 +207,43 @@ export default function CompareEstimatesPage() {
       {/* CTA row */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {estimates.map((est) => (
-          <div key={est.ref} className="glass flex flex-col gap-3 rounded-2xl p-4">
+          <div
+            key={est.ref}
+            className="glass flex flex-col gap-3 rounded-2xl p-4"
+          >
             <div className="font-display text-[16px] font-semibold text-white">
               {est.sizeKwp} kWp · {est.tier}
             </div>
             <ul className="flex flex-col gap-1.5 text-[13px] text-slate-400">
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" aria-hidden="true" />
-                PKR {(est.monthlySavingPkr).toLocaleString()}/mo saving
+                <CheckCircle2
+                  className="h-3.5 w-3.5 shrink-0 text-emerald-400"
+                  aria-hidden="true"
+                />
+                PKR {est.monthlySavingPkr.toLocaleString()}/mo saving
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" aria-hidden="true" />
+                <CheckCircle2
+                  className="h-3.5 w-3.5 shrink-0 text-emerald-400"
+                  aria-hidden="true"
+                />
                 {est.paybackYears} yr payback
               </li>
               <li className="flex items-center gap-2">
                 {est.batteryKwh > 0 ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" aria-hidden="true" />
+                  <CheckCircle2
+                    className="h-3.5 w-3.5 shrink-0 text-emerald-400"
+                    aria-hidden="true"
+                  />
                 ) : (
-                  <Minus className="h-3.5 w-3.5 shrink-0 text-slate-600" aria-hidden="true" />
+                  <Minus
+                    className="h-3.5 w-3.5 shrink-0 text-slate-600"
+                    aria-hidden="true"
+                  />
                 )}
-                {est.batteryKwh > 0 ? `${est.batteryKwh} kWh backup` : "No battery backup"}
+                {est.batteryKwh > 0
+                  ? `${est.batteryKwh} kWh backup`
+                  : "No battery backup"}
               </li>
             </ul>
             <Link

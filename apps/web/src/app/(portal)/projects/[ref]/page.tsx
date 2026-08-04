@@ -9,7 +9,10 @@ import {
   Zap,
 } from "lucide-react";
 import { StatusChip, type CardStatus } from "@/components/portal/status-chip";
-import { PhaseTracker, type ProjectPhase } from "@/components/portal/phase-tracker";
+import {
+  PhaseTracker,
+  type ProjectPhase,
+} from "@/components/portal/phase-tracker";
 
 export const metadata: Metadata = {
   title: "Project detail",
@@ -38,11 +41,41 @@ const PHASES: ProjectPhase[] = [
     label: "Site Survey & Design",
     status: "completed",
     tasks: [
-      { id: "t1", label: "Site visit", status: "completed", owner: "Usman Khalid", date: "15 Jul 2026" },
-      { id: "t2", label: "Roof inspection", status: "completed", owner: "Usman Khalid", date: "15 Jul 2026" },
-      { id: "t3", label: "Load assessment", status: "completed", owner: "Usman Khalid", date: "15 Jul 2026" },
-      { id: "t4", label: "Final system design", status: "completed", owner: "Engineering", date: "17 Jul 2026" },
-      { id: "t5", label: "Customer approval", status: "completed", owner: "Ali Raza", date: "18 Jul 2026" },
+      {
+        id: "t1",
+        label: "Site visit",
+        status: "completed",
+        owner: "Usman Khalid",
+        date: "15 Jul 2026",
+      },
+      {
+        id: "t2",
+        label: "Roof inspection",
+        status: "completed",
+        owner: "Usman Khalid",
+        date: "15 Jul 2026",
+      },
+      {
+        id: "t3",
+        label: "Load assessment",
+        status: "completed",
+        owner: "Usman Khalid",
+        date: "15 Jul 2026",
+      },
+      {
+        id: "t4",
+        label: "Final system design",
+        status: "completed",
+        owner: "Engineering",
+        date: "17 Jul 2026",
+      },
+      {
+        id: "t5",
+        label: "Customer approval",
+        status: "completed",
+        owner: "Ali Raza",
+        date: "18 Jul 2026",
+      },
     ],
   },
   {
@@ -50,10 +83,34 @@ const PHASES: ProjectPhase[] = [
     label: "Agreement & Procurement",
     status: "completed",
     tasks: [
-      { id: "t6", label: "Agreement signing", status: "completed", owner: "Ali Raza", date: "19 Jul 2026" },
-      { id: "t7", label: "Advance payment", status: "completed", owner: "Finance", date: "20 Jul 2026" },
-      { id: "t8", label: "Equipment ordering", status: "completed", owner: "Procurement", date: "21 Jul 2026" },
-      { id: "t9", label: "Delivery to site", status: "completed", owner: "Logistics", date: "28 Jul 2026" },
+      {
+        id: "t6",
+        label: "Agreement signing",
+        status: "completed",
+        owner: "Ali Raza",
+        date: "19 Jul 2026",
+      },
+      {
+        id: "t7",
+        label: "Advance payment",
+        status: "completed",
+        owner: "Finance",
+        date: "20 Jul 2026",
+      },
+      {
+        id: "t8",
+        label: "Equipment ordering",
+        status: "completed",
+        owner: "Procurement",
+        date: "21 Jul 2026",
+      },
+      {
+        id: "t9",
+        label: "Delivery to site",
+        status: "completed",
+        owner: "Logistics",
+        date: "28 Jul 2026",
+      },
     ],
   },
   {
@@ -61,9 +118,26 @@ const PHASES: ProjectPhase[] = [
     label: "Installation",
     status: "active",
     tasks: [
-      { id: "t10", label: "Mounting structure", status: "completed", owner: "Bilal Ahmed", date: "30 Jul 2026" },
-      { id: "t11", label: "Installing panels", status: "completed", owner: "Bilal Ahmed", date: "31 Jul 2026" },
-      { id: "t12", label: "Installing inverter & battery", status: "in_progress", owner: "Bilal Ahmed" },
+      {
+        id: "t10",
+        label: "Mounting structure",
+        status: "completed",
+        owner: "Bilal Ahmed",
+        date: "30 Jul 2026",
+      },
+      {
+        id: "t11",
+        label: "Installing panels",
+        status: "completed",
+        owner: "Bilal Ahmed",
+        date: "31 Jul 2026",
+      },
+      {
+        id: "t12",
+        label: "Installing inverter & battery",
+        status: "in_progress",
+        owner: "Bilal Ahmed",
+      },
       { id: "t13", label: "DC/AC wiring", status: "pending" },
       { id: "t14", label: "Earthing & protections", status: "pending" },
     ],
@@ -87,7 +161,11 @@ const PHASES: ProjectPhase[] = [
       { id: "t19", label: "LESCO application", status: "pending" },
       { id: "t20", label: "Documentation", status: "pending" },
       { id: "t21", label: "Technical inspection", status: "pending" },
-      { id: "t22", label: "Bi-directional meter installation", status: "pending" },
+      {
+        id: "t22",
+        label: "Bi-directional meter installation",
+        status: "pending",
+      },
       { id: "t23", label: "Approval", status: "pending" },
     ],
   },
@@ -138,14 +216,42 @@ const DOCUMENTS = [
 ];
 
 const PAYMENTS = [
-  { id: "pay1", label: "30% Advance", amount: 930000, status: "paid", date: "20 Jul 2026" },
-  { id: "pay2", label: "60% at installation start", amount: 1860000, status: "due", date: "1 Aug 2026" },
-  { id: "pay3", label: "10% on completion", amount: 310000, status: "pending", date: "TBD" },
+  {
+    id: "pay1",
+    label: "30% Advance",
+    amount: 930000,
+    status: "paid",
+    date: "20 Jul 2026",
+  },
+  {
+    id: "pay2",
+    label: "60% at installation start",
+    amount: 1860000,
+    status: "due",
+    date: "1 Aug 2026",
+  },
+  {
+    id: "pay3",
+    label: "10% on completion",
+    amount: 310000,
+    status: "pending",
+    date: "TBD",
+  },
 ];
 
 const TEAM = [
-  { id: "tm1", role: "Sales Manager", name: "Usman Khalid", phone: "+92 300 1111111" },
-  { id: "tm2", role: "Installation Lead", name: "Bilal Ahmed", phone: "+92 300 2222222" },
+  {
+    id: "tm1",
+    role: "Sales Manager",
+    name: "Usman Khalid",
+    phone: "+92 300 1111111",
+  },
+  {
+    id: "tm2",
+    role: "Installation Lead",
+    name: "Bilal Ahmed",
+    phone: "+92 300 2222222",
+  },
 ];
 
 interface Props {
@@ -156,7 +262,10 @@ export default async function ProjectDetailPage({ params }: Props) {
   const { ref } = await params;
   void ref; // will be used for data fetching in Phase 5
 
-  const paid = PAYMENTS.filter((p) => p.status === "paid").reduce((s, p) => s + p.amount, 0);
+  const paid = PAYMENTS.filter((p) => p.status === "paid").reduce(
+    (s, p) => s + p.amount,
+    0,
+  );
   const total = PAYMENTS.reduce((s, p) => s + p.amount, 0);
 
   return (
@@ -178,9 +287,12 @@ export default async function ProjectDetailPage({ params }: Props) {
             </h1>
             <div className="mt-2 flex flex-wrap items-center gap-3">
               <StatusChip status={PROJECT.status} />
-              <span className="font-mono text-[13px] text-slate-400">{PROJECT.ref}</span>
+              <span className="font-mono text-[13px] text-slate-400">
+                {PROJECT.ref}
+              </span>
               <span className="text-[13px] text-slate-400">
-                PKR {(PROJECT.contractValuePkr / 1_000_000).toFixed(1)}M contract
+                PKR {(PROJECT.contractValuePkr / 1_000_000).toFixed(1)}M
+                contract
               </span>
             </div>
           </div>
@@ -188,10 +300,22 @@ export default async function ProjectDetailPage({ params }: Props) {
           {/* Overall progress ring */}
           <div className="flex flex-col items-center gap-1">
             <svg width="64" height="64" className="-rotate-90">
-              <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
               <circle
-                cx="32" cy="32" r="26" fill="none"
-                stroke="url(#prog-grad)" strokeWidth="6" strokeLinecap="round"
+                cx="32"
+                cy="32"
+                r="26"
+                fill="none"
+                stroke="rgba(255,255,255,0.08)"
+                strokeWidth="6"
+              />
+              <circle
+                cx="32"
+                cy="32"
+                r="26"
+                fill="none"
+                stroke="url(#prog-grad)"
+                strokeWidth="6"
+                strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 26}`}
                 strokeDashoffset={`${2 * Math.PI * 26 * (1 - PROJECT.progressPct / 100)}`}
               />
@@ -227,8 +351,13 @@ export default async function ProjectDetailPage({ params }: Props) {
           </h2>
           <div className="flex flex-col gap-4">
             {UPDATES.map((u) => (
-              <div key={u.id} className="glass flex flex-col gap-2 rounded-2xl p-4">
-                <p className="text-[14px] leading-relaxed text-slate-200">{u.text}</p>
+              <div
+                key={u.id}
+                className="glass flex flex-col gap-2 rounded-2xl p-4"
+              >
+                <p className="text-[14px] leading-relaxed text-slate-200">
+                  {u.text}
+                </p>
                 <div className="flex items-center gap-2 text-[12px] text-slate-500">
                   <span className="font-medium text-slate-400">{u.author}</span>
                   <span>·</span>
@@ -271,9 +400,14 @@ export default async function ProjectDetailPage({ params }: Props) {
             </h3>
             <div className="flex flex-col gap-3">
               {TEAM.map((m) => (
-                <div key={m.id} className="flex items-center justify-between gap-3">
+                <div
+                  key={m.id}
+                  className="flex items-center justify-between gap-3"
+                >
                   <div>
-                    <div className="text-[13px] font-medium text-white">{m.name}</div>
+                    <div className="text-[13px] font-medium text-white">
+                      {m.name}
+                    </div>
                     <div className="text-[12px] text-slate-500">{m.role}</div>
                   </div>
                   <div className="flex gap-1.5">
@@ -307,7 +441,10 @@ export default async function ProjectDetailPage({ params }: Props) {
             </h3>
             <div className="flex flex-col gap-2">
               {DOCUMENTS.map((doc) => (
-                <div key={doc.id} className="flex items-center justify-between gap-2">
+                <div
+                  key={doc.id}
+                  className="flex items-center justify-between gap-2"
+                >
                   <div>
                     <div className="text-[13px] text-white">{doc.label}</div>
                     <div className="text-[11px] text-slate-500">{doc.date}</div>
@@ -331,7 +468,10 @@ export default async function ProjectDetailPage({ params }: Props) {
             </h3>
             <div className="flex flex-col gap-2.5">
               {PAYMENTS.map((pay) => (
-                <div key={pay.id} className="flex items-center justify-between gap-2">
+                <div
+                  key={pay.id}
+                  className="flex items-center justify-between gap-2"
+                >
                   <div>
                     <div className="text-[13px] text-white">{pay.label}</div>
                     <div className="text-[11px] text-slate-500">{pay.date}</div>

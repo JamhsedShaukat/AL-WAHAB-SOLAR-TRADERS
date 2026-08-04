@@ -24,7 +24,9 @@ export function PendingEstimateChip() {
       const key = sessionStorage.key(i);
       if (key?.startsWith("estimate-")) {
         try {
-          const data = JSON.parse(sessionStorage.getItem(key)!) as EstimateResult;
+          const data = JSON.parse(
+            sessionStorage.getItem(key)!,
+          ) as EstimateResult;
           setEstimate(data);
         } catch {
           // ignore malformed entries
@@ -37,9 +39,11 @@ export function PendingEstimateChip() {
   if (!estimate) return null;
 
   const systemLabel =
-    SYSTEM_TYPE_LABELS[estimate.answers.systemType ?? ""] ?? estimate.answers.systemType;
+    SYSTEM_TYPE_LABELS[estimate.answers.systemType ?? ""] ??
+    estimate.answers.systemType;
   const tierLabel =
-    PRIORITY_LABELS[estimate.answers.priority ?? ""] ?? estimate.answers.priority;
+    PRIORITY_LABELS[estimate.answers.priority ?? ""] ??
+    estimate.answers.priority;
 
   const totalFormatted = `PKR ${estimate.totalPkr.toLocaleString("en-PK")}`;
 

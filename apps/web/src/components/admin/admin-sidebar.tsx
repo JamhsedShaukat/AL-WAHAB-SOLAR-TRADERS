@@ -51,7 +51,10 @@ export function AdminSidebar() {
               </p>
             )}
             {collapsed && (
-              <div className="my-1 border-t border-white/6" aria-hidden="true" />
+              <div
+                className="my-1 border-t border-white/6"
+                aria-hidden="true"
+              />
             )}
             {section.items.map(({ label, href, icon: Icon }) => {
               const active =

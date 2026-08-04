@@ -118,6 +118,7 @@
 - [x] wizard.tsx routing (on-grid = 7 steps, hybrid/off-grid = 8 steps)
 
 ### Phase 12 — Estimator Result & Detail ✅
+
 - [x] Client-side pricing engine (lib/pricing/engine.ts — sizes system, line items, savings, CO₂)
 - [x] Building animation (spinning sun + bounce dots, 2.2 s delay)
 - [x] Result card (receipt layout with stats: saving / payback / CO₂)

@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Download, Globe, Lock, Shield, Trash2, User } from "lucide-react";
+import {
+  AlertTriangle,
+  Download,
+  Globe,
+  Lock,
+  Shield,
+  Trash2,
+  User,
+} from "lucide-react";
 import { cn } from "@wahab/utils";
 
 type Tab = "profile" | "security" | "preferences" | "data";
@@ -115,11 +123,21 @@ function SecurityTab() {
     <div className="flex flex-col gap-6">
       {/* Change password */}
       <section className="glass rounded-2xl p-5">
-        <h3 className="mb-4 text-[15px] font-semibold text-white">Change password</h3>
+        <h3 className="mb-4 text-[15px] font-semibold text-white">
+          Change password
+        </h3>
         <div className="flex flex-col gap-4">
-          <Field label="Current password" type="password" placeholder="••••••••" />
+          <Field
+            label="Current password"
+            type="password"
+            placeholder="••••••••"
+          />
           <Field label="New password" type="password" placeholder="••••••••" />
-          <Field label="Confirm new password" type="password" placeholder="••••••••" />
+          <Field
+            label="Confirm new password"
+            type="password"
+            placeholder="••••••••"
+          />
           <div className="flex justify-end">
             <button
               type="button"
@@ -147,7 +165,9 @@ function SecurityTab() {
       {/* Active sessions */}
       <section className="glass rounded-2xl p-5">
         <div className="mb-4 flex items-center justify-between gap-4">
-          <h3 className="text-[15px] font-semibold text-white">Active sessions</h3>
+          <h3 className="text-[15px] font-semibold text-white">
+            Active sessions
+          </h3>
           <button
             type="button"
             className="focus-ring text-[13px] text-red-400 transition-colors hover:text-red-300"
@@ -157,10 +177,23 @@ function SecurityTab() {
         </div>
         <div className="flex flex-col gap-3">
           {[
-            { device: "Chrome on Windows", location: "Lahore, PK", current: true, time: "Now" },
-            { device: "Safari on iPhone", location: "Lahore, PK", current: false, time: "2 days ago" },
+            {
+              device: "Chrome on Windows",
+              location: "Lahore, PK",
+              current: true,
+              time: "Now",
+            },
+            {
+              device: "Safari on iPhone",
+              location: "Lahore, PK",
+              current: false,
+              time: "2 days ago",
+            },
           ].map((s) => (
-            <div key={s.device} className="flex items-center justify-between gap-3 text-[13px]">
+            <div
+              key={s.device}
+              className="flex items-center justify-between gap-3 text-[13px]"
+            >
               <div>
                 <span className="text-white">{s.device}</span>
                 <span className="ml-2 text-slate-500">· {s.location}</span>
@@ -212,10 +245,18 @@ function PreferencesTab() {
           <table className="w-full min-w-100 text-[13px]">
             <thead>
               <tr className="border-b border-white/[0.07]">
-                <th className="pb-3 text-left font-medium text-slate-500">Event</th>
-                <th className="pb-3 text-center font-medium text-slate-500">In-app</th>
-                <th className="pb-3 text-center font-medium text-slate-500">Email</th>
-                <th className="pb-3 text-center font-medium text-slate-500">SMS</th>
+                <th className="pb-3 text-left font-medium text-slate-500">
+                  Event
+                </th>
+                <th className="pb-3 text-center font-medium text-slate-500">
+                  In-app
+                </th>
+                <th className="pb-3 text-center font-medium text-slate-500">
+                  Email
+                </th>
+                <th className="pb-3 text-center font-medium text-slate-500">
+                  SMS
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -250,7 +291,9 @@ function DataTab() {
       {/* Download data */}
       <section className="glass flex items-center justify-between gap-4 rounded-2xl p-5">
         <div>
-          <div className="text-[15px] font-semibold text-white">Download my data</div>
+          <div className="text-[15px] font-semibold text-white">
+            Download my data
+          </div>
           <p className="mt-0.5 text-[13px] text-slate-400">
             Export all your estimates, projects and account data as JSON.
           </p>
@@ -268,11 +311,14 @@ function DataTab() {
       <section className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
         <div className="mb-4 flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-red-400" aria-hidden="true" />
-          <h3 className="text-[15px] font-semibold text-red-300">Delete account</h3>
+          <h3 className="text-[15px] font-semibold text-red-300">
+            Delete account
+          </h3>
         </div>
         <p className="mb-4 text-[13px] leading-relaxed text-slate-400">
-          Permanently delete your account and all associated data. This cannot be
-          undone. Active projects will remain visible to our team until closed.
+          Permanently delete your account and all associated data. This cannot
+          be undone. Active projects will remain visible to our team until
+          closed.
         </p>
         <div className="flex flex-col gap-3">
           <label className="text-[13px] text-slate-400">

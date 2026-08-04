@@ -119,7 +119,13 @@ function formatPkr(n: number) {
   return String(n);
 }
 
-function ValidityChip({ daysLeft, validUntil }: { daysLeft: number; validUntil: string }) {
+function ValidityChip({
+  daysLeft,
+  validUntil,
+}: {
+  daysLeft: number;
+  validUntil: string;
+}) {
   if (daysLeft < 0)
     return (
       <span className="inline-flex items-center rounded-full bg-red-500/12 px-2 py-0.5 text-[11px] font-medium text-red-400">
@@ -164,7 +170,10 @@ export function EstimatesList() {
       {/* FilterBar */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-55 flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" aria-hidden="true" />
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+            aria-hidden="true"
+          />
           <input
             type="search"
             placeholder="Search by ref or area…"
@@ -176,7 +185,9 @@ export function EstimatesList() {
 
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as CardStatus | "all")}
+          onChange={(e) =>
+            setStatusFilter(e.target.value as CardStatus | "all")
+          }
           className="focus-ring rounded-xl border border-white/9 bg-white/4 px-3 py-2.5 text-[13px] text-slate-300"
         >
           {STATUS_OPTIONS.map((o) => (
@@ -211,23 +222,32 @@ export function EstimatesList() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-white/[0.07]">
-                {["", "Ref", "Size & type", "Tier", "Area", "Price range", "Created", "Valid until", "Status", ""].map(
-                  (col, i) => (
-                    <th
-                      key={i}
-                      className="px-4 py-3 text-[12px] font-medium uppercase tracking-wide text-slate-500"
-                    >
-                      {col && col !== "" ? (
-                        <span className="flex items-center gap-1">
-                          {col}
-                          {["Size & type", "Created", "Valid until"].includes(col) && (
-                            <ArrowUpDown className="h-3 w-3 opacity-50" />
-                          )}
-                        </span>
-                      ) : null}
-                    </th>
-                  ),
-                )}
+                {[
+                  "",
+                  "Ref",
+                  "Size & type",
+                  "Tier",
+                  "Area",
+                  "Price range",
+                  "Created",
+                  "Valid until",
+                  "Status",
+                  "",
+                ].map((col, i) => (
+                  <th
+                    key={i}
+                    className="px-4 py-3 text-[12px] font-medium uppercase tracking-wide text-slate-500"
+                  >
+                    {col && col !== "" ? (
+                      <span className="flex items-center gap-1">
+                        {col}
+                        {["Size & type", "Created", "Valid until"].includes(
+                          col,
+                        ) && <ArrowUpDown className="h-3 w-3 opacity-50" />}
+                      </span>
+                    ) : null}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -262,15 +282,25 @@ export function EstimatesList() {
                   <td className="px-4 py-3.5 text-[13px] text-white">
                     {est.sizeKwp} kWp · {est.systemType}
                   </td>
-                  <td className="px-4 py-3.5 text-[13px] text-slate-300">{est.tier}</td>
-                  <td className="px-4 py-3.5 text-[13px] text-slate-300">{est.areaName}</td>
+                  <td className="px-4 py-3.5 text-[13px] text-slate-300">
+                    {est.tier}
+                  </td>
+                  <td className="px-4 py-3.5 text-[13px] text-slate-300">
+                    {est.areaName}
+                  </td>
                   <td className="px-4 py-3.5 font-mono text-[13px] text-slate-300">
                     PKR {formatPkr(est.priceLow)}
-                    {est.priceHigh !== est.priceLow && `–${formatPkr(est.priceHigh)}`}
+                    {est.priceHigh !== est.priceLow &&
+                      `–${formatPkr(est.priceHigh)}`}
                   </td>
-                  <td className="px-4 py-3.5 text-[13px] text-slate-400">{est.createdAt}</td>
+                  <td className="px-4 py-3.5 text-[13px] text-slate-400">
+                    {est.createdAt}
+                  </td>
                   <td className="px-4 py-3.5">
-                    <ValidityChip daysLeft={est.daysLeft} validUntil={est.validUntil} />
+                    <ValidityChip
+                      daysLeft={est.daysLeft}
+                      validUntil={est.validUntil}
+                    />
                   </td>
                   <td className="px-4 py-3.5">
                     <StatusChip status={est.status} />
@@ -347,13 +377,17 @@ export function EstimatesList() {
               <span>{est.areaName}</span>
               <span className="font-mono text-slate-300">
                 PKR {formatPkr(est.priceLow)}
-                {est.priceHigh !== est.priceLow && `–${formatPkr(est.priceHigh)}`}
+                {est.priceHigh !== est.priceLow &&
+                  `–${formatPkr(est.priceHigh)}`}
               </span>
             </div>
 
             <div className="flex items-center justify-between gap-2 text-[12px] text-slate-500">
               <span>Created {est.createdAt}</span>
-              <ValidityChip daysLeft={est.daysLeft} validUntil={est.validUntil} />
+              <ValidityChip
+                daysLeft={est.daysLeft}
+                validUntil={est.validUntil}
+              />
             </div>
           </div>
         ))}

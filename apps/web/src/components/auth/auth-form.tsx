@@ -44,7 +44,8 @@ function validate(tab: Tab, fields: Record<string, string>) {
   const errors: Record<string, string> = {};
   if (tab === "signup") {
     if (!fields.name?.trim()) errors.name = "Please enter your full name.";
-    if (!fields.contact?.trim()) errors.contact = "Please enter your phone or email.";
+    if (!fields.contact?.trim())
+      errors.contact = "Please enter your phone or email.";
     if (!fields.password) errors.password = "Please create a password.";
     else if (fields.password.length < 8)
       errors.password = "Password must be at least 8 characters.";
@@ -69,7 +70,12 @@ export function AuthForm({ initialTab = "signup" }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
 
   function clearError(field: string) {
-    if (errors[field]) setErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
+    if (errors[field])
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
   }
 
   function switchTab(next: Tab) {
@@ -177,7 +183,10 @@ export function AuthForm({ initialTab = "signup" }: AuthFormProps) {
               label="Full name"
               type="text"
               value={name}
-              onChange={(e) => { setName(e.target.value); clearError("name"); }}
+              onChange={(e) => {
+                setName(e.target.value);
+                clearError("name");
+              }}
               placeholder="e.g. Tariq Ahmed"
               autoComplete="name"
               error={errors.name}
@@ -190,8 +199,13 @@ export function AuthForm({ initialTab = "signup" }: AuthFormProps) {
             label="Phone or email"
             type="text"
             value={contact}
-            onChange={(e) => { setContact(e.target.value); clearError("contact"); }}
-            placeholder={tab === "signup" ? "+92 300 1234567 or email" : "Phone or email"}
+            onChange={(e) => {
+              setContact(e.target.value);
+              clearError("contact");
+            }}
+            placeholder={
+              tab === "signup" ? "+92 300 1234567 or email" : "Phone or email"
+            }
             autoComplete={tab === "signup" ? "username" : "username"}
             error={errors.contact}
             disabled={loading}
@@ -201,9 +215,14 @@ export function AuthForm({ initialTab = "signup" }: AuthFormProps) {
           <PasswordInput
             label="Password"
             value={password}
-            onChange={(v) => { setPassword(v); clearError("password"); }}
+            onChange={(v) => {
+              setPassword(v);
+              clearError("password");
+            }}
             showStrength={tab === "signup"}
-            autoComplete={tab === "signup" ? "new-password" : "current-password"}
+            autoComplete={
+              tab === "signup" ? "new-password" : "current-password"
+            }
             error={errors.password}
             disabled={loading}
           />
@@ -232,18 +251,16 @@ export function AuthForm({ initialTab = "signup" }: AuthFormProps) {
 
           {/* Generic form error */}
           {formError && (
-            <p className="rounded-xl bg-red-500/10 px-4 py-3 text-[13px] text-red-400" role="alert">
+            <p
+              className="rounded-xl bg-red-500/10 px-4 py-3 text-[13px] text-red-400"
+              role="alert"
+            >
               {formError}
             </p>
           )}
 
           {/* Submit */}
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full"
-            disabled={loading}
-          >
+          <Button type="submit" size="lg" className="w-full" disabled={loading}>
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : tab === "signup" ? (
@@ -257,11 +274,17 @@ export function AuthForm({ initialTab = "signup" }: AuthFormProps) {
           {tab === "signup" && (
             <p className="text-center text-[12px] leading-relaxed text-slate-500">
               By creating an account you agree to our{" "}
-              <Link href="/terms" className="text-slate-400 underline-offset-2 hover:underline">
+              <Link
+                href="/terms"
+                className="text-slate-400 underline-offset-2 hover:underline"
+              >
                 Terms
               </Link>{" "}
               and{" "}
-              <Link href="/privacy" className="text-slate-400 underline-offset-2 hover:underline">
+              <Link
+                href="/privacy"
+                className="text-slate-400 underline-offset-2 hover:underline"
+              >
                 Privacy Policy
               </Link>
               .
