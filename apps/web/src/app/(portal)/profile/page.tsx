@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+import { ProfileTabs } from "@/components/portal/profile-tabs";
 
 export const metadata: Metadata = {
   title: "Profile & settings",
@@ -7,10 +7,16 @@ export const metadata: Metadata = {
 
 export default function ProfilePage() {
   return (
-    <PagePlaceholder
-      title={"Profile & settings"}
-      description={"Your contact details, password, language and notification preferences."}
-      spec="docs/03-design-system.md §S-21"
-    />
+    <div className="flex flex-col gap-8">
+      <div>
+        <h1 className="font-display text-[28px] font-semibold text-white sm:text-[32px]">
+          Profile & settings
+        </h1>
+        <p className="mt-1 text-[14px] text-slate-400">
+          Your contact details, password, language and notification preferences.
+        </p>
+      </div>
+      <ProfileTabs />
+    </div>
   );
 }
