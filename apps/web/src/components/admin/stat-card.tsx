@@ -61,11 +61,22 @@ export function StatCard({
           <div className="h-14 w-24 shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               {sparkType === "bar" ? (
-                <BarChart data={sparkData} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
-                  <Bar dataKey="v" fill="#FFB800" radius={[2, 2, 0, 0]} opacity={0.8} />
+                <BarChart
+                  data={sparkData}
+                  margin={{ top: 2, right: 0, bottom: 0, left: 0 }}
+                >
+                  <Bar
+                    dataKey="v"
+                    fill="#FFB800"
+                    radius={[2, 2, 0, 0]}
+                    opacity={0.8}
+                  />
                 </BarChart>
               ) : (
-                <AreaChart data={sparkData} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                <AreaChart
+                  data={sparkData}
+                  margin={{ top: 2, right: 0, bottom: 0, left: 0 }}
+                >
                   <defs>
                     <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#FFB800" stopOpacity={0.3} />
@@ -80,10 +91,7 @@ export function StatCard({
                     fill="url(#sg)"
                     dot={false}
                   />
-                  <Tooltip
-                    contentStyle={{ display: "none" }}
-                    cursor={false}
-                  />
+                  <Tooltip contentStyle={{ display: "none" }} cursor={false} />
                 </AreaChart>
               )}
             </ResponsiveContainer>

@@ -3,11 +3,27 @@
 import { StatCard } from "@/components/admin/stat-card";
 import { ChartCard } from "@/components/admin/chart-card";
 import { cn } from "@wahab/utils";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { MapPin, ExternalLink } from "lucide-react";
 
 const sparkline = [
-  { v: 12 }, { v: 18 }, { v: 15 }, { v: 24 }, { v: 20 }, { v: 31 }, { v: 27 }, { v: 38 }, { v: 34 }, { v: 42 },
+  { v: 12 },
+  { v: 18 },
+  { v: 15 },
+  { v: 24 },
+  { v: 20 },
+  { v: 31 },
+  { v: 27 },
+  { v: 38 },
+  { v: 34 },
+  { v: 42 },
 ];
 
 const hourlyData = Array.from({ length: 24 }, (_, h) => ({
@@ -36,8 +52,12 @@ export function TrafficClient() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-white">Visitor traffic</h1>
-        <p className="mt-1 text-[13px] text-slate-500">Where your visitors come from and when</p>
+        <h1 className="font-display text-2xl font-bold text-white">
+          Visitor traffic
+        </h1>
+        <p className="mt-1 text-[13px] text-slate-500">
+          Where your visitors come from and when
+        </p>
       </div>
 
       {/* Live counter */}
@@ -47,15 +67,33 @@ export function TrafficClient() {
           <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
         </span>
         <span className="text-slate-300">
-          <span className="font-display text-2xl font-bold text-white">14</span> visitors on the site right now
+          <span className="font-display text-2xl font-bold text-white">14</span>{" "}
+          visitors on the site right now
         </span>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Sessions today" value="312" delta="+9%" deltaPositive sparkData={sparkline} sparkType="area" />
-        <StatCard label="Avg session" value="2m 38s" delta="+0:14" deltaPositive />
-        <StatCard label="Mobile share" value="71%" delta="+3%" deltaPositive={false} />
+        <StatCard
+          label="Sessions today"
+          value="312"
+          delta="+9%"
+          deltaPositive
+          sparkData={sparkline}
+          sparkType="area"
+        />
+        <StatCard
+          label="Avg session"
+          value="2m 38s"
+          delta="+0:14"
+          deltaPositive
+        />
+        <StatCard
+          label="Mobile share"
+          value="71%"
+          delta="+3%"
+          deltaPositive={false}
+        />
         <StatCard label="New vs returning" value="68% / 32%" />
       </div>
 
@@ -70,10 +108,35 @@ export function TrafficClient() {
                   <stop offset="95%" stopColor="#00E5FF" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="hour" tick={{ fill: "#475569", fontSize: 10 }} axisLine={false} tickLine={false} interval={3} />
-              <YAxis tick={{ fill: "#475569", fontSize: 10 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: "#0d1426", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 12, color: "#e2e8f0" }} />
-              <Area type="monotone" dataKey="v" stroke="#00E5FF" fill="url(#gT)" strokeWidth={2} dot={false} name="Sessions" />
+              <XAxis
+                dataKey="hour"
+                tick={{ fill: "#475569", fontSize: 10 }}
+                axisLine={false}
+                tickLine={false}
+                interval={3}
+              />
+              <YAxis
+                tick={{ fill: "#475569", fontSize: 10 }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#0d1426",
+                  border: "1px solid rgba(255,255,255,0.09)",
+                  borderRadius: 12,
+                  color: "#e2e8f0",
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="v"
+                stroke="#00E5FF"
+                fill="url(#gT)"
+                strokeWidth={2}
+                dot={false}
+                name="Sessions"
+              />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -84,12 +147,21 @@ export function TrafficClient() {
             {areas.map((a) => (
               <div key={a.name} className="flex items-center gap-3">
                 <MapPin className="h-3.5 w-3.5 shrink-0 text-gold" />
-                <span className="w-28 shrink-0 text-[12px] text-slate-300">{a.name}</span>
+                <span className="w-28 shrink-0 text-[12px] text-slate-300">
+                  {a.name}
+                </span>
                 <div className="h-4 flex-1 overflow-hidden rounded-full bg-white/5">
-                  <div className="h-full rounded-full bg-gold/60" style={{ width: `${Math.round(a.sessions / 8.2)}%` }} />
+                  <div
+                    className="h-full rounded-full bg-gold/60"
+                    style={{ width: `${Math.round(a.sessions / 8.2)}%` }}
+                  />
                 </div>
-                <span className="w-12 shrink-0 text-right text-[12px] text-slate-400">{a.sessions}</span>
-                <span className="w-8 shrink-0 text-right text-[11px] text-emerald-400">{a.conversions}</span>
+                <span className="w-12 shrink-0 text-right text-[12px] text-slate-400">
+                  {a.sessions}
+                </span>
+                <span className="w-8 shrink-0 text-right text-[11px] text-emerald-400">
+                  {a.conversions}
+                </span>
               </div>
             ))}
           </div>
@@ -110,13 +182,22 @@ export function TrafficClient() {
             </thead>
             <tbody>
               {utmLinks.map((u) => (
-                <tr key={u.name} className="border-b border-white/5 last:border-0">
+                <tr
+                  key={u.name}
+                  className="border-b border-white/5 last:border-0"
+                >
                   <td className="flex items-center gap-1.5 py-2.5 pr-4 text-slate-300">
                     {u.name} <ExternalLink className="h-3 w-3 text-slate-600" />
                   </td>
-                  <td className="py-2.5 pr-4 text-right text-slate-300">{u.sessions}</td>
-                  <td className="py-2.5 pr-4 text-right text-gold">{u.estimates}</td>
-                  <td className="py-2.5 text-right text-emerald-400">{u.projects}</td>
+                  <td className="py-2.5 pr-4 text-right text-slate-300">
+                    {u.sessions}
+                  </td>
+                  <td className="py-2.5 pr-4 text-right text-gold">
+                    {u.estimates}
+                  </td>
+                  <td className="py-2.5 text-right text-emerald-400">
+                    {u.projects}
+                  </td>
                 </tr>
               ))}
             </tbody>

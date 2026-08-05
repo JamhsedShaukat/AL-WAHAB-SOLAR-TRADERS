@@ -31,7 +31,10 @@ export function ExportMenu({ onExportCsv, onExportPdf }: ExportMenuProps) {
           onClick={onExportCsv}
           className="flex items-center gap-2 text-[13px]"
         >
-          <FileSpreadsheet className="h-4 w-4 text-emerald-400" aria-hidden="true" />
+          <FileSpreadsheet
+            className="h-4 w-4 text-emerald-400"
+            aria-hidden="true"
+          />
           Export CSV
         </DropdownMenuItem>
         <DropdownMenuSeparator />

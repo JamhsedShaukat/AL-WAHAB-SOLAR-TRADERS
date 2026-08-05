@@ -22,12 +22,48 @@ interface SearchResult {
 }
 
 const QUICK_LINKS: SearchResult[] = [
-  { id: "dash", label: "Dashboard", sub: "Overview", href: "/admin", icon: LayoutDashboard },
-  { id: "users", label: "Users", sub: "Manage", href: "/admin/users", icon: Users },
-  { id: "est", label: "Estimations", sub: "Manage", href: "/admin/estimates", icon: FileText },
-  { id: "proj", label: "Projects", sub: "Manage", href: "/admin/projects", icon: FolderKanban },
-  { id: "rev", label: "Revenue", sub: "Insights", href: "/admin/revenue", icon: BarChart3 },
-  { id: "set", label: "Settings", sub: "System", href: "/admin/settings", icon: Settings },
+  {
+    id: "dash",
+    label: "Dashboard",
+    sub: "Overview",
+    href: "/admin",
+    icon: LayoutDashboard,
+  },
+  {
+    id: "users",
+    label: "Users",
+    sub: "Manage",
+    href: "/admin/users",
+    icon: Users,
+  },
+  {
+    id: "est",
+    label: "Estimations",
+    sub: "Manage",
+    href: "/admin/estimates",
+    icon: FileText,
+  },
+  {
+    id: "proj",
+    label: "Projects",
+    sub: "Manage",
+    href: "/admin/projects",
+    icon: FolderKanban,
+  },
+  {
+    id: "rev",
+    label: "Revenue",
+    sub: "Insights",
+    href: "/admin/revenue",
+    icon: BarChart3,
+  },
+  {
+    id: "set",
+    label: "Settings",
+    sub: "System",
+    href: "/admin/settings",
+    icon: Settings,
+  },
 ];
 
 interface CommandPaletteProps {
@@ -93,7 +129,10 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
       >
         {/* Search input */}
         <div className="flex items-center gap-3 border-b border-white/8 px-4 py-3">
-          <Search className="h-4.5 w-4.5 shrink-0 text-slate-500" aria-hidden="true" />
+          <Search
+            className="h-4.5 w-4.5 shrink-0 text-slate-500"
+            aria-hidden="true"
+          />
           <input
             ref={inputRef}
             type="text"
