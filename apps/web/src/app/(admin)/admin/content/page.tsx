@@ -1,16 +1,8 @@
-import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+﻿import type { Metadata } from "next";
+import { ContentClient } from "@/components/admin/content-client";
 
-export const metadata: Metadata = {
-  title: "Content",
-};
+export const metadata: Metadata = { title: "Content" };
 
 export default function AdminContentPage() {
-  return (
-    <PagePlaceholder
-      title={"Content"}
-      description={"Marketing copy, FAQs and legal pages."}
-      spec="docs/05-admin-panel.md §A-20"
-    />
-  );
+  return <ContentClient />;
 }

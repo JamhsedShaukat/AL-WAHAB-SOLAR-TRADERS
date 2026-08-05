@@ -1,16 +1,8 @@
-import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+﻿import type { Metadata } from "next";
+import { TrafficClient } from "@/components/admin/traffic-client";
 
-export const metadata: Metadata = {
-  title: "Visitor traffic",
-};
+export const metadata: Metadata = { title: "Visitor traffic" };
 
 export default function AdminTrafficPage() {
-  return (
-    <PagePlaceholder
-      title={"Visitor traffic"}
-      description={"Sessions, sources and geography."}
-      spec="docs/05-admin-panel.md §A-08"
-    />
-  );
+  return <TrafficClient />;
 }

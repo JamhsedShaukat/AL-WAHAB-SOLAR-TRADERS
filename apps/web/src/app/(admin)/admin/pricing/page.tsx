@@ -1,16 +1,8 @@
-import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+﻿import type { Metadata } from "next";
+import { PricingClient } from "@/components/admin/pricing-client";
 
-export const metadata: Metadata = {
-  title: "Pricing & rate cards",
-};
+export const metadata: Metadata = { title: "Pricing" };
 
 export default function AdminPricingPage() {
-  return (
-    <PagePlaceholder
-      title={"Pricing & rate cards"}
-      description={"Panel, inverter and labour rates that drive every estimate."}
-      spec="docs/05-admin-panel.md §A-19"
-    />
-  );
+  return <PricingClient />;
 }

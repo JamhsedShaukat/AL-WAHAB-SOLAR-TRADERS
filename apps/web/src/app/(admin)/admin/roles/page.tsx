@@ -1,16 +1,8 @@
-import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+﻿import type { Metadata } from "next";
+import { RolesClient } from "@/components/admin/roles-client";
 
-export const metadata: Metadata = {
-  title: "Roles & permissions",
-};
+export const metadata: Metadata = { title: "Roles & permissions" };
 
 export default function AdminRolesPage() {
-  return (
-    <PagePlaceholder
-      title={"Roles & permissions"}
-      description={"Staff roles and the permissions attached to each."}
-      spec="docs/05-admin-panel.md §A-16"
-    />
-  );
+  return <RolesClient />;
 }
