@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -22,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@wahab/ui";
 import { cn } from "@wahab/utils";
+import { CommandPalette } from "@/components/admin/command-palette";
 
 /** Maps route segments to human-readable labels for breadcrumbs. */
 const SEGMENT_LABELS: Record<string, string> = {
@@ -76,11 +78,25 @@ const MOCK_NOTIFICATIONS = [
 
 export function AdminTopbar() {
   const crumbs = useBreadcrumbs();
+  const [cmdOpen, setCmdOpen] = useState(false);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setCmdOpen(true);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
-    <header className="glass sticky top-0 z-20 flex items-center justify-between gap-4 px-5 py-3.5">
-      {/* Left: mobile menu + logo + breadcrumbs */}
-      <div className="flex min-w-0 items-center gap-3">
+    <>
+      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
+      <header className="glass sticky top-0 z-20 flex items-center justify-between gap-4 px-5 py-3.5">
+        {/* Left: mobile menu + logo + breadcrumbs */}
+        <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
           aria-label="Open navigation"
@@ -126,6 +142,7 @@ export function AdminTopbar() {
         <button
           type="button"
           aria-label="Search (Ctrl+K)"
+          onClick={() => setCmdOpen(true)}
           className="focus-ring hidden items-center gap-2 rounded-lg border border-white/8 bg-white/4 px-3 py-1.5 text-[13px] text-slate-400 transition-colors hover:bg-white/8 hover:text-white sm:flex"
         >
           <Search className="h-3.5 w-3.5" aria-hidden="true" />
@@ -258,5 +275,6 @@ export function AdminTopbar() {
         </DropdownMenu>
       </div>
     </header>
+    </>
   );
 }

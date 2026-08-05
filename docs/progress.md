@@ -187,36 +187,36 @@
 - [x] `lib/permissions.ts` — `hasPermission()`, `hasAnyPermission()`, `hasRole()`, `isStaff()` helpers using `SessionUser` from `@wahab/types`
 - [x] `components/admin/role-guard.tsx` — server-side `RoleGuard` component; non-staff → `notFound()` (404 not 403 per spec); missing permission → `notFound()`; wraps page children
 
-### Phase 18 — Admin Data Components
+### Phase 18 — Admin Data Components ✅
 
-- [ ] DataTable (TanStack Table)
-- [ ] FilterBar (search, multi-select, date range)
-- [ ] StatCard (KPI with sparkline)
-- [ ] ChartCard (Recharts wrapper)
-- [ ] ExportMenu (CSV/PDF)
-- [ ] CommandPalette (⌘K search)
+- [x] DataTable (TanStack Table) — `components/admin/data-table.tsx`; sorting, pagination, page size selector (25/50/100)
+- [x] FilterBar (search, multi-select, active chip row) — `components/admin/filter-bar.tsx`
+- [x] StatCard (KPI with Recharts sparkline) — `components/admin/stat-card.tsx`; area or bar sparkline, delta with trend icon
+- [x] ChartCard (Recharts glass card wrapper) — `components/admin/chart-card.tsx`
+- [x] ExportMenu (CSV/PDF) — `components/admin/export-menu.tsx`
+- [x] CommandPalette (⌘K search) — `components/admin/command-palette.tsx`; keyboard nav, 6 quick links
 
-### Phase 19 — Admin Dashboard & Management
+### Phase 19 — Admin Dashboard & Management ✅
 
-- [ ] Admin dashboard (8 KPI cards, 6 charts)
-- [ ] Users module (list + detail)
-- [ ] Estimates module (list + detail + line-item editor)
-- [ ] Projects module (list + kanban + detail)
-- [ ] Leads module (kanban)
-- [ ] Reviews moderation
-- [ ] Activity feed
+- [x] Admin dashboard (8 KPI cards, 6 charts) — `components/admin/admin-dashboard.tsx` + `app/(admin)/admin/page.tsx`
+- [x] Users module (list + detail) — `components/admin/users-list.tsx`, `app/(admin)/admin/users/[id]/page.tsx`
+- [x] Estimates module (list + detail + line-item editor) — `components/admin/estimates-list.tsx`, `app/(admin)/admin/estimates/[ref]/page.tsx`
+- [x] Projects module (list + board toggle + detail) — `components/admin/projects-list.tsx`, `app/(admin)/admin/projects/[ref]/page.tsx`
+- [x] Leads module (kanban pipeline) — `components/admin/leads-kanban.tsx`, `app/(admin)/admin/leads/page.tsx`
+- [x] Reviews moderation (approve/reject) — `components/admin/reviews-client.tsx`, `app/(admin)/admin/reviews/page.tsx`
+- [x] Activity feed (grouped by date) — `components/admin/activity-feed.tsx`, `app/(admin)/admin/activity/page.tsx`
 
-### Phase 20 — Admin Insights & System
+### Phase 20 — Admin Insights & System ✅
 
-- [ ] Analytics page (funnel, top pages)
-- [ ] Traffic page (live counter, heatmap)
-- [ ] Revenue page (charts, targets)
-- [ ] Notifications module (inbox, rules, broadcast)
-- [ ] Pricing module (rate card editor)
-- [ ] Content CMS
-- [ ] Roles & permissions matrix
-- [ ] Settings (12 tabs)
-- [ ] Audit logs
+- [x] Analytics page (funnel, conversion chart, top pages, top areas) — `components/admin/analytics-client.tsx`
+- [x] Traffic page (live counter, session chart, device split, source breakdown) — `components/admin/traffic-client.tsx`
+- [x] Revenue page (MRR/ARR tiles, monthly bar chart, collected vs booked, payment methods) — `components/admin/revenue-client.tsx`
+- [x] Notifications module (inbox + mark-read, rules toggle, broadcast composer) — `components/admin/notifications-client.tsx`
+- [x] Pricing module (rate card list, live line-item editor, tier preview) — `components/admin/pricing-client.tsx`
+- [x] Content CMS (Hero, How-it-works, Why-us, FAQ editor, SEO — bilingual EN/UR fields) — `components/admin/content-client.tsx`
+- [x] Roles & permissions matrix (5 roles × 25 permissions, toggle, Super Admin locked) — `components/admin/roles-client.tsx`
+- [x] Settings (12 tabs: Company, Branding, Estimator, Pricing, Tariffs, Phases, Notifications, Integrations, Localisation, Security, Data, Feature flags) — `components/admin/settings-client.tsx`
+- [x] Audit logs (expandable diff rows, action colour codes, search, integrity badge) — `components/admin/audit-logs-client.tsx`
 
 ---
 

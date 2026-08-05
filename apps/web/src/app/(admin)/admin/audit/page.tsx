@@ -1,16 +1,8 @@
-import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+﻿import type { Metadata } from "next";
+import { AuditLogsClient } from "@/components/admin/audit-logs-client";
 
-export const metadata: Metadata = {
-  title: "Audit logs",
-};
+export const metadata: Metadata = { title: "Audit logs" };
 
 export default function AdminAuditPage() {
-  return (
-    <PagePlaceholder
-      title={"Audit logs"}
-      description={"Immutable record of every privileged action."}
-      spec="docs/05-admin-panel.md §A-18"
-    />
-  );
+  return <AuditLogsClient />;
 }

@@ -1,16 +1,8 @@
-import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+﻿import type { Metadata } from "next";
+import { AnalyticsClient } from "@/components/admin/analytics-client";
 
-export const metadata: Metadata = {
-  title: "Website analytics",
-};
+export const metadata: Metadata = { title: "Analytics" };
 
 export default function AdminAnalyticsPage() {
-  return (
-    <PagePlaceholder
-      title={"Website analytics"}
-      description={"Funnel, conversion and drop-off across the estimator."}
-      spec="docs/05-admin-panel.md §A-07"
-    />
-  );
+  return <AnalyticsClient />;
 }

@@ -1,16 +1,8 @@
-import type { Metadata } from "next";
-import { PagePlaceholder } from "@/components/shared/page-placeholder";
+﻿import type { Metadata } from "next";
+import { SettingsClient } from "@/components/admin/settings-client";
 
-export const metadata: Metadata = {
-  title: "Settings",
-};
+export const metadata: Metadata = { title: "Settings" };
 
 export default function AdminSettingsPage() {
-  return (
-    <PagePlaceholder
-      title={"Settings"}
-      description={"Business, security, notification and integration settings."}
-      spec="docs/05-admin-panel.md §A-15"
-    />
-  );
+  return <SettingsClient />;
 }
