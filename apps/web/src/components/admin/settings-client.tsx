@@ -206,7 +206,7 @@ export function SettingsClient() {
           <Field label="Email" defaultValue="hello@alwahabsolar.com.pk" />
           <Field
             label="Address"
-            defaultValue="123 Main Boulevard, Gulberg III, Lahore"
+            defaultValue="Plot 62, J1 Block, Phase 2, Johar Town, Lahore"
           />
           <Field label="NTN" defaultValue="1234567-8" />
           <Field label="STRN" defaultValue="12-34-5678-001-23" />

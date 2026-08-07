@@ -37,9 +37,27 @@ export class EnvVars {
   @IsOptional()
   PORT: number = 3001;
 
+  /** Supabase pooler, transaction mode (port 6543) — used for every query. */
   @IsString()
   @IsNotEmpty()
   DATABASE_URL!: string;
+
+  /** Supabase pooler, session mode (port 5432) — used only by migrations. */
+  @IsString()
+  @IsNotEmpty()
+  DIRECT_URL!: string;
+
+  /**
+   * Connections this process opens to the pooler. Keep it low: Supabase counts
+   * every client against the project's pool, and an EC2 autoscaling group
+   * multiplies whatever is set here by the number of instances.
+   */
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  @IsOptional()
+  DATABASE_POOL_MAX: number = 10;
 
   @IsString()
   @MinLength(32, {

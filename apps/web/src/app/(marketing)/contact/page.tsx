@@ -1,16 +1,52 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ArrowRight, MapPin, Phone, Mail, MessageCircle, Clock } from "lucide-react";
+import { Check, ArrowRight, MapPin, Navigation, Phone, Mail, MessageCircle, Clock } from "lucide-react";
 import { Container } from "@wahab/ui";
 import { SectionHeading } from "@/components/marketing/section-heading";
+import { SITE } from "@/lib/seo/site";
 
+// Values come from SITE so the visible details and the LocalBusiness schema in
+// this route's layout can never drift apart — mismatched NAP is a real ranking
+// problem, not just untidiness.
 const contactInfo = [
-  { icon: MapPin, label: "Address", value: "Lahore, Pakistan", href: undefined },
-  { icon: Phone, label: "Phone", value: "+92 42 111 765 765", href: "tel:+924211176576" },
-  { icon: Mail, label: "Email", value: "info@alwahabsolar.pk", href: "mailto:info@alwahabsolar.pk" },
-  { icon: MessageCircle, label: "WhatsApp", value: "Chat with us", href: "https://wa.me/924211176576" },
-  { icon: Clock, label: "Hours", value: "Mon–Sat, 9 AM – 6 PM", href: undefined },
+  {
+    icon: MapPin,
+    label: "Address",
+    value: `${SITE.streetAddress}, ${SITE.city} ${SITE.postalCode}`,
+    // Opens the actual Google Business Profile pin.
+    href: SITE.googleMapsUrl,
+  },
+  {
+    icon: Navigation,
+    label: "Plus Code",
+    value: SITE.plusCode,
+    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE.plusCode)}`,
+  },
+  {
+    icon: Phone,
+    label: "Phone",
+    value: "+92 42 111 765 765",
+    href: `tel:${SITE.telephone}`,
+  },
+  {
+    icon: Mail,
+    label: "Email",
+    value: SITE.email,
+    href: `mailto:${SITE.email}`,
+  },
+  {
+    icon: MessageCircle,
+    label: "WhatsApp",
+    value: "Chat with us",
+    href: `https://wa.me/${SITE.whatsapp.replace(/\D/g, "")}`,
+  },
+  {
+    icon: Clock,
+    label: "Hours",
+    value: `Mon–Sat, ${SITE.openingHours.opens} – ${SITE.openingHours.closes}`,
+    href: undefined,
+  },
 ] as const;
 
 const billOptions = [

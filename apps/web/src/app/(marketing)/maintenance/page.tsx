@@ -63,7 +63,7 @@ export default function MaintenancePage() {
           </p>
           <div className="flex flex-col gap-2 text-[14px]">
             <a
-              href="tel:+924232000000"
+              href="tel:+924211176576"
               className="flex items-center gap-2 text-slate-300 transition-colors hover:text-gold"
             >
               <svg
@@ -81,7 +81,7 @@ export default function MaintenancePage() {
               +92 42 3200 0000
             </a>
             <a
-              href="https://wa.me/923001234567"
+              href="https://wa.me/923294777785"
               className="flex items-center gap-2 text-slate-300 transition-colors hover:text-gold"
             >
               <svg

@@ -8,10 +8,18 @@ import { Reviews } from "@/components/marketing/reviews";
 import { AboutSection } from "@/components/marketing/about-section";
 import { FAQAccordion } from "@/components/marketing/faq-accordion";
 import { CTASection } from "@/components/marketing/cta-section";
+import { FeaturedProducts } from "@/components/marketing/featured-products";
+import { ServicesSection } from "@/components/marketing/services-section";
 import { JsonLd } from "@/lib/seo/json-ld";
+import { graph, organizationSchema, websiteSchema } from "@/lib/seo/schema";
+import { SITE } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
-  title: "Al-Wahab Solar Traders — Lahore's honest solar estimator",
+  // `absolute` — the root layout template would otherwise append the company
+  // name a second time.
+  title: {
+    absolute: "Al-Wahab Solar Traders — Lahore's honest solar estimator",
+  },
   description:
     "Get an accurate solar estimate in 2 minutes. Answer a few questions or upload your LESCO bill. Priced on live Lahore market rates, supplied and installed by our own certified team.",
   openGraph: {
@@ -25,43 +33,24 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      {/* One @graph rather than several stray blocks, so every schema on the
+          page references the same organisation entity by @id. */}
       <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          name: "Al-Wahab Solar Traders",
-          description:
-            "Lahore's honest solar estimator. Price your system, book a free survey, and let our own certified team install it.",
-          url: "https://alwahabsolar.pk",
-          telephone: "+924211176576",
-          email: "info@alwahabsolar.pk",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Lahore",
-            addressCountry: "PK",
-          },
-          areaServed: { "@type": "City", name: "Lahore" },
-          priceRange: "PKR",
-        }}
-      />
-      <JsonLd
-        data={{
-          "@context": "https://schema.org",
+        data={graph(organizationSchema(), websiteSchema(), {
           "@type": "Service",
           name: "Solar System Estimation & Installation",
-          provider: {
-            "@type": "LocalBusiness",
-            name: "Al-Wahab Solar Traders",
-          },
           serviceType: "Solar Panel Installation",
-          areaServed: { "@type": "City", name: "Lahore" },
+          provider: { "@id": `${SITE.url}/#organization` },
+          areaServed: { "@type": "City", name: SITE.city },
           description:
             "Free, itemized solar estimates for Lahore homes. On-grid, hybrid and off-grid systems supplied and installed by our own certified team.",
-        }}
+        })}
       />
       <Hero />
       <ValueStrip />
       <HowItWorks />
+      <FeaturedProducts />
+      <ServicesSection />
       <WhyUs />
       <SampleEstimate />
       <Reviews />

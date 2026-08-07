@@ -39,3 +39,17 @@ export type {
 } from "./estimate";
 
 export type { Project, ProjectStatus, TaskStatus } from "./project";
+
+export type {
+  BrandSummary,
+  PriceMode,
+  ProductCategoryDetail,
+  ProductCategorySummary,
+  ProductDetail,
+  ProductImageDto,
+  ProductSummary,
+  PublishStatus,
+  ServiceDetail,
+  ServiceSummary,
+  StockStatus,
+} from "./catalog";

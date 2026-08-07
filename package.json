@@ -4,6 +4,7 @@
   "private": true,
   "packageManager": "pnpm@9.15.9",
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
@@ -12,9 +13,22 @@
     "dev:web": "turbo dev --filter=web",
     "dev:api": "turbo dev --filter=api",
     "build:web": "turbo build --filter=web",
-    "build:api": "turbo build --filter=api"
+    "build:api": "turbo build --filter=api",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:status": "prisma migrate status",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset"
   },
   "devDependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "dotenv": "^17",
+    "pg": "^8.22.0",
+    "prisma": "^7.9.1",
+    "tsx": "^4.23.9",
     "turbo": "^2.5.0"
   }
 }

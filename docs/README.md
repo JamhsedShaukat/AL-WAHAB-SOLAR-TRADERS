@@ -13,6 +13,7 @@ the main build brief for screens.
 | [05-admin-panel.md](05-admin-panel.md)                           | All admin modules (A-01 … A-22) with columns, filters and permissions          |
 | [06-content-copy-deck.md](06-content-copy-deck.md)               | Every user-facing string, English + Urdu                                      |
 | [07-implementation-plan.md](07-implementation-plan.md)           | Milestones, estimates, risks, budget                                          |
+| [08-seo-strategy.md](08-seo-strategy.md)           | URL architecture, JSON-LD, metadata rules, programmatic SEO plan, per-phase checklist |
 | [progress.md](progress.md)                                       | Build log for the marketing site (historical)                                 |
 
 ## Architecture note

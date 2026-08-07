@@ -1,7 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": ["NODE_ENV"],
-  "globalDependencies": ["packages/config/tsconfig/*.json"],
+  "globalDependencies": [
+    "packages/config/tsconfig/*.json",
+    "prisma/schema.prisma"
+  ],
   "tasks": {
     "dev": {
       "cache": false,
@@ -13,6 +16,8 @@
       "env": [
         "NEXT_PUBLIC_*",
         "DATABASE_URL",
+        "DIRECT_URL",
+        "DATABASE_POOL_MAX",
         "JWT_SECRET",
         "JWT_EXPIRY",
         "JWT_REFRESH_EXPIRY",

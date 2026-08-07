@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@wahab/ui";
 import { LogoMark } from "@/components/brand/logo-mark";
+import { SITE } from "@/lib/seo/site";
 
 const productLinks = [
   { label: "Get an estimate", href: "/estimate" },
@@ -17,10 +18,10 @@ const companyLinks = [
 ] as const;
 
 const contactInfo = [
-  { label: "Lahore, Pakistan", href: "#" },
+  { label: `${SITE.streetAddress}, ${SITE.city}`, href: "/contact" },
   { label: "info@alwahabsolar.pk", href: "mailto:info@alwahabsolar.pk" },
   { label: "+92 42 111 765 765", href: "tel:+924211176576" },
-  { label: "WhatsApp us", href: "https://wa.me/924211176576" },
+  { label: "WhatsApp us", href: "https://wa.me/923294777785" },
 ] as const;
 
 const socialLinks = [
