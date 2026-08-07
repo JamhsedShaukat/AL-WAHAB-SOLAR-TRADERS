@@ -16,6 +16,7 @@ const STATUS_TO_CODE: Record<number, ApiErrorCode> = {
   [HttpStatus.NOT_FOUND]: "NOT_FOUND",
   [HttpStatus.CONFLICT]: "CONFLICT",
   [HttpStatus.TOO_MANY_REQUESTS]: "RATE_LIMITED",
+  [HttpStatus.SERVICE_UNAVAILABLE]: "SERVICE_UNAVAILABLE",
 };
 
 interface ValidationErrorBody {
@@ -65,8 +66,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 
   private resolveMessage(exception: unknown, status: number): string {
-    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
-      // Never leak internal failure details to the client.
+    // Mask anything we did not raise deliberately, plus every bare 500 — those
+    // carry stack details or driver internals. A deliberate 503 from a
+    // readiness probe, by contrast, should say what is actually wrong.
+    const isDeliberate = exception instanceof HttpException;
+    if (!isDeliberate || status === HttpStatus.INTERNAL_SERVER_ERROR) {
       return "Something went wrong on our end. Please try again.";
     }
 

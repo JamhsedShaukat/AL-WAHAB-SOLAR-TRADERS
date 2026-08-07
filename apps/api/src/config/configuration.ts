@@ -6,7 +6,12 @@ export interface AppConfig {
   port: number;
   corsOrigins: string[];
   database: {
+    /** Pooled connection (Supavisor transaction mode) used for all queries. */
     url: string;
+    /** Session-mode connection, used only by `prisma migrate`. */
+    directUrl: string;
+    /** Upper bound on connections this process opens to the pooler. */
+    poolMax: number;
   };
   jwt: {
     secret: string;
@@ -30,6 +35,8 @@ export function configuration(env: EnvVars): AppConfig {
       .filter(Boolean),
     database: {
       url: env.DATABASE_URL,
+      directUrl: env.DIRECT_URL,
+      poolMax: env.DATABASE_POOL_MAX,
     },
     jwt: {
       secret: env.JWT_SECRET,

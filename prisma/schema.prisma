@@ -1,0 +1,1026 @@
+// Al-Wahab Solar Traders — database schema
+//
+// Translated from docs/02-technical-design.md §4.2 (core tables) and §4.4
+// (indexes). Deviations from that document are called out inline; the biggest
+// one is identity — see the User model.
+//
+// Prisma 7 notes:
+//  - Connection URLs live in prisma.config.ts, not in the datasource block.
+//  - The `prisma-client` generator emits TypeScript into `output`, so the
+//    client is generated inside apps/api/src to stay within its tsc rootDir.
+//  - moduleFormat is cjs because NestJS compiles to CommonJS.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../apps/api/src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────
+// Identity
+// ─────────────────────────────────────────────────────────────
+
+enum UserStatus {
+  active
+  suspended
+  deleted
+
+  @@map("user_status")
+}
+
+/// The design doc splits identity across Supabase's `auth.users` and a
+/// `profiles` table. We use Supabase purely as managed Postgres and own
+/// authentication in the NestJS API, so credentials and profile live together
+/// here and every other table's FK points at this model.
+model User {
+  id             String     @id @default(uuid()) @db.Uuid
+  fullName       String     @map("full_name")
+  email          String?    @unique
+  phone          String?    @unique
+  passwordHash   String?    @map("password_hash")
+  city           String     @default("Lahore")
+  area           String?
+  address        String?
+  language       String     @default("en")
+  avatarUrl      String?    @map("avatar_url")
+  status         UserStatus @default(active)
+  emailVerified  Boolean    @default(false) @map("email_verified")
+  phoneVerified  Boolean    @default(false) @map("phone_verified")
+  marketingOptin Boolean    @default(false) @map("marketing_optin")
+  /// utm_source / referrer captured at signup
+  source         String?
+  lastSeenAt     DateTime?  @map("last_seen_at") @db.Timestamptz
+  createdAt      DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt      DateTime?  @map("deleted_at") @db.Timestamptz
+
+  roles              UserRole[]         @relation("UserRoleUser")
+  rolesAssigned      UserRole[]         @relation("UserRoleAssigner")
+  rateCardsCreated   RateCard[]
+  estimates          Estimate[]
+  lineItemOverrides  EstimateLineItem[]
+  projects           Project[]          @relation("ProjectOwner")
+  projectsAssigned   Project[]          @relation("ProjectSalesOwner")
+  projectsAsCrewLead Project[]          @relation("ProjectCrewLead")
+  tasksAssigned      ProjectTask[]
+  documentsUploaded  ProjectDocument[]
+  paymentsRecorded   ProjectPayment[]
+  projectUpdates     ProjectUpdate[]
+  leadsAssigned      Lead[]             @relation("LeadAssignee")
+  leads              Lead[]             @relation("LeadUser")
+  reviews            Review[]           @relation("ReviewAuthor")
+  reviewsModerated   Review[]           @relation("ReviewModerator")
+  notifications      Notification[]
+  siteContentEdits   SiteContent[]
+  settingsEdits      Setting[]
+  activityLogs       ActivityLog[]
+  visitorSessions    VisitorSession[]
+
+  @@index([status, createdAt(sort: Desc)])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Roles & permissions
+// ─────────────────────────────────────────────────────────────
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  /// super_admin | admin | sales | operations | viewer | customer
+  key         String  @unique
+  name        String
+  description String?
+  isSystem    Boolean @default(false) @map("is_system")
+
+  permissions RolePermission[]
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id     Int    @id @default(autoincrement())
+  /// e.g. users.read, estimates.override_price
+  key    String @unique
+  module String
+  label  String
+
+  roles RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId     String   @map("user_id") @db.Uuid
+  roleId     Int      @map("role_id")
+  assignedBy String?  @map("assigned_by") @db.Uuid
+  assignedAt DateTime @default(now()) @map("assigned_at") @db.Timestamptz
+
+  user     User  @relation("UserRoleUser", fields: [userId], references: [id], onDelete: Cascade)
+  role     Role  @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  assigner User? @relation("UserRoleAssigner", fields: [assignedBy], references: [id])
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Pricing
+// ─────────────────────────────────────────────────────────────
+
+enum RateBasis {
+  per_kwp
+  per_kw_ac
+  per_kwh_batt
+  flat
+  per_sqft
+  percent
+
+  @@map("rate_basis")
+}
+
+model RateCard {
+  id            String    @id @default(uuid()) @db.Uuid
+  version       Int
+  /// e.g. 'Lahore market — Jul 2026'
+  label         String
+  city          String    @default("Lahore")
+  currency      String    @default("PKR")
+  effectiveFrom DateTime  @map("effective_from") @db.Date
+  effectiveTo   DateTime? @map("effective_to") @db.Date
+  /// ± market buffer applied to the low/high price band
+  bufferPct     Decimal   @default(6.0) @map("buffer_pct") @db.Decimal(4, 2)
+  isActive      Boolean   @default(false) @map("is_active")
+  notes         String?
+  createdBy     String?   @map("created_by") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  creator   User?          @relation(fields: [createdBy], references: [id])
+  items     RateCardItem[]
+  estimates Estimate[]
+
+  @@index([isActive, effectiveFrom(sort: Desc)])
+  @@map("rate_cards")
+}
+
+model RateCardItem {
+  id          String    @id @default(uuid()) @db.Uuid
+  rateCardId  String    @map("rate_card_id") @db.Uuid
+  /// panels|inverter|battery|structure|bos|net_metering|labour|transport
+  code        String
+  labelEn     String    @map("label_en")
+  labelUr     String?   @map("label_ur")
+  basis       RateBasis
+  unitRate    Decimal   @map("unit_rate") @db.Decimal(12, 2)
+  sortOrder   Int       @default(0) @map("sort_order")
+  /// e.g. {"system_type":["hybrid","offgrid"]}
+  appliesWhen Json      @default("{}") @map("applies_when")
+
+  rateCard RateCard @relation(fields: [rateCardId], references: [id], onDelete: Cascade)
+
+  @@index([rateCardId, sortOrder])
+  @@map("rate_card_items")
+}
+
+model Tier {
+  id             String  @id @default(uuid()) @db.Uuid
+  /// economy | standard | premium
+  key            String  @unique
+  nameEn         String  @map("name_en")
+  nameUr         String? @map("name_ur")
+  /// 'Lowest price' | 'Best value' | 'Best quality'
+  taglineEn      String? @map("tagline_en")
+  multiplier     Decimal @db.Decimal(5, 3)
+  /// panel/inverter/battery/structure descriptors
+  specs          Json
+  warrantyNoteEn String? @map("warranty_note_en")
+  isDefault      Boolean @default(false) @map("is_default")
+  sortOrder      Int?    @map("sort_order")
+
+  estimates Estimate[]
+  projects  Project[]
+
+  @@map("tiers")
+}
+
+model TariffSlab {
+  id            String   @id @default(uuid()) @db.Uuid
+  disco         String   @default("LESCO")
+  /// single | three | any
+  phase         String   @default("any")
+  unitsFrom     Int      @map("units_from")
+  unitsTo       Int?     @map("units_to")
+  /// PKR per unit
+  rate          Decimal  @db.Decimal(8, 2)
+  effectiveFrom DateTime @map("effective_from") @db.Date
+  isActive      Boolean  @default(true) @map("is_active")
+
+  @@index([disco, isActive, unitsFrom])
+  @@map("tariff_slabs")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Estimates
+// ─────────────────────────────────────────────────────────────
+
+enum SystemType {
+  ongrid
+  hybrid
+  offgrid
+
+  @@map("system_type")
+}
+
+enum EstimateGoal {
+  cover_all
+  reduce_bill
+  fit_budget
+
+  @@map("estimate_goal")
+}
+
+enum EstimateStatus {
+  draft
+  completed
+  saved
+  survey_requested
+  surveyed
+  quoted
+  accepted
+  declined
+  expired
+  converted
+
+  @@map("estimate_status")
+}
+
+model Estimate {
+  id        String         @id @default(uuid()) @db.Uuid
+  /// Human-quotable reference, e.g. 'AWS-2607-0421'
+  publicRef String         @unique @map("public_ref")
+  userId    String?        @map("user_id") @db.Uuid
+  /// Set while the estimate is anonymous; nulled when claimed on signup
+  anonToken String?        @map("anon_token")
+  status    EstimateStatus @default(draft)
+  version   Int            @default(1)
+  /// Re-price lineage
+  parentId  String?        @map("parent_id") @db.Uuid
+
+  // Inputs — denormalised for fast listing; full payload in EstimateInput
+  monthlyUnits     Int?          @map("monthly_units")
+  /// single | three
+  connectionPhase  String?       @map("connection_phase")
+  goal             EstimateGoal?
+  systemType       SystemType?   @map("system_type")
+  backupLoads      String[]      @map("backup_loads")
+  backupHours      Int?          @map("backup_hours")
+  roofType         String?       @map("roof_type")
+  roofAreaSqft     Int?          @map("roof_area_sqft")
+  /// standard | customized
+  structureType    String?       @map("structure_type")
+  /// medium | good
+  structureQuality String?       @map("structure_quality")
+  /// lowest_price | best_value | best_quality | budget
+  priority         String?
+  budgetPkr        Decimal?      @map("budget_pkr") @db.Decimal(12, 2)
+  netMetering      Boolean       @default(true) @map("net_metering")
+  areaName         String?       @map("area_name")
+  installAddress   String?       @map("install_address")
+
+  // Outputs
+  tierId           String?  @map("tier_id") @db.Uuid
+  systemSizeKwp    Decimal? @map("system_size_kwp") @db.Decimal(6, 2)
+  inverterKw       Decimal? @map("inverter_kw") @db.Decimal(6, 2)
+  batteryKwh       Decimal? @map("battery_kwh") @db.Decimal(6, 2)
+  panelCount       Int?     @map("panel_count")
+  panelWatt        Int?     @map("panel_watt")
+  subtotalPkr      Decimal? @map("subtotal_pkr") @db.Decimal(12, 2)
+  priceLowPkr      Decimal? @map("price_low_pkr") @db.Decimal(12, 2)
+  priceHighPkr     Decimal? @map("price_high_pkr") @db.Decimal(12, 2)
+  monthlyUnitsGen  Int?     @map("monthly_units_gen")
+  monthlySavingPkr Decimal? @map("monthly_saving_pkr") @db.Decimal(12, 2)
+  billCoveragePct  Decimal? @map("bill_coverage_pct") @db.Decimal(5, 2)
+  paybackYears     Decimal? @map("payback_years") @db.Decimal(4, 1)
+  co2KgYear        Int?     @map("co2_kg_year")
+
+  rateCardId    String?   @map("rate_card_id") @db.Uuid
+  billFilePath  String?   @map("bill_file_path")
+  ocrConfidence Decimal?  @map("ocr_confidence") @db.Decimal(4, 3)
+  locale        String    @default("en")
+  utm           Json?
+  validUntil    DateTime? @map("valid_until") @db.Date
+  issuedAt      DateTime? @map("issued_at") @db.Timestamptz
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user      User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent    Estimate?          @relation("EstimateLineage", fields: [parentId], references: [id])
+  revisions Estimate[]         @relation("EstimateLineage")
+  tier      Tier?              @relation(fields: [tierId], references: [id])
+  rateCard  RateCard?          @relation(fields: [rateCardId], references: [id])
+  input     EstimateInput?
+  lineItems EstimateLineItem[]
+  projects  Project[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status, createdAt(sort: Desc)])
+  @@index([anonToken])
+  @@map("estimates")
+}
+
+/// Full raw wizard payload, kept for audit and re-pricing.
+model EstimateInput {
+  estimateId String @id @map("estimate_id") @db.Uuid
+  payload    Json
+
+  estimate Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+
+  @@map("estimate_inputs")
+}
+
+model EstimateLineItem {
+  id           String   @id @default(uuid()) @db.Uuid
+  estimateId   String   @map("estimate_id") @db.Uuid
+  code         String
+  labelEn      String   @map("label_en")
+  labelUr      String?  @map("label_ur")
+  /// e.g. '14 × 585 W Tier-1 monocrystalline'
+  specEn       String?  @map("spec_en")
+  specUr       String?  @map("spec_ur")
+  quantity     Decimal? @db.Decimal(10, 2)
+  unit         String?
+  unitRate     Decimal? @map("unit_rate") @db.Decimal(12, 2)
+  amountPkr    Decimal  @map("amount_pkr") @db.Decimal(12, 2)
+  /// Admin manually adjusted this line
+  isOverride   Boolean  @default(false) @map("is_override")
+  overriddenBy String?  @map("overridden_by") @db.Uuid
+  sortOrder    Int?     @map("sort_order")
+
+  estimate  Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  overrider User?    @relation(fields: [overriddenBy], references: [id])
+
+  @@index([estimateId, sortOrder])
+  @@map("estimate_line_items")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Projects
+// ─────────────────────────────────────────────────────────────
+
+enum ProjectStatus {
+  survey_requested
+  survey_scheduled
+  surveyed
+  quotation_issued
+  agreement_signed
+  procurement
+  installation
+  commissioning
+  net_metering
+  handover
+  completed
+  cancelled
+  on_hold
+
+  @@map("project_status")
+}
+
+enum TaskStatus {
+  pending
+  in_progress
+  completed
+  skipped
+  blocked
+
+  @@map("task_status")
+}
+
+model Project {
+  id         String        @id @default(uuid()) @db.Uuid
+  /// Human-quotable reference, e.g. 'PRJ-2607-0088'
+  publicRef  String        @unique @map("public_ref")
+  userId     String        @map("user_id") @db.Uuid
+  estimateId String?       @map("estimate_id") @db.Uuid
+  status     ProjectStatus @default(survey_requested)
+  /// e.g. '8 kWp Hybrid — Johar Town'
+  title      String?
+
+  systemSizeKwp    Decimal?    @map("system_size_kwp") @db.Decimal(6, 2)
+  systemType       SystemType? @map("system_type")
+  tierId           String?     @map("tier_id") @db.Uuid
+  contractValuePkr Decimal?    @map("contract_value_pkr") @db.Decimal(12, 2)
+  invoicedPkr      Decimal     @default(0) @map("invoiced_pkr") @db.Decimal(12, 2)
+  collectedPkr     Decimal     @default(0) @map("collected_pkr") @db.Decimal(12, 2)
+
+  address          String?
+  areaName         String?   @map("area_name")
+  surveyDate       DateTime? @map("survey_date") @db.Date
+  surveyWindow     String?   @map("survey_window")
+  startDate        DateTime? @map("start_date") @db.Date
+  targetCompletion DateTime? @map("target_completion") @db.Date
+  completedAt      DateTime? @map("completed_at") @db.Timestamptz
+
+  /// Sales owner
+  assignedTo   String? @map("assigned_to") @db.Uuid
+  /// Operations owner
+  crewLead     String? @map("crew_lead") @db.Uuid
+  progressPct  Int     @default(0) @map("progress_pct")
+  cancelReason String? @map("cancel_reason")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user       User              @relation("ProjectOwner", fields: [userId], references: [id], onDelete: Cascade)
+  estimate   Estimate?         @relation(fields: [estimateId], references: [id])
+  tier       Tier?             @relation(fields: [tierId], references: [id])
+  salesOwner User?             @relation("ProjectSalesOwner", fields: [assignedTo], references: [id])
+  crew       User?             @relation("ProjectCrewLead", fields: [crewLead], references: [id])
+  phases     ProjectPhase[]
+  tasks      ProjectTask[]
+  documents  ProjectDocument[]
+  payments   ProjectPayment[]
+  updates    ProjectUpdate[]
+  reviews    Review[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status, updatedAt(sort: Desc)])
+  @@index([assignedTo])
+  @@map("projects")
+}
+
+model PhaseTemplate {
+  id              Int     @id @db.SmallInt
+  key             String  @unique
+  nameEn          String  @map("name_en")
+  nameUr          String? @map("name_ur")
+  durationLabelEn String? @map("duration_label_en")
+  sortOrder       Int?    @map("sort_order")
+  /// e.g. net metering only applies to ongrid/hybrid
+  appliesWhen     Json    @default("{}") @map("applies_when")
+
+  taskTemplates TaskTemplate[]
+
+  @@map("phase_templates")
+}
+
+model TaskTemplate {
+  id        Int     @id @default(autoincrement())
+  phaseKey  String? @map("phase_key")
+  nameEn    String  @map("name_en")
+  nameUr    String? @map("name_ur")
+  sortOrder Int?    @map("sort_order")
+
+  phase PhaseTemplate? @relation(fields: [phaseKey], references: [key])
+
+  @@map("task_templates")
+}
+
+model ProjectPhase {
+  id          String     @id @default(uuid()) @db.Uuid
+  projectId   String     @map("project_id") @db.Uuid
+  key         String?
+  nameEn      String     @map("name_en")
+  nameUr      String?    @map("name_ur")
+  status      TaskStatus @default(pending)
+  sortOrder   Int?       @map("sort_order")
+  startedAt   DateTime?  @map("started_at") @db.Timestamptz
+  completedAt DateTime?  @map("completed_at") @db.Timestamptz
+
+  project Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   ProjectTask[]
+
+  @@index([projectId, sortOrder])
+  @@map("project_phases")
+}
+
+model ProjectTask {
+  id          String     @id @default(uuid()) @db.Uuid
+  phaseId     String     @map("phase_id") @db.Uuid
+  projectId   String     @map("project_id") @db.Uuid
+  nameEn      String     @map("name_en")
+  nameUr      String?    @map("name_ur")
+  status      TaskStatus @default(pending)
+  assignedTo  String?    @map("assigned_to") @db.Uuid
+  dueDate     DateTime?  @map("due_date") @db.Date
+  completedAt DateTime?  @map("completed_at") @db.Timestamptz
+  note        String?
+  sortOrder   Int?       @map("sort_order")
+
+  phase    ProjectPhase @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  project  Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee User?        @relation(fields: [assignedTo], references: [id])
+
+  @@index([projectId, status])
+  @@map("project_tasks")
+}
+
+model ProjectDocument {
+  id                String   @id @default(uuid()) @db.Uuid
+  projectId         String   @map("project_id") @db.Uuid
+  /// agreement|invoice|warranty|net_meter|photo|other
+  kind              String?
+  title             String?
+  filePath          String   @map("file_path")
+  mime              String?
+  sizeBytes         BigInt?  @map("size_bytes")
+  visibleToCustomer Boolean  @default(true) @map("visible_to_customer")
+  uploadedBy        String?  @map("uploaded_by") @db.Uuid
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  uploader User?   @relation(fields: [uploadedBy], references: [id])
+
+  @@index([projectId, kind])
+  @@map("project_documents")
+}
+
+model ProjectPayment {
+  id         String    @id @default(uuid()) @db.Uuid
+  projectId  String    @map("project_id") @db.Uuid
+  /// e.g. 'Advance 40%'
+  label      String?
+  amountPkr  Decimal   @map("amount_pkr") @db.Decimal(12, 2)
+  dueDate    DateTime? @map("due_date") @db.Date
+  paidAt     DateTime? @map("paid_at") @db.Timestamptz
+  method     String?
+  reference  String?
+  recordedBy String?   @map("recorded_by") @db.Uuid
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  recorder User?   @relation(fields: [recordedBy], references: [id])
+
+  @@index([projectId])
+  @@map("project_payments")
+}
+
+/// Customer-visible project timeline.
+model ProjectUpdate {
+  id        String   @id @default(uuid()) @db.Uuid
+  projectId String   @map("project_id") @db.Uuid
+  bodyEn    String?  @map("body_en")
+  bodyUr    String?  @map("body_ur")
+  photoPath String?  @map("photo_path")
+  authorId  String?  @map("author_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  author  User?   @relation(fields: [authorId], references: [id])
+
+  @@index([projectId, createdAt(sort: Desc)])
+  @@map("project_updates")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Engagement
+// ─────────────────────────────────────────────────────────────
+
+model Lead {
+  id         String   @id @default(uuid()) @db.Uuid
+  fullName   String?  @map("full_name")
+  email      String?
+  phone      String?
+  billRange  String?  @map("bill_range")
+  areaName   String?  @map("area_name")
+  message    String?
+  source     String?
+  utm        Json?
+  /// new|contacted|qualified|converted|lost
+  status     String   @default("new")
+  assignedTo String?  @map("assigned_to") @db.Uuid
+  /// Set if the lead later registered an account
+  userId     String?  @map("user_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  assignee User? @relation("LeadAssignee", fields: [assignedTo], references: [id])
+  user     User? @relation("LeadUser", fields: [userId], references: [id])
+
+  @@index([status, createdAt(sort: Desc)])
+  @@map("leads")
+}
+
+model Review {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String?   @map("user_id") @db.Uuid
+  projectId   String?   @map("project_id") @db.Uuid
+  /// 1–5; enforced by a CHECK constraint added in the initial migration
+  rating      Int?
+  body        String?
+  areaName    String?   @map("area_name")
+  systemLabel String?   @map("system_label")
+  /// pending|approved|rejected
+  status      String    @default("pending")
+  moderatedBy String?   @map("moderated_by") @db.Uuid
+  moderatedAt DateTime? @map("moderated_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user      User?    @relation("ReviewAuthor", fields: [userId], references: [id])
+  project   Project? @relation(fields: [projectId], references: [id])
+  moderator User?    @relation("ReviewModerator", fields: [moderatedBy], references: [id])
+
+  @@index([status, createdAt(sort: Desc)])
+  @@map("reviews")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  type      String
+  titleEn   String?   @map("title_en")
+  titleUr   String?   @map("title_ur")
+  bodyEn    String?   @map("body_en")
+  bodyUr    String?   @map("body_ur")
+  link      String?
+  readAt    DateTime? @map("read_at") @db.Timestamptz
+  channel   String[]  @default(["in_app"])
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+model NotificationTemplate {
+  key       String   @id
+  name      String?
+  subjectEn String?  @map("subject_en")
+  subjectUr String?  @map("subject_ur")
+  bodyEn    String?  @map("body_en")
+  bodyUr    String?  @map("body_ur")
+  smsEn     String?  @map("sms_en")
+  smsUr     String?  @map("sms_ur")
+  channels  String[] @default(["in_app", "email"])
+  enabled   Boolean  @default(true)
+
+  @@map("notification_templates")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Content & config
+// ─────────────────────────────────────────────────────────────
+
+model SiteContent {
+  /// e.g. hero.title, faq.items, about.body
+  key       String   @id
+  valueEn   Json?    @map("value_en")
+  valueUr   Json?    @map("value_ur")
+  updatedBy String?  @map("updated_by") @db.Uuid
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  editor User? @relation(fields: [updatedBy], references: [id])
+
+  @@map("site_content")
+}
+
+/// Estimator constants and business settings. Per docs §6.4 the pricing engine
+/// must read its constants from here rather than hard-coding them.
+model Setting {
+  key         String   @id
+  value       Json
+  category    String?
+  description String?
+  updatedBy   String?  @map("updated_by") @db.Uuid
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  editor User? @relation(fields: [updatedBy], references: [id])
+
+  @@index([category])
+  @@map("settings")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Observability
+// ─────────────────────────────────────────────────────────────
+
+/// High-level record of what happened, for customers and staff alike.
+model ActivityLog {
+  id         BigInt   @id @default(autoincrement())
+  actorId    String?  @map("actor_id") @db.Uuid
+  actorLabel String?  @map("actor_label")
+  /// e.g. estimate.created, project.status_changed
+  action     String
+  entityType String?  @map("entity_type")
+  entityId   String?  @map("entity_id") @db.Uuid
+  meta       Json?
+  ip         String?  @db.Inet
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  actor User? @relation(fields: [actorId], references: [id])
+
+  @@index([createdAt(sort: Desc)])
+  @@index([entityType, entityId])
+  @@map("activity_logs")
+}
+
+/// Immutable record of privileged changes, with before/after values. UPDATE and
+/// DELETE are revoked on this table in the initial migration; no FK to users so
+/// a deleted account cannot cascade away its own audit trail.
+model AuditLog {
+  id            BigInt   @id @default(autoincrement())
+  actorId       String?  @map("actor_id") @db.Uuid
+  actorEmail    String?  @map("actor_email")
+  actorRole     String?  @map("actor_role")
+  /// INSERT | UPDATE | DELETE | LOGIN | IMPERSONATE | EXPORT
+  action        String
+  tableName     String?  @map("table_name")
+  recordId      String?  @map("record_id")
+  oldValues     Json?    @map("old_values")
+  newValues     Json?    @map("new_values")
+  changedFields String[] @map("changed_fields")
+  ip            String?  @db.Inet
+  userAgent     String?  @map("user_agent")
+  requestId     String?  @map("request_id")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([createdAt(sort: Desc)])
+  @@index([actorId, createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
+
+// ─────────────────────────────────────────────────────────────
+// First-party analytics
+// ─────────────────────────────────────────────────────────────
+
+model VisitorSession {
+  id        String    @id @default(uuid()) @db.Uuid
+  anonId    String    @map("anon_id")
+  userId    String?   @map("user_id") @db.Uuid
+  firstPage String?   @map("first_page")
+  referrer  String?
+  utm       Json?
+  device    String?
+  browser   String?
+  os        String?
+  country   String?
+  city      String?
+  startedAt DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  endedAt   DateTime? @map("ended_at") @db.Timestamptz
+  pageviews Int       @default(0)
+  isBounce  Boolean?  @map("is_bounce")
+
+  user      User?      @relation(fields: [userId], references: [id])
+  pageViews PageView[]
+
+  @@index([anonId])
+  @@index([startedAt(sort: Desc)])
+  @@map("visitor_sessions")
+}
+
+model PageView {
+  id         BigInt   @id @default(autoincrement())
+  sessionId  String?  @map("session_id") @db.Uuid
+  path       String
+  title      String?
+  referrer   String?
+  durationMs Int?     @map("duration_ms")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  session VisitorSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt(sort: Desc)])
+  @@map("page_views")
+}
+
+/// Pre-aggregated daily figures so dashboards never scan raw event tables.
+model DailyMetric {
+  day                 DateTime @id @db.Date
+  visitors            Int?
+  sessions            Int?
+  pageviews           Int?
+  bounceRate          Decimal? @map("bounce_rate") @db.Decimal(5, 2)
+  signups             Int?
+  activeUsers         Int?     @map("active_users")
+  estimatesStarted    Int?     @map("estimates_started")
+  estimatesCompleted  Int?     @map("estimates_completed")
+  estimatesSaved      Int?     @map("estimates_saved")
+  surveyRequests      Int?     @map("survey_requests")
+  projectsCreated     Int?     @map("projects_created")
+  projectsCompleted   Int?     @map("projects_completed")
+  revenueBookedPkr    Decimal? @map("revenue_booked_pkr") @db.Decimal(14, 2)
+  revenueCollectedPkr Decimal? @map("revenue_collected_pkr") @db.Decimal(14, 2)
+
+  @@map("daily_metrics")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Product catalog (trading)
+//
+// Al-Wahab trades hardware as well as installing it: inverters, batteries,
+// panels, net meters, EV chargers, breakers and accessories. There is no
+// checkout — every product converts to a WhatsApp enquiry — but each product
+// still needs its own indexable page, so SEO fields are first-class here
+// rather than bolted on later. See docs/08-seo-strategy.md.
+// ─────────────────────────────────────────────────────────────
+
+/// Whether a price is shown, shown as a floor, or withheld pending enquiry.
+enum PriceMode {
+  /// Exact price shown.
+  fixed
+  /// Shown as "from PKR X" — varies by capacity or configuration.
+  from
+  /// No price shown; the CTA is a WhatsApp enquiry.
+  on_request
+
+  @@map("price_mode")
+}
+
+enum StockStatus {
+  in_stock
+  out_of_stock
+  preorder
+  discontinued
+
+  @@map("stock_status")
+}
+
+enum PublishStatus {
+  draft
+  published
+  archived
+
+  @@map("publish_status")
+}
+
+/// Product category, e.g. inverters, batteries, solar-panels, ev-chargers.
+/// Self-referencing so "hybrid inverters" can sit under "inverters".
+model ProductCategory {
+  id        String  @id @default(uuid()) @db.Uuid
+  /// URL segment — /products/<slug>. Never change once indexed.
+  slug      String  @unique
+  nameEn    String  @map("name_en")
+  nameUr    String? @map("name_ur")
+  /// Short intro shown above the product grid.
+  summaryEn String? @map("summary_en")
+  /// Long-form copy beneath the grid; carries the category's ranking content.
+  bodyEn    String? @map("body_en")
+  /// lucide icon name used by the marketing UI.
+  icon      String?
+  imageUrl  String? @map("image_url")
+
+  parentId String?           @map("parent_id") @db.Uuid
+  parent   ProductCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children ProductCategory[] @relation("CategoryTree")
+
+  // SEO
+  metaTitle       String? @map("meta_title")
+  metaDescription String? @map("meta_description")
+
+  isActive  Boolean  @default(true) @map("is_active")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  products Product[]
+
+  @@index([isActive, sortOrder])
+  @@index([parentId])
+  @@map("product_categories")
+}
+
+/// Manufacturer. Brand + model is how customers actually search
+/// ("Longi 585W price in Lahore"), so brands get their own indexable pages.
+model Brand {
+  id            String  @id @default(uuid()) @db.Uuid
+  slug          String  @unique
+  name          String
+  logoUrl       String? @map("logo_url")
+  websiteUrl    String? @map("website_url")
+  summaryEn     String? @map("summary_en")
+  /// Country of origin — a real buying signal in this market.
+  originCountry String? @map("origin_country")
+
+  metaTitle       String? @map("meta_title")
+  metaDescription String? @map("meta_description")
+
+  isActive  Boolean  @default(true) @map("is_active")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  products Product[]
+
+  @@index([isActive, sortOrder])
+  @@map("brands")
+}
+
+model Product {
+  id        String  @id @default(uuid()) @db.Uuid
+  /// URL segment — /products/<category>/<slug>. Never change once indexed.
+  slug      String  @unique
+  /// Internal stock-keeping reference, shown to staff only.
+  sku       String? @unique
+  nameEn    String  @map("name_en")
+  nameUr    String? @map("name_ur")
+  /// One-line summary used on cards and in meta descriptions.
+  summaryEn String? @map("summary_en")
+  /// Full description (markdown). The page's primary ranking content.
+  bodyEn    String? @map("body_en")
+
+  categoryId String  @map("category_id") @db.Uuid
+  brandId    String? @map("brand_id") @db.Uuid
+
+  /// Category-specific attributes, e.g. {"capacity_kw": 5, "phase": "single"}.
+  /// Rendered as a spec table and mapped into schema.org additionalProperty.
+  specs Json @default("{}")
+
+  // ─── Pricing. Some products are quoted on request, so price is nullable
+  // and priceMode decides what the UI and the schema.org Offer show.
+  priceMode       PriceMode @default(on_request) @map("price_mode")
+  pricePkr        Decimal?  @map("price_pkr") @db.Decimal(12, 2)
+  /// Strike-through "was" price, when discounted.
+  comparePricePkr Decimal?  @map("compare_price_pkr") @db.Decimal(12, 2)
+  currency        String    @default("PKR")
+
+  stockStatus    StockStatus @default(in_stock) @map("stock_status")
+  warrantyMonths Int?        @map("warranty_months")
+
+  /// Overrides the default WhatsApp enquiry text for this product.
+  whatsappMessage String? @map("whatsapp_message")
+
+  /// Shown in the marketing carousel.
+  isFeatured Boolean @default(false) @map("is_featured")
+
+  // SEO
+  metaTitle       String? @map("meta_title")
+  metaDescription String? @map("meta_description")
+  /// Set when this product replaces another, so the old URL can 301 here.
+  canonicalUrl    String? @map("canonical_url")
+
+  status      PublishStatus @default(draft)
+  publishedAt DateTime?     @map("published_at") @db.Timestamptz
+  sortOrder   Int           @default(0) @map("sort_order")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  category ProductCategory @relation(fields: [categoryId], references: [id])
+  brand    Brand?          @relation(fields: [brandId], references: [id])
+  images   ProductImage[]
+
+  @@index([status, isFeatured, sortOrder])
+  @@index([categoryId, status, sortOrder])
+  @@index([brandId, status])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(uuid()) @db.Uuid
+  productId String  @map("product_id") @db.Uuid
+  url       String
+  /// Required for accessibility and image search; never leave empty.
+  alt       String
+  width     Int?
+  height    Int?
+  isPrimary Boolean @default(false) @map("is_primary")
+  sortOrder Int     @default(0) @map("sort_order")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
+  @@map("product_images")
+}
+
+/// Installation and configuration services sold alongside hardware — inverter
+/// commissioning, battery bank configuration, net-metering paperwork and so on.
+model Service {
+  id        String  @id @default(uuid()) @db.Uuid
+  slug      String  @unique
+  nameEn    String  @map("name_en")
+  nameUr    String? @map("name_ur")
+  summaryEn String? @map("summary_en")
+  bodyEn    String? @map("body_en")
+  /// lucide icon name.
+  icon      String?
+
+  priceMode    PriceMode @default(on_request) @map("price_mode")
+  priceFromPkr Decimal?  @map("price_from_pkr") @db.Decimal(12, 2)
+  /// e.g. "per inverter", "per kW", "per site".
+  priceUnit    String?   @map("price_unit")
+
+  metaTitle       String? @map("meta_title")
+  metaDescription String? @map("meta_description")
+
+  isFeatured Boolean       @default(false) @map("is_featured")
+  status     PublishStatus @default(draft)
+  sortOrder  Int           @default(0) @map("sort_order")
+  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([status, sortOrder])
+  @@map("services")
+}

@@ -1,9 +1,16 @@
 import { Module } from "@nestjs/common";
+import { SettingsController } from "./settings.controller";
+import { SettingsService } from "./settings.service";
 
 /**
  * Business settings, rate cards, pricing constants and site content.
  *
- * Add the controller, service and DTOs here as this module is built out.
+ * Only the whitelisted public contact endpoint exists so far; admin read/write
+ * lands with the auth module behind @RequirePermissions("settings.read" | "settings.write").
  */
-@Module({})
+@Module({
+  controllers: [SettingsController],
+  providers: [SettingsService],
+  exports: [SettingsService],
+})
 export class SettingsModule {}

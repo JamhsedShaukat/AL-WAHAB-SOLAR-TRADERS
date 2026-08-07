@@ -19,6 +19,7 @@ export type ApiErrorCode =
   | "ESTIMATE_EXPIRED"
   | "OCR_FAILED"
   | "CONFLICT"
+  | "SERVICE_UNAVAILABLE"
   | "INTERNAL";
 
 export interface ApiError {

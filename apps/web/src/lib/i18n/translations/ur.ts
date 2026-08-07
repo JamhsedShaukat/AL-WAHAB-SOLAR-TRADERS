@@ -5,6 +5,8 @@ const ur: Record<TranslationKey, string> = {
   "nav.home": "ہوم",
   "nav.how": "یہ کیسے کام کرتا ہے",
   "nav.why": "ہمیں کیوں چنیں",
+  "nav.products": "پروڈکٹس",
+  "nav.services": "خدمات",
   "nav.about": "ہمارے بارے میں",
   "nav.faq": "عام سوالات",
   "nav.contact": "رابطہ",

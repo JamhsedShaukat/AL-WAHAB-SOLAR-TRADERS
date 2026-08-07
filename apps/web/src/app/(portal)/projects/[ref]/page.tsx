@@ -518,7 +518,7 @@ export default async function ProjectDetailPage({ params }: Props) {
           Installation in progress — check back for updates
         </p>
         <a
-          href="https://wa.me/924211176576"
+          href="https://wa.me/923294777785"
           target="_blank"
           rel="noopener noreferrer"
           className="focus-ring inline-flex shrink-0 items-center gap-2 rounded-xl bg-emerald-500/15 px-4 py-2.5 text-[13.5px] font-semibold text-emerald-400 transition-colors hover:bg-emerald-500/25"

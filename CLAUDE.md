@@ -111,6 +111,25 @@ apps/web/src/
 - Nav entries live in `src/lib/navigation.ts`, typed against `PermissionKey`
 - Never put backend logic in the frontend
 
+### SEO — non-negotiable for catalogue pages
+
+Full strategy in `docs/08-seo-strategy.md`. The rules that bite:
+
+- JSON-LD comes from the typed builders in `lib/seo/schema.ts`. Never hand-write
+  it in a page; combine builders with `graph(...)`.
+- Titles and descriptions come from `lib/seo/metadata.ts`. The root layout
+  applies `template: "%s — Al-Wahab Solar Traders"`, so a generated title must
+  **not** include the company name. An admin-supplied `metaTitle` is passed as
+  `{ absolute }` to bypass the template.
+- **A quote-only product must not emit an `Offer`.** A missing or zero price is
+  invalid structured data and can suppress rich results catalogue-wide.
+- Catalogue content is **server-rendered**. The carousel is a client component,
+  but its products arrive as props — if Googlebot sees an empty container, the
+  page does not exist. Products must also be reachable by plain `<a href>`.
+- Slugs are immutable once published; changing one needs a 301.
+- `sitemap.ts` is `force-dynamic` and paginates the API (limit is capped at 100).
+  A prerendered sitemap silently ships with static routes only.
+
 ### Auth gating
 
 Route protection belongs in **`apps/web/src/proxy.ts`**. Next.js 16 renamed
@@ -237,15 +256,58 @@ Controllers return **plain data**. To attach pagination, return
 
 ## Database Standards
 
+PostgreSQL is hosted on **Supabase** (managed Postgres only — no Supabase Auth,
+Storage, Realtime or RLS). The API runs on **EC2**.
+
 ### Prisma Conventions
 
 - Schema lives in `prisma/schema.prisma`
-- Use `snake_case` for database columns (`@map`)
+- Use `snake_case` for database columns (`@map`) and tables (`@@map`)
 - Use `PascalCase` for model names
-- Always add `createdAt` and `updatedAt` to models
+- Always add `createdAt` and `updatedAt` to mutable models
 - Use UUID for primary keys
+- Money is `Decimal @db.Decimal(12, 2)` — never a float
+- Timestamps are `@db.Timestamptz`
 - Add indexes for frequently queried fields
-- Write migrations with `pnpm prisma migrate dev --name descriptive_name`
+- Write migrations with `pnpm db:migrate --name descriptive_name`
+
+### Prisma 7 specifics — these differ from most examples online
+
+- Connection URLs live in **`prisma.config.ts`**, not in the `datasource` block.
+  The datasource carries only `provider`.
+- The generator is `prisma-client` (not `prisma-client-js`) and `output` is
+  **required**. The client is emitted as TypeScript to
+  `apps/api/src/generated/prisma` so it falls inside the API's `tsc` rootDir.
+  That directory is gitignored and rebuilt by `postinstall`.
+- Prisma connects through a **driver adapter** (`@prisma/adapter-pg`), so the
+  connection pool is configured in `PrismaService`, not in a URL parameter.
+- `$connect()` is lazy with a driver adapter — it resolves even against an
+  unreachable host. Probe with a real query to verify connectivity.
+
+### Two connection URLs
+
+Supabase fronts Postgres with the Supavisor pooler, and both sides are needed:
+
+| Variable       | Port | Mode        | Used by             |
+| -------------- | ---- | ----------- | ------------------- |
+| `DATABASE_URL` | 6543 | transaction | every runtime query |
+| `DIRECT_URL`   | 5432 | session     | `prisma migrate`    |
+
+`DIRECT_URL` must be session mode because migrations hold advisory locks that
+transaction pooling breaks. Use the **pooler hostname for both** —
+`db.<ref>.supabase.co` is IPv6-only and unreachable from an IPv4-only EC2 VPC.
+
+`?pgbouncer=true` on `DATABASE_URL` is kept by convention but is **inert under
+Prisma 7** — it configured the removed Rust engine. Safety on the transaction
+pooler comes from `@prisma/adapter-pg` leaving prepared statements unnamed
+unless a `statementNameGenerator` is passed. Do not pass one. Details in
+`prisma/README.md`.
+
+### Database access in application code
+
+Inject `PrismaService` from `@/database`. It is provided by a `@Global()`
+`DatabaseModule`, so no module needs to import it explicitly. There is exactly
+one client per process.
 
 ### Example Model
 
@@ -322,10 +384,12 @@ pnpm build            # Build all
 pnpm build:web
 pnpm build:api
 
-# Database
-pnpm prisma migrate dev    # Run migrations
-pnpm prisma generate       # Generate client
-pnpm prisma db seed        # Seed database
+# Database (run from the repo root)
+pnpm db:generate      # Regenerate the Prisma client
+pnpm db:migrate       # Create + apply a migration in development
+pnpm db:deploy        # Apply pending migrations (use on EC2)
+pnpm db:seed          # Upsert reference data; safe to re-run
+pnpm db:studio        # Browse data
 
 # Lint & Type Check
 pnpm lint
@@ -350,7 +414,9 @@ Current phases:
 - Phase 2a: Shared packages (`@wahab/ui`, `types`, `utils`, `config`) ✓
 - Phase 2b: NestJS skeleton — config, envelope, filter, throttling, health ✓
 - Phase 2c: Route groups for auth, client portal, admin portal ✓
-- Phase 3: Prisma schema + PostgreSQL, `database/` module
+- Phase 3: Prisma schema + Supabase Postgres, `database/` module ✓
+  (schema, seed and PrismaService are in place; the first migration still needs
+  live Supabase credentials — see `prisma/README.md`)
 - Phase 4: Authentication — JWT, OTP, guards, `apps/web/src/proxy.ts` gating
 - Phase 5: Estimator engine + portal/admin screens against real data
 - Phase 6: Docker & production config

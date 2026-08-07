@@ -3,6 +3,8 @@ const en = {
   "nav.home": "Home",
   "nav.how": "How it works",
   "nav.why": "Why us",
+  "nav.products": "Products",
+  "nav.services": "Services",
   "nav.about": "About",
   "nav.faq": "FAQ",
   "nav.contact": "Contact",
